@@ -1,15 +1,16 @@
 {
   "version": 8,
-  "name": "Projektbereich: Planungsrecht",
+  "name": "Planungsphase 0: Planungsrecht",
   "sprite": "https://tiles.cismet.de/bplanverfahren/sprites",
   "glyphs": "https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf",
   "metadata": {
     "adhoc": {
       "projektbereich": "pb-63bd9074",
       "styles": {
-        "planungsrecht": "published/planungsrecht.json",
-        "fachkonzepte": "published/fachkonzepte.json",
-        "geltungsbereich": "published/geltungsbereich.json",
+        "planungsrecht": "published/planungsphase-0-planungsrecht.json",
+        "fachkonzepte": "published/planungsphase-0-fachkonzepte.json",
+        "ready2use": "published/planungsphase-1-ready2use.json",
+        "ready2hack": "published/planungsphase-1-ready2hack.json",
         "projektbereich": "published/projektbereich.geojson"
       }
     },
@@ -24,7 +25,6 @@
             {
               "id": "nur",
               "title": "Nur Projektbereich",
-              "vis_bbox": "none",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "none",
@@ -34,7 +34,6 @@
             {
               "id": "fnp",
               "title": "FNP Hauptnutzungen",
-              "vis_bbox": "visible",
               "vis_fnp": "visible",
               "vis_regionalplan": "none",
               "vis_lep": "none",
@@ -44,7 +43,6 @@
             {
               "id": "regionalplan",
               "title": "WMS Regionalplan NRW",
-              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "visible",
               "vis_lep": "none",
@@ -54,7 +52,6 @@
             {
               "id": "lep",
               "title": "WMS Landesentwicklungsplan NRW",
-              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "visible",
@@ -64,7 +61,6 @@
             {
               "id": "bplan",
               "title": "B-Plan-Verfahren (rechtsverbindlich)",
-              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "none",
@@ -74,7 +70,6 @@
             {
               "id": "landschaft",
               "title": "Landschafts- und Naturschutz",
-              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "none",
@@ -83,9 +78,6 @@
             }
           ],
           "targets": {
-            "vis_bbox": [
-              "layers.adhoc-bbox.layout.visibility"
-            ],
             "vis_fnp": [
               "layers.fd-fnp-hauptnutzungen-id.layout.visibility",
               "layers.fd-fnp-hauptnutzungen-line-id.layout.visibility",
@@ -132,8 +124,8 @@
         }
       ],
       "layerInfo": {
-        "title": "Projektbereich: Planungsrecht",
-        "description": "Projektbereich pb-63bd9074, gemeinsam veröffentlicht mit den Styles „Projektbereich: Planungsrecht“, „Projektbereich: Fachkonzepte“ und „Geltungsbereich“.\nFNP Hauptnutzungen: Flächennutzungsplan der Stadt Wuppertal, Hauptnutzungen (Vektordaten). (Quelle: Stadt Wuppertal, tiles.cismet.de/hauptnutzungen)\nWMS Regionalplan NRW: Stellt Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet dar. (Quelle: Land NRW, wms.nrw.de/wms/wms_nw_regionalplan)\nWMS Landesentwicklungsplan NRW: Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans NRW. (Quelle: Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan)\nB-Plan-Verfahren (rechtsverbindlich): Räumliche Geltungsbereiche rechtsverbindlicher Bebauungsplanverfahren in Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/bplanverfahren)\nLandschafts- und Naturschutz: Landschafts- und Naturschutzgebiete der Stadt Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/landschaftsundnaturschutz)",
+        "title": "Planungsphase 0: Planungsrecht",
+        "description": "Projektbereich pb-63bd9074, gemeinsam veröffentlicht mit allen Planungsphase-Styles.\nFNP Hauptnutzungen: Flächennutzungsplan der Stadt Wuppertal, Hauptnutzungen (Vektordaten). (Quelle: Stadt Wuppertal, tiles.cismet.de/hauptnutzungen)\nWMS Regionalplan NRW: Stellt Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet dar. (Quelle: Land NRW, wms.nrw.de/wms/wms_nw_regionalplan)\nWMS Landesentwicklungsplan NRW: Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans NRW. (Quelle: Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan)\nB-Plan-Verfahren (rechtsverbindlich): Räumliche Geltungsbereiche rechtsverbindlicher Bebauungsplanverfahren in Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/bplanverfahren)\nLandschafts- und Naturschutz: Landschafts- und Naturschutzgebiete der Stadt Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/landschaftsundnaturschutz)",
         "links": [
           {
             "url": "https://tiles.cismet.de/hauptnutzungen/style.json",
@@ -156,12 +148,16 @@
             "text": "Landschafts- und Naturschutz (Style)"
           },
           {
-            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/fachkonzepte.json",
-            "text": "Projektbereich: Fachkonzepte (Style)"
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-fachkonzepte.json",
+            "text": "Planungsphase 0: Fachkonzepte (Style)"
           },
           {
-            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/geltungsbereich.json",
-            "text": "Geltungsbereich (Style)"
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json",
+            "text": "Planungsphase 1: Ready2Use (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json",
+            "text": "Planungsphase 1: Ready2hack (Style)"
           }
         ],
         "keywords": [
@@ -261,48 +257,6 @@
         51.25819
       ],
       "attribution": "Stadt Wuppertal, tiles.cismet.de/landschaftsundnaturschutz"
-    },
-    "adhoc-bbox": {
-      "type": "geojson",
-      "data": {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {
-              "info_title": "Abrufbereich der Fachdaten",
-              "info_text": "Rechteck um den Projektbereich, in dem die gewählten Fachdaten geladen werden."
-            },
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [
-                    7.146173,
-                    51.254204
-                  ],
-                  [
-                    7.152542,
-                    51.254204
-                  ],
-                  [
-                    7.152542,
-                    51.25819
-                  ],
-                  [
-                    7.146173,
-                    51.25819
-                  ],
-                  [
-                    7.146173,
-                    51.254204
-                  ]
-                ]
-              ]
-            }
-          }
-        ]
-      }
     },
     "adhoc": {
       "type": "geojson",
@@ -1611,22 +1565,6 @@
       },
       "metadata": {
         "fachdaten": "Landschafts- und Naturschutz"
-      }
-    },
-    {
-      "id": "adhoc-bbox",
-      "type": "line",
-      "source": "adhoc-bbox",
-      "layout": {
-        "visibility": "none"
-      },
-      "paint": {
-        "line-color": "#0b6bcb",
-        "line-width": 1.5,
-        "line-dasharray": [
-          4,
-          3
-        ]
       }
     },
     {

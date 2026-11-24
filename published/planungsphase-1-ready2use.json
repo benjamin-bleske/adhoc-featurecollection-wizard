@@ -1,6 +1,6 @@
 {
   "version": 8,
-  "name": "Geltungsbereich",
+  "name": "Planungsphase 1: Ready2Use",
   "metadata": {
     "adhoc": {
       "projektbereich": "pb-63bd9074"
@@ -21,16 +21,20 @@
         }
       ],
       "layerInfo": {
-        "title": "Geltungsbereich",
-        "description": "Geltungsbereich zum Projektbereich pb-63bd9074 (gleiche Geometrie wie der Projektbereich, Planungsphase 0).",
+        "title": "Planungsphase 1: Ready2Use",
+        "description": "Geltungsbereich zum Projektbereich pb-63bd9074 (gleiche Geometrie wie der Projektbereich).",
         "links": [
           {
-            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsrecht.json",
-            "text": "Projektbereich: Planungsrecht (Style)"
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
+            "text": "Planungsphase 0: Planungsrecht (Style)"
           },
           {
-            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/fachkonzepte.json",
-            "text": "Projektbereich: Fachkonzepte (Style)"
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-fachkonzepte.json",
+            "text": "Planungsphase 0: Fachkonzepte (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json",
+            "text": "Planungsphase 1: Ready2hack (Style)"
           }
         ],
         "keywords": [

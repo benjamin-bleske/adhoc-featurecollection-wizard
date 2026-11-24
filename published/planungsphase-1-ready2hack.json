@@ -1,0 +1,166 @@
+{
+  "version": 8,
+  "name": "Planungsphase 1: Ready2hack",
+  "glyphs": "https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf",
+  "metadata": {
+    "adhoc": {
+      "projektbereich": "pb-63bd9074",
+      "folgt": "published/planungsphase-1-ready2use.json"
+    },
+    "carmaConf": {
+      "tools": [
+        {
+          "kind": "zoomToExtent",
+          "config": {
+            "label": "Auf den Projektbereich zoomen",
+            "bounds": [
+              7.148296,
+              51.255962,
+              7.150419,
+              51.256432
+            ]
+          }
+        }
+      ],
+      "filterConfig": {
+        "filterType": "button",
+        "filterMode": "or",
+        "layerPattern": "r2h-",
+        "styles": {
+          "iconSize": "12px",
+          "selectedBorderColor": "none"
+        },
+        "filters": [
+          {
+            "key": "tf101",
+            "label": "TwinFlow 101",
+            "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='%23e8590c'/%3E%3C/svg%3E",
+            "propertyName": "name",
+            "propertyValue": "TwinFlow 101"
+          },
+          {
+            "key": "tf103",
+            "label": "TwinFlow 103",
+            "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='%230b6bcb'/%3E%3C/svg%3E",
+            "propertyName": "name",
+            "propertyValue": "TwinFlow 103"
+          }
+        ]
+      },
+      "layerInfo": {
+        "title": "Planungsphase 1: Ready2hack",
+        "description": "Punkte TwinFlow 101 (Mitte) und TwinFlow 103 (20 % der Ausdehnung östlich) relativ zum Geltungsbereich „Planungsphase 1: Ready2Use“, Projektbereich pb-63bd9074.",
+        "links": [
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
+            "text": "Planungsphase 0: Planungsrecht (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-fachkonzepte.json",
+            "text": "Planungsphase 0: Fachkonzepte (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json",
+            "text": "Planungsphase 1: Ready2Use (Style)"
+          }
+        ],
+        "keywords": [
+          "adhoc",
+          "pb-63bd9074",
+          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var M = {  }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = (p.info_text || '').split('\\n').filter(function (l) { return l; }).map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + t + \"\" + '</html>' }; }"
+        ]
+      }
+    }
+  },
+  "sources": {
+    "r2h-points": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "projektbereich_id": "pb-63bd9074",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "name": "TwinFlow 101",
+              "info_title": "TwinFlow 101",
+              "info_text": "Planungsphase 1: Ready2hack\nLage: Mitte des Geltungsbereichs"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1493575,
+                51.256197
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "name": "TwinFlow 103",
+              "info_title": "TwinFlow 103",
+              "info_text": "Planungsphase 1: Ready2hack\nLage: auf gleicher Höhe, 20 % der Ausdehnung östlich der Mitte"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1497821,
+                51.256197
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "layers": [
+    {
+      "id": "r2h-circle",
+      "type": "circle",
+      "source": "r2h-points",
+      "paint": {
+        "circle-radius": 8,
+        "circle-color": [
+          "match",
+          [
+            "get",
+            "name"
+          ],
+          "TwinFlow 101",
+          "#e8590c",
+          "TwinFlow 103",
+          "#0b6bcb",
+          "#555555"
+        ],
+        "circle-stroke-color": "#ffffff",
+        "circle-stroke-width": 2
+      }
+    },
+    {
+      "id": "r2h-label",
+      "type": "symbol",
+      "source": "r2h-points",
+      "layout": {
+        "text-field": [
+          "get",
+          "name"
+        ],
+        "text-font": [
+          "Open Sans Semibold"
+        ],
+        "text-size": 13,
+        "text-anchor": "top",
+        "text-offset": [
+          0,
+          0.9
+        ],
+        "text-allow-overlap": true
+      },
+      "paint": {
+        "text-color": "#222222",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1.5
+      }
+    }
+  ]
+}

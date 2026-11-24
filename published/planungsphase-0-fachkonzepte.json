@@ -1,15 +1,16 @@
 {
   "version": 8,
-  "name": "Projektbereich: Fachkonzepte",
+  "name": "Planungsphase 0: Fachkonzepte",
   "sprite": "https://tiles.cismet.de/stadtbaumkonzept/sprites",
   "glyphs": "https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf",
   "metadata": {
     "adhoc": {
       "projektbereich": "pb-63bd9074",
       "styles": {
-        "planungsrecht": "published/planungsrecht.json",
-        "fachkonzepte": "published/fachkonzepte.json",
-        "geltungsbereich": "published/geltungsbereich.json",
+        "planungsrecht": "published/planungsphase-0-planungsrecht.json",
+        "fachkonzepte": "published/planungsphase-0-fachkonzepte.json",
+        "ready2use": "published/planungsphase-1-ready2use.json",
+        "ready2hack": "published/planungsphase-1-ready2hack.json",
         "projektbereich": "published/projektbereich.geojson"
       }
     },
@@ -24,7 +25,6 @@
             {
               "id": "nur",
               "title": "Nur Projektbereich",
-              "vis_bbox": "none",
               "vis_boden": "none",
               "vis_kwp": "none",
               "vis_stadtbaum": "none"
@@ -32,7 +32,6 @@
             {
               "id": "boden",
               "title": "Gesamtbewertung der Bodenfunktionen",
-              "vis_bbox": "visible",
               "vis_boden": "visible",
               "vis_kwp": "none",
               "vis_stadtbaum": "none"
@@ -40,7 +39,6 @@
             {
               "id": "kwp",
               "title": "Eignung dezentrale Wärmeversorgung",
-              "vis_bbox": "visible",
               "vis_boden": "none",
               "vis_kwp": "visible",
               "vis_stadtbaum": "none"
@@ -48,16 +46,12 @@
             {
               "id": "stadtbaum",
               "title": "Stadtbaumkonzept",
-              "vis_bbox": "visible",
               "vis_boden": "none",
               "vis_kwp": "none",
               "vis_stadtbaum": "visible"
             }
           ],
           "targets": {
-            "vis_bbox": [
-              "layers.adhoc-bbox.layout.visibility"
-            ],
             "vis_boden": [
               "layers.fd-boden-bodenfunktion-line-id.layout.visibility",
               "layers.fd-boden-bodenfunktion-fill-id.layout.visibility",
@@ -89,8 +83,8 @@
         }
       ],
       "layerInfo": {
-        "title": "Projektbereich: Fachkonzepte",
-        "description": "Projektbereich pb-63bd9074, gemeinsam veröffentlicht mit den Styles „Projektbereich: Planungsrecht“, „Projektbereich: Fachkonzepte“ und „Geltungsbereich“.\nGesamtbewertung der Bodenfunktionen: Gesamtbewertung der Bodenfunktionen in Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/bodenfunktion)\nEignung dezentrale Wärmeversorgung: Eignungsgebiete für dezentrale Wärmeversorgung (kommunale Wärmeplanung Wuppertal). (Quelle: Stadt Wuppertal, tiles.cismet.de/kwp_dezentral)\nStadtbaumkonzept: Geplante Baumstandorte und Baumarten des Stadtbaumkonzepts (Pflanzsaison 26/27). (Quelle: Stadt Wuppertal, tiles.cismet.de/stadtbaumkonzept)",
+        "title": "Planungsphase 0: Fachkonzepte",
+        "description": "Projektbereich pb-63bd9074, gemeinsam veröffentlicht mit allen Planungsphase-Styles.\nGesamtbewertung der Bodenfunktionen: Gesamtbewertung der Bodenfunktionen in Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/bodenfunktion)\nEignung dezentrale Wärmeversorgung: Eignungsgebiete für dezentrale Wärmeversorgung (kommunale Wärmeplanung Wuppertal). (Quelle: Stadt Wuppertal, tiles.cismet.de/kwp_dezentral)\nStadtbaumkonzept: Geplante Baumstandorte und Baumarten des Stadtbaumkonzepts (Pflanzsaison 26/27). (Quelle: Stadt Wuppertal, tiles.cismet.de/stadtbaumkonzept)",
         "links": [
           {
             "url": "https://tiles.cismet.de/bodenfunktion/style.json",
@@ -105,12 +99,16 @@
             "text": "Stadtbaumkonzept (Style)"
           },
           {
-            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsrecht.json",
-            "text": "Projektbereich: Planungsrecht (Style)"
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
+            "text": "Planungsphase 0: Planungsrecht (Style)"
           },
           {
-            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/geltungsbereich.json",
-            "text": "Geltungsbereich (Style)"
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json",
+            "text": "Planungsphase 1: Ready2Use (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json",
+            "text": "Planungsphase 1: Ready2hack (Style)"
           }
         ],
         "keywords": [
@@ -166,48 +164,6 @@
         51.25819
       ],
       "attribution": "Stadt Wuppertal, tiles.cismet.de/stadtbaumkonzept"
-    },
-    "adhoc-bbox": {
-      "type": "geojson",
-      "data": {
-        "type": "FeatureCollection",
-        "features": [
-          {
-            "type": "Feature",
-            "properties": {
-              "info_title": "Abrufbereich der Fachdaten",
-              "info_text": "Rechteck um den Projektbereich, in dem die gewählten Fachdaten geladen werden."
-            },
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [
-                [
-                  [
-                    7.146173,
-                    51.254204
-                  ],
-                  [
-                    7.152542,
-                    51.254204
-                  ],
-                  [
-                    7.152542,
-                    51.25819
-                  ],
-                  [
-                    7.146173,
-                    51.25819
-                  ],
-                  [
-                    7.146173,
-                    51.254204
-                  ]
-                ]
-              ]
-            }
-          }
-        ]
-      }
     },
     "adhoc": {
       "type": "geojson",
@@ -847,22 +803,6 @@
       },
       "metadata": {
         "fachdaten": "Stadtbaumkonzept"
-      }
-    },
-    {
-      "id": "adhoc-bbox",
-      "type": "line",
-      "source": "adhoc-bbox",
-      "layout": {
-        "visibility": "none"
-      },
-      "paint": {
-        "line-color": "#0b6bcb",
-        "line-width": 1.5,
-        "line-dasharray": [
-          4,
-          3
-        ]
       }
     },
     {
