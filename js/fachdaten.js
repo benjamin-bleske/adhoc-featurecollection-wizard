@@ -6,14 +6,20 @@
 const Fachdaten = (() => {
   const caps = base => `${base}?REQUEST=GetCapabilities&SERVICE=WMS`;
 
+  // Zwei Styles im Geoportal: "Projektbereich: Planungsrecht" und "Projektbereich: Fachkonzepte"
+  const GROUPS = {
+    planungsrecht: { title: 'Projektbereich: Planungsrecht', file: 'published/planungsrecht.json' },
+    fachkonzepte: { title: 'Projektbereich: Fachkonzepte', file: 'published/fachkonzepte.json' },
+  };
+
   const CATALOG = [
-    { id: 'fnp', kind: 'style', label: 'FNP Hauptnutzungen',
+    { id: 'fnp', group: 'planungsrecht', kind: 'style', label: 'FNP Hauptnutzungen',
       styleUrl: 'https://tiles.cismet.de/hauptnutzungen/style.json', sourceLayer: 'hauptnutzungen',
       description: 'Flächennutzungsplan der Stadt Wuppertal, Hauptnutzungen (Vektordaten).',
       source: 'Stadt Wuppertal, tiles.cismet.de/hauptnutzungen',
       // der Style bringt keine Infobox mit: eigene Zuordnung (eine Zeile, siehe Geoportal-Regel "nur Zeilen mit function")
       infobox: "function createInfoBoxInfo(p){ return { header: 'FNP Hauptnutzungen', headerColor: p.farbe || '#7C7CA6', title: p.nutzung, subtitle: p.text_recht || '', additionalInfo: p.name || '' }; }" },
-    { id: 'regionalplan', kind: 'wms', label: 'WMS Regionalplan NRW',
+    { id: 'regionalplan', group: 'planungsrecht', kind: 'wms', label: 'WMS Regionalplan NRW',
       description: 'Stellt Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet dar.',
       source: 'Land NRW, wms.nrw.de/wms/wms_nw_regionalplan',
       capabilities: caps('https://www.wms.nrw.de/wms/wms_nw_regionalplan'),
@@ -21,7 +27,7 @@ const Fachdaten = (() => {
       // keine Flächenauswertung: gerenderte Farben weichen von der Legende ab, Topographie-Unterlage, Darstellung nur ab 1:8000
       noAnalysis: 'Festlegungen im Projektbereich sind aus dem Kartenbild nicht zuverlässig ableitbar (siehe Legende).',
       getMap: { base: 'https://www.wms.nrw.de/wms/wms_nw_regionalplan', layers: 'regionalplan' }, opacity: 0.7 },
-    { id: 'lep', kind: 'wms', label: 'WMS Landesentwicklungsplan NRW',
+    { id: 'lep', group: 'planungsrecht', kind: 'wms', label: 'WMS Landesentwicklungsplan NRW',
       description: 'Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans NRW.',
       source: 'Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan',
       capabilities: caps('https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan'),
@@ -36,18 +42,26 @@ const Fachdaten = (() => {
         { name: 'Gebiete für den Schutz der Natur', rgb: [122, 164, 117] },
         { name: 'Oberflächengewässer', rgb: [0, 131, 181] },
       ] },
-    { id: 'bplan', kind: 'style', label: 'B-Plan-Verfahren (rechtsverbindlich)',
+    { id: 'bplan', group: 'planungsrecht', kind: 'style', label: 'B-Plan-Verfahren (rechtsverbindlich)',
       styleUrl: 'https://tiles.cismet.de/bplanverfahren/rechtsverbindlich.style.json', sourceLayer: 'bplanverfahren',
       description: 'Räumliche Geltungsbereiche rechtsverbindlicher Bebauungsplanverfahren in Wuppertal.',
       source: 'Stadt Wuppertal, tiles.cismet.de/bplanverfahren' },
-    { id: 'landschaft', kind: 'style', label: 'Landschafts- und Naturschutz',
+    { id: 'landschaft', group: 'planungsrecht', kind: 'style', label: 'Landschafts- und Naturschutz',
       styleUrl: 'https://tiles.cismet.de/landschaftsundnaturschutz/style.json', sourceLayer: 'landschaftsundnaturschutz',
       description: 'Landschafts- und Naturschutzgebiete der Stadt Wuppertal.',
       source: 'Stadt Wuppertal, tiles.cismet.de/landschaftsundnaturschutz' },
-    { id: 'boden', kind: 'style', label: 'Gesamtbewertung der Bodenfunktionen',
+    { id: 'boden', group: 'fachkonzepte', kind: 'style', label: 'Gesamtbewertung der Bodenfunktionen',
       styleUrl: 'https://tiles.cismet.de/bodenfunktion/style.json', sourceLayer: 'bodenfunktion',
       description: 'Gesamtbewertung der Bodenfunktionen in Wuppertal.',
       source: 'Stadt Wuppertal, tiles.cismet.de/bodenfunktion' },
+    { id: 'kwp', group: 'fachkonzepte', kind: 'style', label: 'Eignung dezentrale Wärmeversorgung',
+      styleUrl: 'https://tiles.cismet.de/kwp_dezentral/style.json', sourceLayer: 'kwp_dezentral',
+      description: 'Eignungsgebiete für dezentrale Wärmeversorgung (kommunale Wärmeplanung Wuppertal).',
+      source: 'Stadt Wuppertal, tiles.cismet.de/kwp_dezentral' },
+    { id: 'stadtbaum', group: 'fachkonzepte', kind: 'style', label: 'Stadtbaumkonzept',
+      styleUrl: 'https://tiles.cismet.de/stadtbaumkonzept/style.json', sourceLayer: 'stadtbaumkonzept',
+      description: 'Geplante Baumstandorte und Baumarten des Stadtbaumkonzepts (Pflanzsaison 26/27).',
+      source: 'Stadt Wuppertal, tiles.cismet.de/stadtbaumkonzept' },
   ];
 
   const byId = id => CATALOG.find(c => c.id === id);
@@ -129,15 +143,21 @@ const Fachdaten = (() => {
   }
 
   // ---- Style-Bausteine
-  const padBounds = ([w, s, e, n]) => {
-    const dx = (e - w) * 0.05 || 0.0005, dy = (n - s) * 0.05 || 0.0005;
-    return [w - dx, s - dy, e + dx, n + dy].map(v => +v.toFixed(6));
+  const unmerc = ([x, y]) => [x * 180 / 20037508.34, Math.atan(Math.exp(y * Math.PI / 20037508.34)) * 360 / Math.PI - 90];
+  // Abrufbereich der Fachdaten: ein Quadrat (gleich lange Seiten), mittig um den Projektbereich, Kantenlänge = 3 x längste Seite des Projektbereichs
+  const ABRUF_FAKTOR = 3;
+  const abrufbereich = ([w, s, e, n]) => {
+    const [x0, y0] = merc([w, s]), [x1, y1] = merc([e, n]);
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, half = ABRUF_FAKTOR * Math.max(x1 - x0, y1 - y0, 1) / 2;
+    const [lw, ls] = unmerc([cx - half, cy - half]), [le, ln] = unmerc([cx + half, cy + half]);
+    return [lw, ls, le, ln].map(v => +v.toFixed(6));
   };
 
   // -> { sources, layers, byEntry: { id: [layer-ids] } }
   function toStyleParts(ids, bounds) {
     const sources = {}, layers = [], byEntry = {};
-    const b = bounds && padBounds(bounds);
+    let sprite = null, glyphs = null;
+    const b = bounds && abrufbereich(bounds);
     for (const c of selected(ids)) {
       byEntry[c.id] = [];
       if (c.kind === 'wms') {
@@ -146,7 +166,7 @@ const Fachdaten = (() => {
         if (!b) { delete byEntry[c.id]; continue; }
         const [w, s0, e, n] = b, [x0, y0] = merc([w, s0]), [x1, y1] = merc([e, n]);
         const mpp = Math.max(4, Math.max(x1 - x0, y1 - y0) / 2000);
-        const W = Math.max(32, Math.round((x1 - x0) / mpp)), H = Math.max(32, Math.round((y1 - y0) / mpp));
+        const W = Math.max(32, Math.round((x1 - x0) / mpp)), H = Math.max(32, Math.round((y1 - y0) / mpp)); // Quadrat -> W = H
         sources[`fd-${c.id}`] = { type: 'image', coordinates: [[w, n], [e, n], [e, s0], [w, s0]],
           url: `${c.getMap.base}?service=WMS&version=1.1.1&request=GetMap&layers=${c.getMap.layers}&styles=&format=image/png&transparent=true&srs=EPSG:3857&width=${W}&height=${H}&bbox=${[x0, y0, x1, y1].map(v => v.toFixed(2)).join(',')}` };
         layers.push({ id: `fd-${c.id}`, type: 'raster', source: `fd-${c.id}`, layout: { visibility: 'none' }, paint: { 'raster-opacity': c.opacity ?? 1 }, metadata: { fachdaten: c.label } });
@@ -154,15 +174,20 @@ const Fachdaten = (() => {
       } else if (loaded[c.id]?.style) {
         const st = loaded[c.id].style;
         for (const [k, def] of Object.entries(st.sources)) sources[`fd-${c.id}-${k}`] = { ...def, ...(b && { bounds: b }), attribution: c.source };
+        // Ein Style kann nur ein Sprite haben: der erste Quell-Style mit Sprite behält seine Symbol-Layer (Beschriftung/Symbole),
+        // bei weiteren entfallen sie.
+        const owner = st.sprite && (!sprite || sprite === st.sprite);
+        if (owner) { sprite = st.sprite; }
+        if (st.glyphs && !glyphs) glyphs = st.glyphs;
         for (const l of st.layers) {
-          if (l.type === 'symbol') continue; // Beschriftungen brauchen Sprite/Glyphs des Quell-Styles
+          if (l.type === 'symbol' && !owner) continue;
           const id = `fd-${c.id}-${l.id}`;
           layers.push({ ...l, id, source: `fd-${c.id}-${l.source}`, layout: { ...l.layout, visibility: 'none' }, metadata: { ...l.metadata, fachdaten: c.label } });
           byEntry[c.id].push(id);
         }
       }
     }
-    return { sources, layers, byEntry };
+    return { sources, layers, byEntry, sprite, glyphs };
   }
 
   // Ein Dropdown im Layer-Chip (carmaConf.dynamicStyling, Typ list): "Nur Projektbereich" (Standard) oder je ein Kartenwerk.
@@ -181,7 +206,7 @@ const Fachdaten = (() => {
   // Rechteck, in dem die Fachdaten abgerufen werden (Quelle `bounds` der Fachdaten-Ebenen)
   function bboxFeature(ids, bounds) {
     if (!bounds || !selected(ids).length) return null;
-    const [w, s, e, n] = padBounds(bounds);
+    const [w, s, e, n] = abrufbereich(bounds);
     return { type: 'Feature', properties: { info_title: 'Abrufbereich der Fachdaten', info_text: 'Rechteck um den Projektbereich, in dem die gewählten Fachdaten geladen werden.' },
       geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } };
   }
@@ -199,11 +224,13 @@ const Fachdaten = (() => {
     }).join('<br/>');
   }
 
-  function infoboxMapping(ids) {
+  function infoboxMapping(ids, { extraKey = null, title = null } = {}) {
     const fns = selected(ids).filter(c => c.sourceLayer && loaded[c.id]?.infobox)
       .map(c => `${JSON.stringify(c.sourceLayer)}: ${loaded[c.id].infobox}`);
     const capsHtml = capabilitiesHtml(ids);
-    const adhoc = `var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = (p.info_text || '').split('\\n').map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + t + ${JSON.stringify(capsHtml ? '<br/>' + capsHtml : '')} + '</html>' };`;
+    const base = title ? "(p.info_title + '\\n' + (p.info_text || ''))" : "(p.info_text || '')";
+    const raw = extraKey ? `(${base} + '\\n' + (p.${extraKey} || ''))` : base;
+    const adhoc = `var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = ${raw}.split('\\n').filter(function (l) { return l; }).map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: ${title ? JSON.stringify(title) : 'p.info_title'}, additionalInfo: '<html>' + t + ${JSON.stringify(capsHtml ? '<br/>' + capsHtml : '')} + '</html>' };`;
     const code = `function createInfoBoxInfo(p){ var M = { ${fns.join(', ')} }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } ${adhoc} }`;
     return code.replace(/\s*\n\s*/g, ' ');
   }
@@ -211,5 +238,5 @@ const Fachdaten = (() => {
   const describe = ids => selected(ids).map(c => `${c.label}: ${c.description} (Quelle: ${c.source})`);
   const links = ids => selected(ids).flatMap(c => [c.styleUrl && { url: c.styleUrl, text: `${c.label} (Style)` }, c.capabilities && { url: c.capabilities, text: `${c.label} (GetCapabilities)` }].filter(Boolean));
 
-  return { CATALOG, load, analyse, analysis, errors, toStyleParts, toDynamicStyling, bboxFeature, infoboxMapping, describe, links };
+  return { CATALOG, GROUPS, load, analyse, analysis, errors, abrufbereich, toStyleParts, toDynamicStyling, bboxFeature, infoboxMapping, describe, links };
 })();

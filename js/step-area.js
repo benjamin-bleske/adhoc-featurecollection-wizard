@@ -130,7 +130,7 @@ const AreaStep = (() => {
     if (!multi) { const had = !!a.vec; a.vec = null; return had; }
     const vec = {};
     for (const id of Object.keys(Alkis.VEC)) { const r = Alkis.vecSummary(mgl, id, multi); if (!r) return false; vec[id] = r; }
-    const key = JSON.stringify([a.mode, Object.values(vec).map(r => r.items.map(i => [i.name, Math.round(i.share * 100)])), a.parcels.map(f => f.id), a.drawn && a.drawn.coordinates[0].length]);
+    const key = JSON.stringify([a.mode, Object.values(vec).map(r => r.items.map(i => [i.name, i.count ?? Math.round(i.share * 100)])), a.parcels.map(f => f.id), a.drawn && a.drawn.coordinates[0].length]);
     if (a.vec?.key === key) return false;
     a.vec = { ...vec, key };
     return true;
@@ -189,18 +189,26 @@ const AreaStep = (() => {
     return !!a && (a.mode === 'draw' ? !!a.drawn : a.parcels.length > 0);
   }
 
-  // Fachdaten-Zeilen für die Infobox (nur die in Schritt 2 gewählten)
-  const VEC_LABEL = { fnp: 'FNP Hauptnutzung', bplan: 'B-Plan-Verfahren (rechtsverbindlich)', landschaft: 'Landschafts- und Naturschutz', boden: 'Bodenfunktion (Gesamtbewertung)' };
-  const VEC_NONE = { fnp: 'keine Angabe', bplan: 'keine', landschaft: 'keine', boden: 'keine Angabe' };
+  // Fachdaten-Zeilen für die Infobox (nur die in Schritt 2 gewählten), getrennt nach den zwei Styles
+  const VEC_LABEL = { fnp: 'FNP Hauptnutzung', bplan: 'B-Plan-Verfahren (rechtsverbindlich)', landschaft: 'Landschafts- und Naturschutz',
+    boden: 'Bodenfunktion (Gesamtbewertung)', kwp: 'Eignung dezentrale Wärmeversorgung', stadtbaum: 'Stadtbaumkonzept' };
+  const VEC_NONE = { fnp: 'keine Angabe', bplan: 'keine', landschaft: 'keine', boden: 'keine Angabe', kwp: 'keine', stadtbaum: 'keine Baumstandorte' };
+  const pct = i => i.count != null ? `${i.count}× ${i.name}` : `${i.name} (${Math.max(1, Math.round(i.share * 100))} %)`;
   // die drei größten Anteile, der Rest als "+ n weitere"
-  const vecText = (r, none) => r.items.length ? r.items.slice(0, 3).map(i => `${i.name} (${Math.max(1, Math.round(i.share * 100))} %)`).join(', ') + (r.items.length > 3 ? ` + ${r.items.length - 3} weitere` : '') : none;
+  const vecText = (r, none) => r.items.length ? r.items.slice(0, 3).map(pct).join(', ') + (r.items.length > 3 ? ` + ${r.items.length - 3} weitere` : '') : none;
   const fnpLines = (a, ids) => !a.vec ? '' : Object.keys(VEC_LABEL).filter(id => ids.includes(id))
     .map(id => `\n${VEC_LABEL[id]}: ${vecText(a.vec[id], VEC_NONE[id])}` + (id === 'fnp' && a.vec.fnp.recht.length === 1 ? ` – ${a.vec.fnp.recht[0]}` : '')).join('');
+  const inGroup = (ids, g) => ids.filter(id => Fachdaten.CATALOG.find(c => c.id === id)?.group === g);
+  const groupLines = (a, ids) => ({
+    info_planungsrecht: fnpLines(a, inGroup(ids, 'planungsrecht')).replace(/^\n/, ''),
+    info_fachkonzepte: fnpLines(a, inGroup(ids, 'fachkonzepte')).replace(/^\n/, ''),
+  });
 
   // Fertige Infobox-Texte (werden im Style per infoboxMapping angezeigt)
   const infoFor = (g, a, ids) => ({
     info_title: `Gemarkung: ${g.gem}`,
-    info_text: `Flur: ${g.flur}\n${g.parcelsText}\nGröße: ${Format.ca(g.sum)}` + fnpLines(a, ids),
+    info_text: `Flur: ${g.flur}\n${g.parcelsText}\nGröße: ${Format.ca(g.sum)}`,
+    ...groupLines(a, ids),
   });
 
   function toFeatures(state) {
@@ -215,7 +223,8 @@ const AreaStep = (() => {
           role: 'projektbereich', mode: 'draw', flaeche_m2: area,
           flurstuecke: parcels.map(f => ({ gemarkung: f.properties.gemarkung, flur: f.properties.flur, flurstueck: f.properties.flurstuecksnummer, flaeche_m2: f.properties.flaeche_m2 })),
           info_title: 'Gezeichneter Projektbereich',
-          info_text: `Größe: ${Format.ca(area)}\n\n` + gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n') + fnpLines(a, state.fachdaten ?? []),
+          info_text: `Größe: ${Format.ca(area)}\n\n` + gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n'),
+          ...groupLines(a, state.fachdaten ?? []),
         },
       }];
     }

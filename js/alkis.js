@@ -98,6 +98,9 @@ const Alkis = (() => {
     bplan: { layer: 'bplanverfahren', maxzoom: 17, name: p => p.kategorie === 'rechtsverbindlich' && p.verfahren ? `Nr. ${p.verfahren}${p.name ? ' ' + p.name : ''}` : null },
     landschaft: { layer: 'landschaftsundnaturschutz', maxzoom: 14, name: p => p.sg_typ ? (p.sg_typ === 'NS' ? 'Naturschutzgebiet' : 'Landschaftsschutzgebiet') + (p.nrw_name ? ' ' + p.nrw_name : '') : null },
     boden: { layer: 'bodenfunktion', maxzoom: 14, name: p => BODEN[p.ges] ?? null },
+    kwp: { layer: 'kwp_dezentral', maxzoom: 14, name: p => p.Name || null },
+    // Punkte: gezählt statt als Flächenanteil
+    stadtbaum: { layer: 'stadtbaumkonzept', maxzoom: 14, kind: 'points', name: p => (p.art || '').trim() || (p.baumart || '').trim() || null },
   };
   const srcId = id => `adhoc-${id}`;
 
@@ -115,6 +118,21 @@ const Alkis = (() => {
   function vecSummary(mgl, id, multi) {
     const v = VEC[id], src = srcId(id);
     if (!mgl.getSource(src) || !mgl.isSourceLoaded(src)) return null;
+    if (v.kind === 'points') {
+      const inside = pt => multi.some(poly => Geo.pointInRing(pt, poly[0]) && !poly.slice(1).some(h => Geo.pointInRing(pt, h)));
+      const seen = new Set(), counts = new Map();
+      for (const f of mgl.querySourceFeatures(src, { sourceLayer: v.layer })) {
+        const name = v.name(f.properties);
+        if (!name) continue;
+        for (const pt of f.geometry.type === 'Point' ? [f.geometry.coordinates] : f.geometry.type === 'MultiPoint' ? f.geometry.coordinates : []) {
+          const key = name + pt.map(c => c.toFixed(6)).join(',');
+          if (seen.has(key)) continue; // Punkte können in mehreren Kacheln auftauchen
+          seen.add(key);
+          if (inside(pt)) counts.set(name, (counts.get(name) ?? 0) + 1);
+        }
+      }
+      return { items: [...counts].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count), recht: [] };
+    }
     const bb = Geo.bbox(multi.flatMap(p => p[0]));
     const groups = new Map();
     for (const f of mgl.querySourceFeatures(src, { sourceLayer: v.layer })) {
