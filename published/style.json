@@ -3,11 +3,6 @@
   "name": "Adhoc-Projektbereich",
   "metadata": {
     "carmaConf": {
-      "infoboxMapping": [
-        "title: p.info_title",
-        "subtitle: p.info_subtitle",
-        "additionalInfo: p.info_text"
-      ],
       "tools": [
         {
           "kind": "zoomToExtent",
@@ -26,7 +21,10 @@
         "title": "Adhoc-Projektbereich",
         "description": "Ad-hoc FeatureCollection aus dem Wizard",
         "keywords": [
-          "adhoc"
+          "adhoc",
+          "carmaconf://infoBoxMapping:title: p.info_title",
+          "carmaconf://infoBoxMapping:subtitle: p.info_subtitle",
+          "carmaconf://infoBoxMapping:additionalInfo: p.info_text"
         ]
       }
     }
