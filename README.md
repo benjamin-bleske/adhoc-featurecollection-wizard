@@ -35,6 +35,13 @@ Die Ebenen werden nur im Rechteck um den Projektbereich geladen (MapLibre kann R
 Im Geoportal gibt es **ein Dropdown „Fachdaten“** am Layer-Symbol im Chip: Alle, jedes Kartenwerk einzeln oder keine.
 Ein echter Filter-Button (wie beim Ölberg) ist nicht möglich, weil er nur Vektor-Features filtert, nicht Raster-WMS.
 
+## Auswertung der WMS-Rasterdaten (Landesentwicklungsplan)
+Der WMS Landesentwicklungsplan NRW ist nicht abfragbar (`queryable=0`). Der Wizard holt deshalb beim Publishen das Kartenbild für den Projektbereich
+und zählt die Pixel je Legendenklasse (Siedlungsraum, Freiraum, Grünzüge, Gebiete für den Schutz der Natur, Oberflächengewässer; die Kartenfarben stimmen exakt mit der Legende überein).
+Das Ergebnis ist eine **Näherung** und steht in der Infobox. Der Dienst zeichnet erst ab ca. 3 m/Pixel, der Wizard rechnet mit mindestens 5 m/Pixel.
+Beim **Regionalplan NRW** gibt es bewusst keine Auswertung: die gerenderten Farben weichen von der Legende ab, darunter liegt eine Topographie-Karte, und der Dienst zeichnet nur ab 1:8000.
+Die Infobox verweist dort auf Capabilities und Legende.
+
 ## Infobox im Geoportal
 Klick in den Projektbereich: Gemarkung, Flur, Flurstück(e), Größe, dazu die **FNP-Hauptnutzungen** mit Flächenanteil (aus den FNP-Vector-Tiles ermittelt)
 und die **Capabilities** (Dienst, Betreiber, Beschreibung, Link) der gewählten WMS (Regionalplan, Landesentwicklungsplan).

@@ -18,12 +18,25 @@ const Fachdaten = (() => {
       description: 'Stellt Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet dar.',
       source: 'Land NRW, wms.nrw.de/wms/wms_nw_regionalplan',
       capabilities: caps('https://www.wms.nrw.de/wms/wms_nw_regionalplan'),
+      legend: 'https://www.wms.nrw.de/legends/wms/wms_nw_regionalplan/Legende.png',
+      // keine Flächenauswertung: gerenderte Farben weichen von der Legende ab, Topographie-Unterlage, Darstellung nur ab 1:8000
+      noAnalysis: 'Festlegungen im Projektbereich sind aus dem Kartenbild nicht zuverlässig ableitbar (siehe Legende).',
       tiles: wms('https://www.wms.nrw.de/wms/wms_nw_regionalplan', 'layers=regionalplan&styles=&format=image/png&transparent=true'), opacity: 0.7 },
     { id: 'lep', kind: 'wms', label: 'WMS Landesentwicklungsplan NRW',
       description: 'Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans NRW.',
       source: 'Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan',
       capabilities: caps('https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan'),
-      tiles: wms('https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan', 'layers=landesentwicklungsplan&styles=&format=image/png&transparent=true'), opacity: 0.7 },
+      tiles: wms('https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan', 'layers=landesentwicklungsplan&styles=&format=image/png&transparent=true'), opacity: 0.7,
+      legend: 'https://www.wms.nrw.de/legends/wms/wms_nw_landesentwicklungsplan/landesentwicklungsplan.png',
+      // Flächenfarben im Kartenbild = Legendenfarben (geprüft); daraus wird der Flächenanteil im Projektbereich geschätzt
+      getMap: { base: 'https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan', layers: 'landesentwicklungsplan' },
+      classes: [
+        { name: 'Siedlungsraum', rgb: [242, 207, 128] },
+        { name: 'Freiraum', rgb: [255, 247, 186] },
+        { name: 'Grünzüge', rgb: [149, 202, 125] },
+        { name: 'Gebiete für den Schutz der Natur', rgb: [122, 164, 117] },
+        { name: 'Oberflächengewässer', rgb: [0, 131, 181] },
+      ] },
     { id: 'bplan', kind: 'style', label: 'B-Plan-Verfahren (rechtsverbindlich)',
       styleUrl: 'https://tiles.cismet.de/bplanverfahren/rechtsverbindlich.style.json', sourceLayer: 'bplanverfahren',
       description: 'Räumliche Geltungsbereiche rechtsverbindlicher Bebauungsplanverfahren in Wuppertal.',
@@ -76,6 +89,45 @@ const Fachdaten = (() => {
     return errors(ids);
   }
   const errors = ids => selected(ids).filter(c => loaded[c.id]?.error).map(c => `${c.label}: ${loaded[c.id].error}`);
+
+  // ---- Auswertung: Flächenanteile der Legendenklassen im Projektbereich (aus dem WMS-Kartenbild, nur Browser)
+  const analysis = {}; // id -> [{ name, share }]
+  const merc = ([lon, lat]) => [lon * 20037508.34 / 180, Math.log(Math.tan((90 + lat) * Math.PI / 360)) * 20037508.34 / Math.PI];
+
+  async function analyse(fc) {
+    const geoms = fc.features.map(f => f.geometry);
+    const polys = geoms.flatMap(g => g.type === 'Polygon' ? [g.coordinates] : g.coordinates);
+    const pts = polys.flatMap(p => p[0]).map(merc);
+    if (!pts.length) return;
+    let [x0, y0, x1, y1] = [Math.min(...pts.map(p => p[0])), Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[0])), Math.max(...pts.map(p => p[1]))];
+    const pad = Math.max(x1 - x0, y1 - y0, 50) * 0.05;
+    [x0, y0, x1, y1] = [x0 - pad, y0 - pad, x1 + pad, y1 + pad];
+    // Der Dienst zeichnet erst ab ca. 3 m/Pixel; wir rechnen mit mindestens 5 m/Pixel, höchstens 1200 Pixel
+    const mpp = Math.max(5, Math.max(x1 - x0, y1 - y0) / 1200);
+    const W = Math.max(16, Math.round((x1 - x0) / mpp)), H = Math.max(16, Math.round((y1 - y0) / mpp));
+    // Maske des Projektbereichs
+    const mc = Object.assign(document.createElement('canvas'), { width: W, height: H }), mx = mc.getContext('2d', { willReadFrequently: true });
+    mx.beginPath();
+    for (const poly of polys) for (const ring of poly) ring.map(merc).forEach(([x, y], i) => mx[i ? 'lineTo' : 'moveTo']((x - x0) / (x1 - x0) * W, (y1 - y) / (y1 - y0) * H));
+    mx.fillStyle = '#000'; mx.fill('evenodd');
+    const mask = mx.getImageData(0, 0, W, H).data;
+    for (const c of selected(fc.fachdaten).filter(c => c.classes)) {
+      try {
+        const u = `${c.getMap.base}?service=WMS&version=1.1.1&request=GetMap&layers=${c.getMap.layers}&styles=&format=image/png&transparent=true&srs=EPSG:3857&width=${W}&height=${H}&bbox=${[x0, y0, x1, y1].join(',')}`;
+        const bmp = await createImageBitmap(await (await fetch(u)).blob());
+        const ic = Object.assign(document.createElement('canvas'), { width: W, height: H }), ix = ic.getContext('2d', { willReadFrequently: true });
+        ix.drawImage(bmp, 0, 0, W, H);
+        const img = ix.getImageData(0, 0, W, H).data, counts = c.classes.map(() => 0);
+        let classified = 0;
+        for (let i = 0; i < W * H; i++) {
+          if (mask[i * 4 + 3] < 128 || img[i * 4 + 3] < 128) continue;
+          const j = c.classes.findIndex(k2 => Math.abs(img[i * 4] - k2.rgb[0]) + Math.abs(img[i * 4 + 1] - k2.rgb[1]) + Math.abs(img[i * 4 + 2] - k2.rgb[2]) <= 9);
+          if (j >= 0) { counts[j]++; classified++; }
+        }
+        analysis[c.id] = classified ? c.classes.map((k2, j) => ({ name: k2.name, share: counts[j] / classified })).filter(x => x.share >= 0.02).sort((a, b) => b.share - a.share) : [];
+      } catch (e) { analysis[c.id] = null; }
+    }
+  }
 
   // ---- Style-Bausteine
   const padBounds = ([w, s, e, n]) => {
@@ -131,7 +183,9 @@ const Fachdaten = (() => {
     return selected(ids).filter(c => c.kind === 'wms').map(c => {
       const k = loaded[c.id]?.caps ?? {};
       const abs = k.abstract ? firstSentences(k.abstract) : c.description;
-      return `<b>${esc(c.label)}</b><br/>Dienst: ${esc(k.title ?? c.label)}${k.org ? ` (${esc(k.org)})` : ''}<br/>${esc(abs)}<br/><a href="${c.capabilities.replace(/&/g, '&amp;')}">GetCapabilities</a>`;
+      const an = analysis[c.id];
+      const anHtml = an?.length ? `<br/><i>Festlegungen im Projektbereich (Näherung aus dem Kartenbild):</i> ${an.map(x => `${esc(x.name)} (${Math.max(1, Math.round(x.share * 100))} %)`).join(', ')}` : c.noAnalysis ? `<br/><i>${esc(c.noAnalysis)}</i>` : '';
+      return `<b>${esc(c.label)}</b><br/>Dienst: ${esc(k.title ?? c.label)}${k.org ? ` (${esc(k.org)})` : ''}<br/>${esc(abs)}${anHtml}<br/><a href="${c.capabilities.replace(/&/g, '&amp;')}">GetCapabilities</a>${c.legend ? ` · <a href="${c.legend}">Legende</a>` : ''}`;
     }).join('<br/><br/>');
   }
 
@@ -147,5 +201,5 @@ const Fachdaten = (() => {
   const describe = ids => selected(ids).map(c => `${c.label}: ${c.description} (Quelle: ${c.source})`);
   const links = ids => selected(ids).flatMap(c => [c.styleUrl && { url: c.styleUrl, text: `${c.label} (Style)` }, c.capabilities && { url: c.capabilities, text: `${c.label} (GetCapabilities)` }].filter(Boolean));
 
-  return { CATALOG, load, errors, toStyleParts, toDynamicStyling, infoboxMapping, describe, links };
+  return { CATALOG, load, analyse, analysis, errors, toStyleParts, toDynamicStyling, infoboxMapping, describe, links };
 })();
