@@ -7,22 +7,24 @@
         {
           "type": "list",
           "label": "Fachdaten",
-          "default": "alle",
+          "default": "nur",
           "showIcon": false,
           "options": [
             {
-              "id": "alle",
-              "title": "Alle Fachdaten",
-              "vis_fnp": "visible",
-              "vis_regionalplan": "visible",
-              "vis_lep": "visible",
-              "vis_bplan": "visible",
-              "vis_landschaft": "visible",
-              "vis_boden": "visible"
+              "id": "nur",
+              "title": "Nur Projektbereich",
+              "vis_bbox": "none",
+              "vis_fnp": "none",
+              "vis_regionalplan": "none",
+              "vis_lep": "none",
+              "vis_bplan": "none",
+              "vis_landschaft": "none",
+              "vis_boden": "none"
             },
             {
               "id": "fnp",
               "title": "FNP Hauptnutzungen",
+              "vis_bbox": "visible",
               "vis_fnp": "visible",
               "vis_regionalplan": "none",
               "vis_lep": "none",
@@ -33,6 +35,7 @@
             {
               "id": "regionalplan",
               "title": "WMS Regionalplan NRW",
+              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "visible",
               "vis_lep": "none",
@@ -43,6 +46,7 @@
             {
               "id": "lep",
               "title": "WMS Landesentwicklungsplan NRW",
+              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "visible",
@@ -53,6 +57,7 @@
             {
               "id": "bplan",
               "title": "B-Plan-Verfahren (rechtsverbindlich)",
+              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "none",
@@ -63,6 +68,7 @@
             {
               "id": "landschaft",
               "title": "Landschafts- und Naturschutz",
+              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "none",
@@ -73,25 +79,19 @@
             {
               "id": "boden",
               "title": "Gesamtbewertung der Bodenfunktionen",
+              "vis_bbox": "visible",
               "vis_fnp": "none",
               "vis_regionalplan": "none",
               "vis_lep": "none",
               "vis_bplan": "none",
               "vis_landschaft": "none",
               "vis_boden": "visible"
-            },
-            {
-              "id": "keine",
-              "title": "Keine Fachdaten",
-              "vis_fnp": "none",
-              "vis_regionalplan": "none",
-              "vis_lep": "none",
-              "vis_bplan": "none",
-              "vis_landschaft": "none",
-              "vis_boden": "none"
             }
           ],
           "targets": {
+            "vis_bbox": [
+              "layers.adhoc-bbox.layout.visibility"
+            ],
             "vis_fnp": [
               "layers.fd-fnp-hauptnutzungen-id.layout.visibility",
               "layers.fd-fnp-hauptnutzungen-line-id.layout.visibility",
@@ -132,10 +132,10 @@
           "config": {
             "label": "Auf den Projektbereich zoomen",
             "bounds": [
-              7.151382,
-              51.255265,
-              7.154708,
-              51.256114
+              7.148794,
+              51.255222,
+              7.153447,
+              51.25661
             ]
           }
         }
@@ -171,7 +171,7 @@
         ],
         "keywords": [
           "adhoc",
-          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var M = { \"hauptnutzungen\": function createInfoBoxInfo(p){ return { header: 'FNP Hauptnutzungen', headerColor: p.farbe || '#7C7CA6', title: p.nutzung, subtitle: p.text_recht || '', additionalInfo: p.name || '' }; }, \"bplanverfahren\": function createInfoBoxInfo(p) { const f = p.targetProperties || p; let qualitaet; if (f.qualitaet.startsWith('ge')) { qualitaet = f.qualitaet + ' (flurstücksscharf)'; } if (f.qualitaet.startsWith('un')) { qualitaet = f.qualitaet + ' (auf +/- 1 m genau)'; } color = \"#20EE20\"; const info = { headerColor: color, genericLinks: [ { url: \"https://digital-twin-wuppertal-live.github.io/bplan-auskunft//#/docs/\" + f.verfahren + \"/1/1\", tooltip: \"Dokumente\", iconname: \"file-pdf-o\" }, { url: 'https://www.wuppertal.de/vv/produkte/102/Bebauungsplaene_B-Plan_Auskunft_und_Verkauf.php', tooltip: 'planungsrechtliche Auskunft' } ], header: 'B-Plan-Verfahren (rechtsverbindlich)', title: f.verfahren + ' ' + f.name, additionalInfo: 'Genauigkeit: ' + qualitaet, subtitle: 'Rechtskräftig seit: ' + f.datum, }; return info; }, \"landschaftsundnaturschutz\": function createInfoBoxInfo(p) { const isSchutzgebiet = p.carmaInfo?.sourceLayer === 'landschaftsundnaturschutz'; if (!isSchutzgebiet) return null; const headerColors = { 'LS': '#92D050', 'NS': '#FF6B6B' }; const headers = { 'LS': 'Landschaftsschutzgebiet', 'NS': 'Naturschutzgebiet' }; const headerColor = headerColors[p.sg_typ] || '#CCCCCC'; const header = headers[p.sg_typ] || 'Schutzgebiet'; if (p.sg_typ === 'NS') { return { headerColor: headerColor, header: header, title: p.nrw_name, additionalInfo: '<html>Objektkennung: ' + p.nrw_nummer + '<br/>' + 'Fläche: ' + (p.flaeche / 1000000).toFixed(2) + ' km²</html>' }; } if (p.sg_typ === 'LS') { return { headerColor: headerColor, header: header, title: '<html><span style=\"font-weight: normal; font-size: 12px; font-weight:500;\">Fläche: ' + (p.flaeche / 1000000).toFixed(2) + ' km²</span></html>' }; } return null; }, \"bodenfunktion\": function createInfoBoxInfo(p) {let color=''; let kategorie=''; if (p.ges=='0'){color='#E1E1E1', kategorie='Siedlungsfläche'} if (p.ges=='-9'){color='#0070FF', kategorie='Gewässer'} if (p.ges=='1'){color='#F9E3A0', kategorie='sehr gering'} if (p.ges=='2'){color='#F9E3A0', kategorie='gering'} if (p.ges=='3'){color='#F9E3A0', kategorie='mittel'} if (p.ges=='4'){color='#A0DD87', kategorie='hoch'} if (p.ges=='5'){color='#438443', kategorie='sehr hoch'} if (!p.ges){color='#FFFFFF', title='keine Daten'}; const info = { subtitle:  '<html><div style=\"width:100%; height:100%; margin-top:0px; display:flex; align-items:center; justify-content:left; font-size:18px; font-weight:normal; \">'+kategorie+'</div></html>', title: 'Schutzwürdigkeit:', header:'Gesamtbewertung der Bodenfunktion', headerColor:color, }; return info; } }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } var t = (p.info_text || '').split('\\n').join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + t + \"<br/><br/><b>WMS Regionalplan NRW</b><br/>Dienst: WMS NW REGIONALPLAN (Ministerium für Wirtschaft, Innovation, Digitalisierung und Energie des Landes Nordrhein-Westfalen)<br/>Dieser Dienst stellt die Rasterdaten der Regionalpläne der sechs Planungsgebiete des Landes NRW. Die Regionalpläne konkretisieren die Ziele und Grundsätze des Landesentwicklungsplans NRW für die einzelnen regionalen Teilräume/Planungsgebiete in NRW.<br/><i>Festlegungen im Projektbereich sind aus dem Kartenbild nicht zuverlässig ableitbar (siehe Legende).</i><br/><a href=\\\"https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&amp;SERVICE=WMS\\\">GetCapabilities</a> · <a href=\\\"https://www.wms.nrw.de/legends/wms/wms_nw_regionalplan/Legende.png\\\">Legende</a><br/><br/><b>WMS Landesentwicklungsplan NRW</b><br/>Dienst: Zeichnerische Festlegungen des Landesentwicklungsplans NRW (Ministerium für Wirtschaft, Innovation, Digitalisierung und Energie des Landes Nordrhein-Westfalen)<br/>Der Datensatz beinhaltet die Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans des Landes Nordrhein-Westfalens (NRW).<br/><i>Festlegungen im Projektbereich (Näherung aus dem Kartenbild):</i> Siedlungsraum (100 %)<br/><a href=\\\"https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan?REQUEST=GetCapabilities&amp;SERVICE=WMS\\\">GetCapabilities</a> · <a href=\\\"https://www.wms.nrw.de/legends/wms/wms_nw_landesentwicklungsplan/landesentwicklungsplan.png\\\">Legende</a>\" + '</html>' }; }"
+          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var M = { \"hauptnutzungen\": function createInfoBoxInfo(p){ return { header: 'FNP Hauptnutzungen', headerColor: p.farbe || '#7C7CA6', title: p.nutzung, subtitle: p.text_recht || '', additionalInfo: p.name || '' }; }, \"bplanverfahren\": function createInfoBoxInfo(p) { const f = p.targetProperties || p; let qualitaet; if (f.qualitaet.startsWith('ge')) { qualitaet = f.qualitaet + ' (flurstücksscharf)'; } if (f.qualitaet.startsWith('un')) { qualitaet = f.qualitaet + ' (auf +/- 1 m genau)'; } color = \"#20EE20\"; const info = { headerColor: color, genericLinks: [ { url: \"https://digital-twin-wuppertal-live.github.io/bplan-auskunft//#/docs/\" + f.verfahren + \"/1/1\", tooltip: \"Dokumente\", iconname: \"file-pdf-o\" }, { url: 'https://www.wuppertal.de/vv/produkte/102/Bebauungsplaene_B-Plan_Auskunft_und_Verkauf.php', tooltip: 'planungsrechtliche Auskunft' } ], header: 'B-Plan-Verfahren (rechtsverbindlich)', title: f.verfahren + ' ' + f.name, additionalInfo: 'Genauigkeit: ' + qualitaet, subtitle: 'Rechtskräftig seit: ' + f.datum, }; return info; }, \"landschaftsundnaturschutz\": function createInfoBoxInfo(p) { const isSchutzgebiet = p.carmaInfo?.sourceLayer === 'landschaftsundnaturschutz'; if (!isSchutzgebiet) return null; const headerColors = { 'LS': '#92D050', 'NS': '#FF6B6B' }; const headers = { 'LS': 'Landschaftsschutzgebiet', 'NS': 'Naturschutzgebiet' }; const headerColor = headerColors[p.sg_typ] || '#CCCCCC'; const header = headers[p.sg_typ] || 'Schutzgebiet'; if (p.sg_typ === 'NS') { return { headerColor: headerColor, header: header, title: p.nrw_name, additionalInfo: '<html>Objektkennung: ' + p.nrw_nummer + '<br/>' + 'Fläche: ' + (p.flaeche / 1000000).toFixed(2) + ' km²</html>' }; } if (p.sg_typ === 'LS') { return { headerColor: headerColor, header: header, title: '<html><span style=\"font-weight: normal; font-size: 12px; font-weight:500;\">Fläche: ' + (p.flaeche / 1000000).toFixed(2) + ' km²</span></html>' }; } return null; }, \"bodenfunktion\": function createInfoBoxInfo(p) {let color=''; let kategorie=''; if (p.ges=='0'){color='#E1E1E1', kategorie='Siedlungsfläche'} if (p.ges=='-9'){color='#0070FF', kategorie='Gewässer'} if (p.ges=='1'){color='#F9E3A0', kategorie='sehr gering'} if (p.ges=='2'){color='#F9E3A0', kategorie='gering'} if (p.ges=='3'){color='#F9E3A0', kategorie='mittel'} if (p.ges=='4'){color='#A0DD87', kategorie='hoch'} if (p.ges=='5'){color='#438443', kategorie='sehr hoch'} if (!p.ges){color='#FFFFFF', title='keine Daten'}; const info = { subtitle:  '<html><div style=\"width:100%; height:100%; margin-top:0px; display:flex; align-items:center; justify-content:left; font-size:18px; font-weight:normal; \">'+kategorie+'</div></html>', title: 'Schutzwürdigkeit:', header:'Gesamtbewertung der Bodenfunktion', headerColor:color, }; return info; } }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } var t = (p.info_text || '').split('\\n').join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + t + \"<br/><b>WMS Regionalplan NRW:</b> keine Auswertung möglich <small>(<a href=\\\"https://www.wms.nrw.de/legends/wms/wms_nw_regionalplan/Legende.png\\\">Legende</a> · <a href=\\\"https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&amp;SERVICE=WMS\\\">Capabilities</a>)</small><br/><b>WMS Landesentwicklungsplan NRW:</b> Siedlungsraum (100 %) <small>(<a href=\\\"https://www.wms.nrw.de/legends/wms/wms_nw_landesentwicklungsplan/landesentwicklungsplan.png\\\">Legende</a> · <a href=\\\"https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan?REQUEST=GetCapabilities&amp;SERVICE=WMS\\\">Capabilities</a>)</small>\" + '</html>' }; }"
         ]
       }
     }
@@ -185,38 +185,40 @@
       "minzoom": 9,
       "maxzoom": 14,
       "bounds": [
-        7.151216,
-        51.255223,
-        7.154874,
-        51.256156
+        7.148561,
+        51.255153,
+        7.15368,
+        51.256679
       ],
       "attribution": "Stadt Wuppertal, tiles.cismet.de/hauptnutzungen"
     },
     "fd-regionalplan": {
       "type": "raster",
       "tileSize": 256,
+      "maxzoom": 15,
       "tiles": [
         "https://www.wms.nrw.de/wms/wms_nw_regionalplan?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=regionalplan&styles=&format=image/png&transparent=true"
       ],
       "bounds": [
-        7.151216,
-        51.255223,
-        7.154874,
-        51.256156
+        7.148561,
+        51.255153,
+        7.15368,
+        51.256679
       ],
       "attribution": "Land NRW, wms.nrw.de/wms/wms_nw_regionalplan"
     },
     "fd-lep": {
       "type": "raster",
       "tileSize": 256,
+      "maxzoom": 15,
       "tiles": [
         "https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=landesentwicklungsplan&styles=&format=image/png&transparent=true"
       ],
       "bounds": [
-        7.151216,
-        51.255223,
-        7.154874,
-        51.256156
+        7.148561,
+        51.255153,
+        7.15368,
+        51.256679
       ],
       "attribution": "Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan"
     },
@@ -228,10 +230,10 @@
       "minzoom": 9,
       "maxzoom": 17,
       "bounds": [
-        7.151216,
-        51.255223,
-        7.154874,
-        51.256156
+        7.148561,
+        51.255153,
+        7.15368,
+        51.256679
       ],
       "attribution": "Stadt Wuppertal, tiles.cismet.de/bplanverfahren"
     },
@@ -243,10 +245,10 @@
       "minzoom": 9,
       "maxzoom": 14,
       "bounds": [
-        7.151216,
-        51.255223,
-        7.154874,
-        51.256156
+        7.148561,
+        51.255153,
+        7.15368,
+        51.256679
       ],
       "attribution": "Stadt Wuppertal, tiles.cismet.de/landschaftsundnaturschutz"
     },
@@ -258,12 +260,54 @@
       "minzoom": 9,
       "maxzoom": 14,
       "bounds": [
-        7.151216,
-        51.255223,
-        7.154874,
-        51.256156
+        7.148561,
+        51.255153,
+        7.15368,
+        51.256679
       ],
       "attribution": "Stadt Wuppertal, tiles.cismet.de/bodenfunktion"
+    },
+    "adhoc-bbox": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "info_title": "Abrufbereich der Fachdaten",
+              "info_text": "Rechteck um den Projektbereich, in dem die gewählten Fachdaten geladen werden."
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.148561,
+                    51.255153
+                  ],
+                  [
+                    7.15368,
+                    51.255153
+                  ],
+                  [
+                    7.15368,
+                    51.256679
+                  ],
+                  [
+                    7.148561,
+                    51.256679
+                  ],
+                  [
+                    7.148561,
+                    51.255153
+                  ]
+                ]
+              ]
+            }
+          }
+        ]
+      }
     },
     "adhoc": {
       "type": "geojson",
@@ -278,140 +322,816 @@
                 [
                   [
                     [
-                      7.151382202282548,
-                      51.255674998694275
+                      7.148794289678335,
+                      51.25598198085814
                     ],
                     [
-                      7.151489658281207,
-                      51.255673687248645
+                      7.148798061534762,
+                      51.25597783671748
                     ],
                     [
-                      7.151835914701223,
-                      51.25566959553802
+                      7.148964861407876,
+                      51.25579171720554
                     ],
                     [
-                      7.152059962972999,
-                      51.25563827820247
+                      7.148982211947441,
+                      51.25577146853226
+                    ],
+                    [
+                      7.149033844470978,
+                      51.25571103720554
+                    ],
+                    [
+                      7.149046333506703,
+                      51.25569739817985
+                    ],
+                    [
+                      7.149145575240254,
+                      51.25558734158602
+                    ],
+                    [
+                      7.149186562746763,
+                      51.255542385122766
+                    ],
+                    [
+                      7.149195782840252,
+                      51.25553152632048
+                    ],
+                    [
+                      7.149199470877647,
+                      51.25552218879764
+                    ],
+                    [
+                      7.149216150864959,
+                      51.255480065005315
+                    ],
+                    [
+                      7.149394853040576,
+                      51.25553740161479
+                    ],
+                    [
+                      7.149157980456948,
+                      51.25582786054062
+                    ],
+                    [
+                      7.149148005992174,
+                      51.25584003071384
+                    ],
+                    [
+                      7.149140797555447,
+                      51.25584889605349
+                    ],
+                    [
+                      7.14911749586463,
+                      51.25587753790839
+                    ],
+                    [
+                      7.14932712726295,
+                      51.255945890101714
+                    ],
+                    [
+                      7.149358307942748,
+                      51.25590764855713
+                    ],
+                    [
+                      7.149362498894334,
+                      51.25590901245363
+                    ],
+                    [
+                      7.149367444217205,
+                      51.25591042880765
+                    ],
+                    [
+                      7.149379849433899,
+                      51.25589652755326
+                    ],
+                    [
+                      7.149438187479973,
+                      51.255831322745394
+                    ],
+                    [
+                      7.149487975984812,
+                      51.255764176909366
+                    ],
+                    [
+                      7.149498537182808,
+                      51.25574985594881
+                    ],
+                    [
+                      7.14950742200017,
+                      51.25574015126608
+                    ],
+                    [
+                      7.149555701762438,
+                      51.25568716890791
+                    ],
+                    [
+                      7.149621415883303,
+                      51.25560512481897
+                    ],
+                    [
+                      7.1496217511594296,
+                      51.255604652697855
+                    ],
+                    [
+                      7.1503533236682415,
+                      51.25583945367981
+                    ],
+                    [
+                      7.150556417182088,
+                      51.25590465847614
+                    ],
+                    [
+                      7.150560105219483,
+                      51.25590581254252
+                    ],
+                    [
+                      7.150562200695276,
+                      51.25590381915515
+                    ],
+                    [
+                      7.150561613962054,
+                      51.25590360932489
+                    ],
+                    [
+                      7.1506383921951056,
+                      51.255888081883455
+                    ],
+                    [
+                      7.150664962828159,
+                      51.25588267875224
+                    ],
+                    [
+                      7.150676948949695,
+                      51.25588656061356
+                    ],
+                    [
+                      7.15068306773901,
+                      51.25587905917854
+                    ],
+                    [
+                      7.150687091052532,
+                      51.255878219857095
+                    ],
+                    [
+                      7.150886496528983,
+                      51.25563282258406
+                    ],
+                    [
+                      7.150884568691254,
+                      51.25563219308958
+                    ],
+                    [
+                      7.1506216283887625,
+                      51.25554778829397
+                    ],
+                    [
+                      7.150634368881583,
+                      51.25553210335838
+                    ],
+                    [
+                      7.150055263191462,
+                      51.255346191874764
+                    ],
+                    [
+                      7.149986447766423,
+                      51.255324106967436
+                    ],
+                    [
+                      7.149977060034871,
+                      51.25532143159788
+                    ],
+                    [
+                      7.149967420846224,
+                      51.255319280810454
+                    ],
+                    [
+                      7.149957530200481,
+                      51.25531765460531
+                    ],
+                    [
+                      7.149947388097644,
+                      51.25531660544067
+                    ],
+                    [
+                      7.149937329813838,
+                      51.25531613331657
+                    ],
+                    [
+                      7.149927187711,
+                      51.25531623823301
+                    ],
+                    [
+                      7.149917129427195,
+                      51.25531686773181
+                    ],
+                    [
+                      7.149907238781452,
+                      51.25531807427117
+                    ],
+                    [
+                      7.14990665204823,
+                      51.25531817918761
+                    ],
+                    [
+                      7.1498997788876295,
+                      51.25531592348361
+                    ],
+                    [
+                      7.149842279031873,
+                      51.255297458181474
+                    ],
+                    [
+                      7.149607418105006,
+                      51.255222075606895
+                    ],
+                    [
+                      7.149642538279295,
+                      51.25523036402407
+                    ],
+                    [
+                      7.149657793343067,
+                      51.25523403610717
+                    ],
+                    [
+                      7.150066830217838,
+                      51.25533197570047
+                    ],
+                    [
+                      7.150127682834864,
+                      51.255346506623965
+                    ],
+                    [
+                      7.150174118578434,
+                      51.255357103178994
+                    ],
+                    [
+                      7.1502741146832705,
+                      51.255378925779695
+                    ],
+                    [
+                      7.150326753035188,
+                      51.2553903091995
+                    ],
+                    [
+                      7.150352401658893,
+                      51.255394610767524
+                    ],
+                    [
+                      7.150365812703967,
+                      51.25539728613282
+                    ],
+                    [
+                      7.1504066325724125,
+                      51.25540463027201
+                    ],
+                    [
+                      7.15046027675271,
+                      51.255413967818754
+                    ],
+                    [
+                      7.150514172390103,
+                      51.255423043072994
+                    ],
+                    [
+                      7.150568403303623,
+                      51.255431331453934
+                    ],
+                    [
+                      7.150622550398111,
+                      51.25543925262673
+                    ],
+                    [
+                      7.150628166273236,
+                      51.255422570949975
+                    ],
+                    [
+                      7.150632860139012,
+                      51.25540851217369
+                    ],
+                    [
+                      7.15069136582315,
+                      51.255416275976046
+                    ],
+                    [
+                      7.150695892050862,
+                      51.25541690547348
+                    ],
+                    [
+                      7.1506979037076235,
+                      51.25541711530596
+                    ],
+                    [
+                      7.150703016668558,
+                      51.255417849719635
+                    ],
+                    [
+                      7.150703351944685,
+                      51.255417849719635
+                    ],
+                    [
+                      7.1507134940475225,
+                      51.25541921363066
+                    ],
+                    [
+                      7.150740483775735,
+                      51.255422256201285
+                    ],
+                    [
+                      7.1507461834698915,
+                      51.255422938156784
+                    ],
+                    [
+                      7.1507559064775705,
+                      51.2554240397771
+                    ],
+                    [
+                      7.150813322514296,
+                      51.25543054458237
+                    ],
+                    [
+                      7.150922203436494,
+                      51.25544166569895
+                    ],
+                    [
+                      7.151037119328976,
+                      51.255450426199275
+                    ],
+                    [
+                      7.151123369112611,
+                      51.25545561954897
+                    ],
+                    [
+                      7.151244571432471,
+                      51.25545960636248
+                    ],
+                    [
+                      7.151370132341981,
+                      51.255461075188435
+                    ],
+                    [
+                      7.151554450392723,
+                      51.25546238664012
+                    ],
+                    [
+                      7.1515660174191,
+                      51.25546243909818
+                    ],
+                    [
+                      7.151714712381363,
+                      51.25546285876271
+                    ],
+                    [
+                      7.151872124522924,
+                      51.25545855720105
+                    ],
+                    [
+                      7.152005648240447,
+                      51.255449219663404
+                    ],
+                    [
+                      7.152143782004714,
+                      51.255435633018124
+                    ],
+                    [
+                      7.152150655165315,
+                      51.25543505597906
+                    ],
+                    [
+                      7.152174208313227,
+                      51.255486937008925
+                    ],
+                    [
+                      7.152471765875816,
+                      51.25543353469419
+                    ],
+                    [
+                      7.152538150548935,
+                      51.25552654281134
+                    ],
+                    [
+                      7.152493726462126,
+                      51.255534988547595
+                    ],
+                    [
+                      7.152490960434079,
+                      51.25553551312743
+                    ],
+                    [
+                      7.152490457519889,
+                      51.25553561804341
+                    ],
+                    [
+                      7.152418037876487,
+                      51.25554936203304
                     ],
                     [
                       7.152316365391016,
                       51.25559069889309
                     ],
                     [
-                      7.152364477515221,
-                      51.2556905262077
+                      7.152059962972999,
+                      51.25563827820247
                     ],
                     [
-                      7.152409655973315,
-                      51.25578379609345
+                      7.151835914701223,
+                      51.25566959553802
                     ],
                     [
-                      7.1523229870945215,
-                      51.2558075069679
+                      7.151489658281207,
+                      51.255673687248645
                     ],
                     [
-                      7.152229864150286,
-                      51.25583294893241
-                    ],
-                    [
-                      7.1522322949022055,
-                      51.2558628497799
-                    ],
-                    [
-                      7.152239419519901,
-                      51.255952132545644
-                    ],
-                    [
-                      7.152245622128248,
-                      51.25602934993293
-                    ],
-                    [
-                      7.152251657098532,
-                      51.256104311525206
-                    ],
-                    [
-                      7.1522523276507854,
-                      51.25611291452728
-                    ],
-                    [
-                      7.152245622128248,
-                      51.256113019441926
-                    ],
-                    [
-                      7.151877069845796,
-                      51.25611364892984
-                    ],
-                    [
-                      7.151839770376682,
-                      51.25611375384449
-                    ],
-                    [
-                      7.151802387088537,
-                      51.2561131768139
-                    ],
-                    [
-                      7.151765171438456,
-                      51.25611197029545
-                    ],
-                    [
-                      7.151727871969342,
-                      51.256110134288974
-                    ],
-                    [
-                      7.151690823957324,
-                      51.2561076687945
-                    ],
-                    [
-                      7.151653775945306,
-                      51.25610452135456
-                    ],
-                    [
-                      7.151616895571351,
-                      51.25610079688366
-                    ],
-                    [
-                      7.151580266654491,
-                      51.25609639046701
-                    ],
-                    [
-                      7.151543805375695,
-                      51.25609135456176
-                    ],
-                    [
-                      7.151507595553994,
-                      51.25608568916766
-                    ],
-                    [
-                      7.1514886524528265,
-                      51.2560822794394
-                    ],
-                    [
-                      7.151470044627786,
-                      51.25607834513724
-                    ],
-                    [
-                      7.15145168825984,
-                      51.25607388626108
-                    ],
-                    [
-                      7.151433667168021,
-                      51.25606890281071
-                    ],
-                    [
-                      7.151416065171361,
-                      51.256063394786025
-                    ],
-                    [
-                      7.151398882269859,
-                      51.25605741464415
+                      7.151382202282548,
+                      51.255674998694275
                     ],
                     [
                       7.151398379355669,
                       51.25604734282453
                     ],
                     [
-                      7.151382202282548,
-                      51.255674998694275
+                      7.151398882269859,
+                      51.25605741464415
+                    ],
+                    [
+                      7.151416065171361,
+                      51.256063394786025
+                    ],
+                    [
+                      7.151433667168021,
+                      51.25606890281071
+                    ],
+                    [
+                      7.15145168825984,
+                      51.25607388626108
+                    ],
+                    [
+                      7.151470044627786,
+                      51.25607834513724
+                    ],
+                    [
+                      7.1514886524528265,
+                      51.2560822794394
+                    ],
+                    [
+                      7.151507595553994,
+                      51.25608568916766
+                    ],
+                    [
+                      7.151543805375695,
+                      51.25609135456176
+                    ],
+                    [
+                      7.151580266654491,
+                      51.25609639046701
+                    ],
+                    [
+                      7.151616895571351,
+                      51.25610079688366
+                    ],
+                    [
+                      7.151653775945306,
+                      51.25610452135456
+                    ],
+                    [
+                      7.151690823957324,
+                      51.2561076687945
+                    ],
+                    [
+                      7.151727871969342,
+                      51.256110134288974
+                    ],
+                    [
+                      7.151765171438456,
+                      51.25611197029545
+                    ],
+                    [
+                      7.151802387088537,
+                      51.2561131768139
+                    ],
+                    [
+                      7.151839770376682,
+                      51.25611375384449
+                    ],
+                    [
+                      7.151877069845796,
+                      51.25611364892984
+                    ],
+                    [
+                      7.152245622128248,
+                      51.256113019441926
+                    ],
+                    [
+                      7.1522523276507854,
+                      51.25611291452728
+                    ],
+                    [
+                      7.15220857411623,
+                      51.256214681624755
+                    ],
+                    [
+                      7.152200611308217,
+                      51.25623335638727
+                    ],
+                    [
+                      7.152126347646117,
+                      51.256406307408724
+                    ],
+                    [
+                      7.152099022641778,
+                      51.25647812097199
+                    ],
+                    [
+                      7.1518682688474655,
+                      51.256501359376415
+                    ],
+                    [
+                      7.151866676285863,
+                      51.25646663290769
+                    ],
+                    [
+                      7.15155134908855,
+                      51.25646841644297
+                    ],
+                    [
+                      7.151501728221774,
+                      51.2564687311845
+                    ],
+                    [
+                      7.151490580290556,
+                      51.256468783641424
+                    ],
+                    [
+                      7.151424363255501,
+                      51.25646915083985
+                    ],
+                    [
+                      7.151198051869869,
+                      51.25647040980587
+                    ],
+                    [
+                      7.151140719652176,
+                      51.25647072454737
+                    ],
+                    [
+                      7.1511228661984205,
+                      51.25647077700427
+                    ],
+                    [
+                      7.1509444154798985,
+                      51.25647177368569
+                    ],
+                    [
+                      7.150941817089915,
+                      51.256474763729784
+                    ],
+                    [
+                      7.150823967531323,
+                      51.25660994499307
+                    ],
+                    [
+                      7.15077786706388,
+                      51.256599978208016
+                    ],
+                    [
+                      7.150475783273578,
+                      51.25654348223304
+                    ],
+                    [
+                      7.150309905409813,
+                      51.256513109716394
+                    ],
+                    [
+                      7.150209825485945,
+                      51.25649212696433
+                    ],
+                    [
+                      7.150156432762742,
+                      51.25648126838641
+                    ],
+                    [
+                      7.150085940957069,
+                      51.25646705256307
+                    ],
+                    [
+                      7.150017125532031,
+                      51.25645267936454
+                    ],
+                    [
+                      7.149952333420515,
+                      51.25643573577074
+                    ],
+                    [
+                      7.149886032566428,
+                      51.25641769057415
+                    ],
+                    [
+                      7.149820905178785,
+                      51.256398333945555
+                    ],
+                    [
+                      7.149756280705333,
+                      51.2563791871369
+                    ],
+                    [
+                      7.149699116125703,
+                      51.25636250580121
+                    ],
+                    [
+                      7.149633904919028,
+                      51.25634183772277
+                    ],
+                    [
+                      7.149570370092988,
+                      51.25632185157721
+                    ],
+                    [
+                      7.14950792491436,
+                      51.25629966222431
+                    ],
+                    [
+                      7.149446904659271,
+                      51.256277577774966
+                    ],
+                    [
+                      7.149384710937738,
+                      51.25625470645758
+                    ],
+                    [
+                      7.149330228567123,
+                      51.25623330393006
+                    ],
+                    [
+                      7.149270884692669,
+                      51.25620901624589
+                    ],
+                    [
+                      7.149211540818214,
+                      51.25618394169018
+                    ],
+                    [
+                      7.1491526160389185,
+                      51.25615865729176
+                    ],
+                    [
+                      7.1491086948663,
+                      51.25613940546867
+                    ],
+                    [
+                      7.149235848337412,
+                      51.25609801664464
+                    ],
+                    [
+                      7.149216067045927,
+                      51.25613956284056
+                    ],
+                    [
+                      7.149328384548426,
+                      51.25616017855262
+                    ],
+                    [
+                      7.149307848885655,
+                      51.25620382298129
+                    ],
+                    [
+                      7.149401139467955,
+                      51.256240070906756
+                    ],
+                    [
+                      7.149528963491321,
+                      51.256285813544736
+                    ],
+                    [
+                      7.149566262960434,
+                      51.25629903273895
+                    ],
+                    [
+                      7.149593001231551,
+                      51.25630816027561
+                    ],
+                    [
+                      7.149689393118024,
+                      51.256337798528705
+                    ],
+                    [
+                      7.149736750870943,
+                      51.25623503501723
+                    ],
+                    [
+                      7.149878405034542,
+                      51.256261001316716
+                    ],
+                    [
+                      7.149843871593475,
+                      51.25633543796059
+                    ],
+                    [
+                      7.1500196401029825,
+                      51.25636748921971
+                    ],
+                    [
+                      7.150007067248225,
+                      51.25639466195548
+                    ],
+                    [
+                      7.1501928102225065,
+                      51.256432273611466
+                    ],
+                    [
+                      7.150298422202468,
+                      51.25643153921402
+                    ],
+                    [
+                      7.150325076654553,
+                      51.256376826570886
+                    ],
+                    [
+                      7.150342930108309,
+                      51.25637084646979
+                    ],
+                    [
+                      7.150418953970075,
+                      51.25621184893541
+                    ],
+                    [
+                      7.150387270376086,
+                      51.25616385056145
+                    ],
+                    [
+                      7.149836830794811,
+                      51.25606308004171
+                    ],
+                    [
+                      7.149783940985799,
+                      51.25604624121914
+                    ],
+                    [
+                      7.149646477773786,
+                      51.25599504276735
+                    ],
+                    [
+                      7.149625774472952,
+                      51.256016969980124
+                    ],
+                    [
+                      7.149622673168778,
+                      51.25601571100168
+                    ],
+                    [
+                      7.149619152769446,
+                      51.256014976597555
+                    ],
+                    [
+                      7.149615464732051,
+                      51.256014766767834
+                    ],
+                    [
+                      7.149611860513687,
+                      51.256015133969896
+                    ],
+                    [
+                      7.149608926847577,
+                      51.2560159208314
+                    ],
+                    [
+                      7.149606244638562,
+                      51.25601702243756
+                    ],
+                    [
+                      7.149604065343738,
+                      51.25601843878826
+                    ],
+                    [
+                      7.149602388963103,
+                      51.25602011742606
+                    ],
+                    [
+                      7.149285972118378,
+                      51.25596220438612
+                    ],
+                    [
+                      7.1492495108395815,
+                      51.256034543217254
+                    ],
+                    [
+                      7.149242470040917,
+                      51.25607519769528
+                    ],
+                    [
+                      7.149156974628568,
+                      51.25596981072252
+                    ],
+                    [
+                      7.14905739761889,
+                      51.25593492647971
+                    ],
+                    [
+                      7.148943906649947,
+                      51.256062450553145
+                    ],
+                    [
+                      7.148794289678335,
+                      51.25598198085814
                     ]
                   ]
                 ]
@@ -423,13 +1143,13 @@
               "gemarkung": "Elberfeld",
               "gemarkungsnummer": 3135,
               "flur": "155",
-              "flurstuecksnummer": "73",
-              "flaeche_m2": 3165,
-              "adresse": "Bundesallee 218 u. a.",
-              "flurstueckskennzeichen": "05313515500073",
+              "flurstuecksnummer": "157",
+              "flaeche_m2": 15567,
+              "adresse": "Alte Freiheit 23 u. a.",
+              "flurstueckskennzeichen": "05313515500157",
               "geometrie_vollstaendig": true,
               "info_title": "Gemarkung: Elberfeld",
-              "info_text": "Flur: 155\nFlurstück 73\nGröße: ca. 3.200 m²\nFNP Hauptnutzung: Gemischte Baufläche - Kerngebiet (67 %), Gewässer 2. Ordnung (29 %), Fläche für den Gemeinbedarf - Schulische Zwecke (2 %)"
+              "info_text": "Flur: 155\nFlurstücke 87 und 157\nGröße: ca. 17.900 m²\nFNP Hauptnutzung: Verkehrsfläche - Straßenverkehr - Bundesstraße (48 %), Verkehrsfläche - Straßenverkehr - Hauptverkehrszüge (23 %), Fläche für den Gemeinbedarf - Schulische Zwecke (13 %), Gemischte Baufläche - Kerngebiet (9 %), Verkehrsfläche - Straßenverkehr - Landstraße (5 %), Grünfläche - Parkanlage (2 %)\nB-Plan-Verfahren (rechtsverbindlich): Nr. 954 Döppersberg (84 %), Nr. 119A Brausenwerth - Döppersberg (11 %), Nr. 1240 Morianstraße / Wuppertpark Ost (5 %)\nLandschafts- und Naturschutz: keine\nBodenfunktion (Gesamtbewertung): Siedlungsfläche (100 %)"
             }
           },
           {
@@ -440,188 +1160,96 @@
                 [
                   [
                     [
-                      7.1526543237268925,
-                      51.25579680560131
+                      7.152239419519901,
+                      51.255952132545644
                     ],
                     [
-                      7.152700088918209,
-                      51.25578935660937
+                      7.152245622128248,
+                      51.25595113585297
                     ],
                     [
-                      7.152825985103846,
-                      51.255768740731014
-                    ],
-                    [
-                      7.15292489156127,
-                      51.2557479674702
-                    ],
-                    [
-                      7.153019774705172,
-                      51.25572373198736
-                    ],
-                    [
-                      7.1530975587666035,
-                      51.255700178443135
-                    ],
-                    [
-                      7.153173414990306,
-                      51.255676729802445
-                    ],
-                    [
-                      7.153225718066096,
-                      51.25566052033244
-                    ],
-                    [
-                      7.153294198215008,
-                      51.25563906507048
-                    ],
-                    [
-                      7.153324875980616,
-                      51.25562941282223
-                    ],
-                    [
-                      7.153329653665423,
-                      51.255636652008576
-                    ],
-                    [
-                      7.153644226491451,
-                      51.255545165395404
-                    ],
-                    [
-                      7.154376721009612,
-                      51.25537415208666
-                    ],
-                    [
-                      7.154409913346171,
-                      51.25536712269164
-                    ],
-                    [
-                      7.154434807598591,
-                      51.25536182441559
-                    ],
-                    [
-                      7.154480488970876,
-                      51.25535211965095
-                    ],
-                    [
-                      7.154500856995583,
-                      51.25534624433297
-                    ],
-                    [
-                      7.154527176171541,
-                      51.2553359625247
-                    ],
-                    [
-                      7.154575958848,
-                      51.25530957603684
-                    ],
-                    [
-                      7.154652904719114,
-                      51.25526461930198
-                    ],
-                    [
-                      7.1547076385468245,
-                      51.25538878791312
-                    ],
-                    [
-                      7.154705459252,
-                      51.25538752891748
-                    ],
-                    [
-                      7.154702860862017,
-                      51.25538679450335
-                    ],
-                    [
-                      7.154700011014938,
-                      51.25538653221258
-                    ],
-                    [
-                      7.15469716116786,
-                      51.2553868469615
-                    ],
-                    [
-                      7.154694562777877,
-                      51.25538763383378
-                    ],
-                    [
-                      7.154590878635645,
-                      51.25541176457756
-                    ],
-                    [
-                      7.154516112059355,
-                      51.255429128213564
-                    ],
-                    [
-                      7.154426341876388,
-                      51.255449796702294
-                    ],
-                    [
-                      7.154376218095422,
-                      51.25546133747878
-                    ],
-                    [
-                      7.15437076985836,
-                      51.25546259647237
-                    ],
-                    [
-                      7.154063154011965,
-                      51.255533362350036
-                    ],
-                    [
-                      7.153658140450716,
-                      51.25562762925438
-                    ],
-                    [
-                      7.1535781770944595,
-                      51.255649661558095
-                    ],
-                    [
-                      7.153517324477434,
-                      51.25566760214042
-                    ],
-                    [
-                      7.153380531817675,
-                      51.25570972576094
-                    ],
-                    [
-                      7.153281457722187,
-                      51.25574015126608
-                    ],
-                    [
-                      7.153124464675784,
-                      51.255789618897836
-                    ],
-                    [
-                      7.1530597563833,
-                      51.25580860857903
-                    ],
-                    [
-                      7.15299379080534,
-                      51.25582508028509
-                    ],
-                    [
-                      7.1529090497642756,
-                      51.25584328308713
-                    ],
-                    [
-                      7.152846688404679,
-                      51.25585576800199
-                    ],
-                    [
-                      7.152787931263447,
-                      51.25586631198203
-                    ],
-                    [
-                      7.152741746976972,
-                      51.255873656046305
+                      7.15267226099968,
+                      51.255884672140525
                     ],
                     [
                       7.1527002565562725,
                       51.255880318160735
                     ],
                     [
-                      7.1526543237268925,
-                      51.25579680560131
+                      7.152741746976972,
+                      51.255873656046305
+                    ],
+                    [
+                      7.152787931263447,
+                      51.25586631198203
+                    ],
+                    [
+                      7.152846688404679,
+                      51.25585576800199
+                    ],
+                    [
+                      7.1529090497642756,
+                      51.25584328308713
+                    ],
+                    [
+                      7.15299379080534,
+                      51.25582508028509
+                    ],
+                    [
+                      7.1530597563833,
+                      51.25580860857903
+                    ],
+                    [
+                      7.153124464675784,
+                      51.255789618897836
+                    ],
+                    [
+                      7.153281457722187,
+                      51.25574015126608
+                    ],
+                    [
+                      7.153284978121519,
+                      51.25574523966756
+                    ],
+                    [
+                      7.153442474082112,
+                      51.25597615807817
+                    ],
+                    [
+                      7.153444988653064,
+                      51.25605232627723
+                    ],
+                    [
+                      7.153446581214666,
+                      51.25609869859008
+                    ],
+                    [
+                      7.152685504406691,
+                      51.256107773709175
+                    ],
+                    [
+                      7.152459025382996,
+                      51.256110449032946
+                    ],
+                    [
+                      7.152255680412054,
+                      51.25611286206998
+                    ],
+                    [
+                      7.1522523276507854,
+                      51.25611291452728
+                    ],
+                    [
+                      7.152251657098532,
+                      51.256104311525206
+                    ],
+                    [
+                      7.152245622128248,
+                      51.25602934993293
+                    ],
+                    [
+                      7.152239419519901,
+                      51.255952132545644
                     ]
                   ]
                 ]
@@ -632,14 +1260,14 @@
               "mode": "flurstueck",
               "gemarkung": "Elberfeld",
               "gemarkungsnummer": 3135,
-              "flur": "153",
-              "flurstuecksnummer": "43/37",
-              "flaeche_m2": 1423,
-              "adresse": "Flutgraben ",
-              "flurstueckskennzeichen": "053135153000430037",
+              "flur": "155",
+              "flurstuecksnummer": "87",
+              "flaeche_m2": 2283,
+              "adresse": "Bundesallee 222",
+              "flurstueckskennzeichen": "05313515500087",
               "geometrie_vollstaendig": true,
               "info_title": "Gemarkung: Elberfeld",
-              "info_text": "Flur: 153\nFlurstück 43/37\nGröße: ca. 1.400 m²\nFNP Hauptnutzung: Gemischte Baufläche - Kerngebiet (67 %), Gewässer 2. Ordnung (29 %), Fläche für den Gemeinbedarf - Schulische Zwecke (2 %)"
+              "info_text": "Flur: 155\nFlurstücke 87 und 157\nGröße: ca. 17.900 m²\nFNP Hauptnutzung: Verkehrsfläche - Straßenverkehr - Bundesstraße (48 %), Verkehrsfläche - Straßenverkehr - Hauptverkehrszüge (23 %), Fläche für den Gemeinbedarf - Schulische Zwecke (13 %), Gemischte Baufläche - Kerngebiet (9 %), Verkehrsfläche - Straßenverkehr - Landstraße (5 %), Grünfläche - Parkanlage (2 %)\nB-Plan-Verfahren (rechtsverbindlich): Nr. 954 Döppersberg (84 %), Nr. 119A Brausenwerth - Döppersberg (11 %), Nr. 1240 Morianstraße / Wuppertpark Ost (5 %)\nLandschafts- und Naturschutz: keine\nBodenfunktion (Gesamtbewertung): Siedlungsfläche (100 %)"
             }
           }
         ],
@@ -669,6 +1297,9 @@
         ],
         "fill-opacity": 0.5
       },
+      "layout": {
+        "visibility": "none"
+      },
       "metadata": {
         "fachdaten": "FNP Hauptnutzungen"
       }
@@ -696,6 +1327,9 @@
         "line-opacity": 1,
         "line-width": 2
       },
+      "layout": {
+        "visibility": "none"
+      },
       "metadata": {
         "fachdaten": "FNP Hauptnutzungen"
       }
@@ -709,7 +1343,8 @@
       "maxzoom": 22,
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#3A7CEB",
@@ -736,6 +1371,9 @@
       "id": "fd-regionalplan",
       "type": "raster",
       "source": "fd-regionalplan",
+      "layout": {
+        "visibility": "none"
+      },
       "paint": {
         "raster-opacity": 0.7
       },
@@ -747,6 +1385,9 @@
       "id": "fd-lep",
       "type": "raster",
       "source": "fd-lep",
+      "layout": {
+        "visibility": "none"
+      },
       "paint": {
         "raster-opacity": 0.7
       },
@@ -781,7 +1422,10 @@
           "kategorie"
         ],
         "rechtsverbindlich"
-      ]
+      ],
+      "layout": {
+        "visibility": "none"
+      }
     },
     {
       "id": "fd-bplan-selection-line-lowzoom",
@@ -792,7 +1436,8 @@
       "maxzoom": 13,
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#4892F0",
@@ -857,7 +1502,8 @@
       ],
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#00FF00",
@@ -912,6 +1558,9 @@
           ]
         },
         "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      },
+      "layout": {
+        "visibility": "none"
       }
     },
     {
@@ -942,7 +1591,8 @@
       ],
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#00FF00",
@@ -1001,6 +1651,9 @@
           ]
         },
         "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      },
+      "layout": {
+        "visibility": "none"
       }
     },
     {
@@ -1042,7 +1695,10 @@
           "kategorie"
         ],
         "rechtsverbindlich"
-      ]
+      ],
+      "layout": {
+        "visibility": "none"
+      }
     },
     {
       "id": "fd-bplan-selection-line-top",
@@ -1053,7 +1709,8 @@
       "maxzoom": 22,
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#4892F0",
@@ -1116,6 +1773,9 @@
         ],
         "fill-opacity": 0.7
       },
+      "layout": {
+        "visibility": "none"
+      },
       "metadata": {
         "fachdaten": "Landschafts- und Naturschutz"
       }
@@ -1129,7 +1789,8 @@
       "maxzoom": 22,
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": [
@@ -1184,7 +1845,8 @@
       "maxzoom": 22,
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#3A7CEB",
@@ -1230,7 +1892,8 @@
       "maxzoom": 22,
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#FFFFFF",
@@ -1273,6 +1936,9 @@
         ],
         "fill-opacity": 0.7
       },
+      "layout": {
+        "visibility": "none"
+      },
       "metadata": {
         "fachdaten": "Gesamtbewertung der Bodenfunktionen"
       }
@@ -1286,7 +1952,8 @@
       "maxzoom": 22,
       "layout": {
         "line-join": "round",
-        "line-cap": "round"
+        "line-cap": "round",
+        "visibility": "none"
       },
       "paint": {
         "line-color": "#3A7CEB",
@@ -1307,6 +1974,22 @@
       },
       "metadata": {
         "fachdaten": "Gesamtbewertung der Bodenfunktionen"
+      }
+    },
+    {
+      "id": "adhoc-bbox",
+      "type": "line",
+      "source": "adhoc-bbox",
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "#0b6bcb",
+        "line-width": 1.5,
+        "line-dasharray": [
+          4,
+          3
+        ]
       }
     },
     {
