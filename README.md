@@ -17,3 +17,9 @@ Statische Seite, kein Build:
 
 ## Erweitern
 Neue Fragen = neues Step-Objekt `{id, title, mount, isValid, toFeatures}` in `js/wizard.js` (`STEPS`, vor `ResultStep`).
+
+## Publishen
+Im Ergebnisschritt schreibt „Ins Repo publishen“ die FeatureCollection per GitHub Contents API nach
+`published/featurecollection.geojson`. Die Datei wird bei jeder neuen Veröffentlichung **überschrieben**
+(abrufbar über die raw-URL im Ergebnisschritt). Nötig: ein fine-grained Token mit *Contents: Read and write*
+für dieses Repo – wird nur im Browser-Tab gehalten, nie im Code gespeichert.

@@ -6,7 +6,7 @@ const ResultStep = (() => {
     root.innerHTML = '';
     const wrap = document.createElement('div');
     wrap.className = 'result-step';
-    wrap.innerHTML = '<h2>Ergebnis: FeatureCollection</h2><div class="result-actions"><button id="copy" type="button">Kopieren</button><button id="dl" type="button" class="primary">Als .geojson herunterladen</button></div><textarea readonly></textarea>';
+    wrap.innerHTML = '<h2>Ergebnis: FeatureCollection</h2><div class="result-actions"><button id="copy" type="button">Kopieren</button><button id="dl" type="button">Als .geojson herunterladen</button></div><div class="publish"><input id="token" type="password" autocomplete="off" placeholder="GitHub-Token (Contents: Read &amp; write)"><button id="pub" type="button" class="primary">Ins Repo publishen</button></div><p class="hint" id="pubmsg">Überschreibt <code></code> im Repo. Das Token bleibt nur im Browser-Tab (sessionStorage).</p><textarea readonly></textarea>';
     wrap.querySelector('textarea').value = json;
     wrap.querySelector('#copy').onclick = () => navigator.clipboard.writeText(json).then(() => api.status('In die Zwischenablage kopiert.'));
     wrap.querySelector('#dl').onclick = () => {
@@ -15,6 +15,19 @@ const ResultStep = (() => {
         download: `adhoc-featurecollection-${new Date().toISOString().slice(0, 10)}.geojson`,
       });
       a.click(); URL.revokeObjectURL(a.href);
+    };
+    const tok = wrap.querySelector('#token');
+    try { tok.value = sessionStorage.getItem('gh-token') ?? ''; } catch {}
+    wrap.querySelector('#pubmsg code').textContent = Publish.CFG.path;
+    wrap.querySelector('#pub').onclick = async () => {
+      if (!tok.value) { api.status('Bitte GitHub-Token eingeben.'); return; }
+      try { sessionStorage.setItem('gh-token', tok.value); } catch {}
+      api.status('Publishe …');
+      try {
+        const r = await Publish.publish(json, tok.value);
+        wrap.querySelector('#pubmsg').innerHTML = `${r.replaced ? 'Vorherige Version überschrieben' : 'Neu angelegt'}: <a target="_blank" rel="noopener" href="${r.url}">${r.url}</a>`;
+        api.status('Veröffentlicht.');
+      } catch (err) { api.status('Fehler: ' + err.message); }
     };
     root.append(wrap);
   }
