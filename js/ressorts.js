@@ -173,7 +173,7 @@ const Ressorts = (() => {
     "titel": "Rechtsverbindliche Erhaltungs- und Gestaltungssatzungen Wuppertal",
     "slug": "a0547842-2897-4f32-bdbc-2af4051c748b",
     "herausgeber": "",
-    "lizenz": "http://inspire.ec.europa.eu/me",
+    "lizenz": "siehe Datensatz",
     "formate": [
      "JSON",
      "KML",
@@ -332,7 +332,7 @@ const Ressorts = (() => {
     "titel": "Manuell erfasste Einzelbaum Stammpositionen in einigen Wuppertaler Parkanlagen",
     "slug": "f7e70ca1-6b44-43e7-9aa3-e5f24122c8c9",
     "herausgeber": "",
-    "lizenz": "https://creativecommons.org/li",
+    "lizenz": "siehe Datensatz",
     "formate": [
      "ZIP"
     ]
@@ -422,7 +422,7 @@ const Ressorts = (() => {
     "titel": "City-Parkzonen Wuppertal",
     "slug": "62d58a38-d3cd-4d43-8624-cf61c0519c9a",
     "herausgeber": "",
-    "lizenz": "https://creativecommons.org/li",
+    "lizenz": "siehe Datensatz",
     "formate": [
      "JSON",
      "ZIP"
@@ -446,7 +446,7 @@ const Ressorts = (() => {
     "titel": "Bike and Ride Anlagen Wuppertal",
     "slug": "2202a8e0-69c8-40a7-a7f3-310bb87f3b96",
     "herausgeber": "",
-    "lizenz": "https://creativecommons.org/li",
+    "lizenz": "siehe Datensatz",
     "formate": [
      "JSON",
      "ZIP"

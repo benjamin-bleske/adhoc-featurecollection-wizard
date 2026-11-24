@@ -19,6 +19,7 @@ Sie tragen dieselbe Projektbereich-ID (`pb-…`) und verweisen in `layerInfo.lin
 | **Planungsphase 1: Ready2Use** | `published/planungsphase-1-ready2use.json` | Geltungsbereich: gleiche Geometrie wie der Projektbereich, **schwarz** gestrichelt, ohne Fachdaten |
 | **Planungsphase 1: Ready2hack** | `published/planungsphase-1-ready2hack.json` | zwei Punkte **TwinFlow 101** und **TwinFlow 103**, per **Filter-Button** im Layer-Chip einzeln schaltbar |
 | **Planungsphase 1: Entwurf** | `published/planungsphase-1-entwurf.json` | Bebauungsentwurf (Lageplan), aus der Geometrie von Ready2Use **berechnet** |
+| (Datenblatt) | `published/twinflow-datenblatt.html`, `published/twinflow-ressorts.json` | Datenblatt zu den TwinFlows (HTML, per GitHub Pages) und seine Daten |
 | (Quelle) | `published/projektbereich.geojson`, `published/entwurf.geojson` | die gemeinsame Geometrie und die Geometrie des Entwurfs |
 
 Alle haben eine Lupe (`zoomToExtent`) im Layer-Chip. Ready2Use liegt auf demselben Umriss wie der Projektbereich: zum Vergleich einen der Chips ausblenden.
@@ -35,12 +36,27 @@ Er wird in `js/entwurf.js` **rein rechnerisch** (ohne Zufall, ohne Bildmodell) a
 - Ergebnis als Vektor: Stellplätze, Straße, Grünflächen, Häuser (Polygone), Teilungslinien, Bäume, Beschriftungen; Kennzahlen in `metadata.adhoc.entwurf`.
 - Bei sehr kleinen (< 6 m) oder stark zerschnittenen Flächen bleibt der Entwurf sparsam oder leer.
 
-### Planungsphase 1: Ready2hack
-Die Geometrie folgt Ready2Use (gleiche FeatureCollection, gleicher Commit, daher immer synchron):
-- **TwinFlow 101**: Mitte der Ausdehnung des Geltungsbereichs.
-- **TwinFlow 103**: auf gleicher Höhe (gleiche Breite) **20 % der Ost-West-Ausdehnung** östlich von TwinFlow 101.
+### Planungsphase 1: Ready2hack – TwinFlows
+Sechs TwinFlows, je Ressort einer (**Annahme: TwinFlow NNN gehört zum Ressort NNN**), nach festen Abstandsregeln relativ zur Ausdehnung des Geltungsbereichs (umschließendes Rechteck, Web-Mercator-Meter; Schritt = 20 %). Die Geometrie folgt Ready2Use (gleiche FeatureCollection, gleicher Commit):
 
-Die Ausdehnung ist das umschließende Rechteck des Geltungsbereichs (gerechnet in Web-Mercator-Metern). Der Filter-Button (`carmaConf.filterConfig`, Typ `button`, Modus `or`) zeigt beide Punkte; ein Klick auf einen Button blendet den jeweiligen Punkt aus.
+| TwinFlow | Ressort | Lage |
+|---|---|---|
+| 101 | Stadtentwicklung und Städtebau | Mitte |
+| 102 | Vermessung, Katasteramt und Geodaten | 20 % der Ost-West-Breite westlich |
+| 103 | Grünflächen und Forsten | 20 % der Ost-West-Breite östlich |
+| 104 | Straßen und Verkehr | 20 % der Nord-Süd-Höhe nördlich |
+| 105 | Bauen und Wohnen | 20 % der Nord-Süd-Höhe südlich |
+| 106 | Umweltschutz | 40 % der Ost-West-Breite östlich |
+
+Die Regeln stehen als `dx`/`dy` in `js/ressorts.js`. Der **Filter-Button** (`carmaConf.filterConfig`, Typ `button`, Modus `or`) schaltet jeden TwinFlow einzeln.
+
+### Datenblatt zu den TwinFlows
+Die Infobox jedes TwinFlows zeigt Lage, Beitrag und ein **Info-Symbol (i)**, das das Datenblatt in einem neuen Tab öffnet (`genericLinks`):
+`https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-104`.
+Es entsteht bei jedem Publishen neu (`js/datenblatt.js`) und enthält je Ressort zuständige Stellen, Beitrag zum Planungsprozess und das Datenangebot (Links ins Open-Data-Portal NRW).
+- **Wie Datenblätter in carma grundsätzlich angelegt werden** und warum ein neues Datenblatt im Geoportal-Fenster Code in carma braucht: [docs/datenblaetter.md](docs/datenblaetter.md).
+- **Entwurf der carma-Komponente** `twinFlowSIM`: [docs/carma-datenblatt/](docs/carma-datenblatt/) (nicht gebaut; `USE_SIM` in `js/publish.js`).
+- **Datenangebot und Beitrag der Ressorts 102, 104, 105, 106** (und 101, 103): [docs/ressorts-datenangebot.md](docs/ressorts-datenangebot.md).
 
 ## Frage 1 – Projektbereich
 - **Zeichnen**: Polygon/Rechteck in die Karte zeichnen. Die Infobox zeigt Fläche sowie die berührten Flurstücke.
@@ -82,7 +98,7 @@ Klick in den Projektbereich zeigt Gemarkung, Flur, Flurstück(e), Größe und je
 - **Planungsrecht:** FNP-Hauptnutzungen, rechtsverbindliche B-Pläne, Landschafts-/Naturschutz (aus den Vector-Tiles), Landesentwicklungsplan (aus dem Kartenbild), Regionalplan (ohne Auswertung), dazu Links zu Legende und Capabilities.
 - **Fachkonzepte:** Bodenfunktion (Flächenanteil), Eignung dezentrale Wärmeversorgung (Flächenanteil), Stadtbaumkonzept (Anzahl Bäume im Bereich).
 - **Ready2Use (Geltungsbereich):** Gemarkung, Flur, Flurstück(e), Größe.
-- **Ready2hack:** Name und Lage des Punktes.
+- **Ready2hack:** Name, Lage, Beitrag des Ressorts und Info-Symbol zum Datenblatt.
 
 Klick auf einen Fachdaten-Layer zeigt dessen eigene Infobox.
 
