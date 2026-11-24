@@ -170,8 +170,7 @@ const AreaStep = (() => {
   // Fertige Infobox-Texte (werden im Style per infoboxMapping angezeigt)
   const infoFor = g => ({
     info_title: `Gemarkung: ${g.gem}`,
-    info_subtitle: `Flur: ${g.flur}`,
-    info_text: `${g.parcelsText}\nGröße: ${Format.ca(g.sum)}`,
+    info_text: `Flur: ${g.flur}\n${g.parcelsText}\nGröße: ${Format.ca(g.sum)}`,
   });
 
   function toFeatures(state) {
@@ -186,8 +185,7 @@ const AreaStep = (() => {
           role: 'projektbereich', mode: 'draw', flaeche_m2: area,
           flurstuecke: parcels.map(f => ({ gemarkung: f.properties.gemarkung, flur: f.properties.flur, flurstueck: f.properties.flurstuecksnummer, flaeche_m2: f.properties.flaeche_m2 })),
           info_title: 'Gezeichneter Projektbereich',
-          info_subtitle: `Größe: ${Format.ca(area)}`,
-          info_text: gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n'),
+          info_text: `Größe: ${Format.ca(area)}\n\n` + gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n'),
         },
       }];
     }

@@ -22,8 +22,11 @@ Statische Seite, kein Build:
 Neue Fragen = neues Step-Objekt `{id, title, mount, isValid, toFeatures}` in `js/wizard.js` (`STEPS`, vor `ResultStep`).
 
 ## Style-Link zum Reinziehen ins Geoportal
-Diesen Link ins Geoportal ziehen: [Adhoc-Projektbereich-Style](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/style.json).
-Danach über das „+“ in „Externe Dienste“ zur Karte hinzufügen. Nach einer neuen Veröffentlichung den Link aus dem Wizard ziehen (mit Cache-Buster `?v=…`), sonst liefert GitHub bis zu 5 Minuten die alte Version.
+Nach jedem Publishen zeigt der Wizard eine **Link mit Commit-SHA** (`…/raw.githubusercontent.com/…/<sha>/published/style.json`).
+Diesen Link ins Geoportal ziehen: er ist unveränderlich und sofort aktuell, danach über das „+“ in „Externe Dienste“ zur Karte hinzufügen.
+
+Der Link auf den jeweils neuesten Stand: [Adhoc-Projektbereich-Style](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/style.json).
+Achtung: GitHub cached diesen `main`-Link bis zu 5 Minuten (ein `?v=…` hilft **nicht**), er kann also kurz den vorherigen Stand liefern.
 
 ## Publishen
 Im Ergebnisschritt schreibt „Ins Repo publishen“ die FeatureCollection per GitHub Contents API als MapLibre-`style.json` (FeatureCollection inline + Fill/Line-Layer + `carmaConf` mit `zoomToExtent`-Lupe; bewusst ohne `instant`, sonst fehlt die Lupe) nach

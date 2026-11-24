@@ -18,15 +18,15 @@ const Publish = (() => {
     return fc.features.length ? [w, s, e, n].map(v => +v.toFixed(6)) : null;
   }
 
-  // Infobox des Geoportals: Zeilen \"key: ausdruck\" mit p = Feature-Properties
-  const INFOBOX_MAPPING = ['title: p.info_title', 'subtitle: p.info_subtitle', 'additionalInfo: p.info_text'];
+  // Infobox des Geoportals: Zeilen "key: ausdruck" (p = Feature-Properties), als Keyword carmaconf://infoBoxMapping:<zeile>
+  const INFOBOX_MAPPING = ['title: p.info_title', 'additionalInfo: p.info_text'];
 
   function buildStyle(fc) {
     const title = 'Adhoc-Projektbereich';
     const bounds = extent(fc);
     return {
       version: 8, name: title,
-      metadata: { carmaConf: { infoboxMapping: INFOBOX_MAPPING, ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc'] } } },
+      metadata: { carmaConf: { ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc', ...INFOBOX_MAPPING.map(l => `carmaconf://infoBoxMapping:${l}`)] } } },
       sources: { adhoc: { type: 'geojson', data: fc } },
       layers: [
         { id: 'adhoc-fill', type: 'fill', source: 'adhoc', paint: { 'fill-color': '#e8590c', 'fill-opacity': 0.35 } },
@@ -49,7 +49,10 @@ const Publish = (() => {
       }),
     });
     if (!res.ok) throw new Error(`GitHub HTTP ${res.status}: ${(await res.json().catch(() => ({}))).message ?? ''}`);
-    return { replaced: !!sha, url: `${rawUrl}?v=${Date.now()}` }; // ?v= umgeht den 5-Min-Cache von raw.githubusercontent.com
+    // raw.githubusercontent.com cached pro Pfad ~5 Min und ignoriert ?query. Die URL mit Commit-SHA ist
+    // dagegen unveränderlich und sofort aktuell -> diese ins Geoportal ziehen.
+    const sha2 = (await res.json()).commit.sha;
+    return { replaced: !!sha, url: `https://raw.githubusercontent.com/${CFG.owner}/${CFG.repo}/${sha2}/${CFG.path}` };
   }
 
   return { publish, buildStyle, rawUrl, CFG };
