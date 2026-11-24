@@ -9,11 +9,20 @@ const Publish = (() => {
 
   // MapLibre-Style, wie ihn das Geoportal per Drop erwartet (URL auf .json):
   // FeatureCollection inline als geojson-Source + Fill/Line-Layer + carmaConf-Metadaten.
+  // [west, süd, ost, nord] über alle Koordinaten der FeatureCollection
+  function extent(fc) {
+    let w = 180, s = 90, e = -180, n = -90;
+    const walk = c => Array.isArray(c[0]) ? c.forEach(walk) : (w = Math.min(w, c[0]), e = Math.max(e, c[0]), s = Math.min(s, c[1]), n = Math.max(n, c[1]));
+    fc.features.forEach(f => walk(f.geometry.coordinates));
+    return fc.features.length ? [w, s, e, n].map(v => +v.toFixed(6)) : null;
+  }
+
   function buildStyle(fc) {
     const title = 'Adhoc-Projektbereich';
+    const bounds = extent(fc);
     return {
       version: 8, name: title,
-      metadata: { carmaConf: { instant: true, layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc'] } } },
+      metadata: { carmaConf: { instant: true, ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc'] } } },
       sources: { adhoc: { type: 'geojson', data: fc } },
       layers: [
         { id: 'adhoc-fill', type: 'fill', source: 'adhoc', paint: { 'fill-color': '#e8590c', 'fill-opacity': 0.35 } },

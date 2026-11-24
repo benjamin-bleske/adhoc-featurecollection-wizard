@@ -45,3 +45,5 @@ button:disabled { opacity: .45; cursor: not-allowed; }
   .area-side { border-left: 0; border-top: 1px solid var(--line); }
 }
 .publish { display: flex; gap: 8px; } .publish input { flex: 1; font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--fg); }
+a { color: var(--accent); }
+code { font-size: 12.5px; }
