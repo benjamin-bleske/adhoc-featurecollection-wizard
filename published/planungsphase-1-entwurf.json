@@ -1,0 +1,2925 @@
+{
+  "version": 8,
+  "name": "Planungsphase 1: Entwurf",
+  "glyphs": "https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf",
+  "metadata": {
+    "adhoc": {
+      "projektbereich": "pb-63bd9074",
+      "folgt": "published/planungsphase-1-ready2use.json",
+      "entwurf": {
+        "haeuser": 2,
+        "einheiten": 5,
+        "baeume": 8,
+        "stellplaetze": 90,
+        "winkel_grad": 1.8,
+        "modul": 1.26
+      }
+    },
+    "carmaConf": {
+      "tools": [
+        {
+          "kind": "zoomToExtent",
+          "config": {
+            "label": "Auf den Projektbereich zoomen",
+            "bounds": [
+              7.148296,
+              51.255962,
+              7.150419,
+              51.256432
+            ]
+          }
+        }
+      ],
+      "layerInfo": {
+        "title": "Planungsphase 1: Entwurf",
+        "description": "Bebauungsentwurf (Lageplan) zum Geltungsbereich „Planungsphase 1: Ready2Use“, Projektbereich pb-63bd9074: 2 Reihenhaus-Zeilen (5 Einheiten), 90 Stellplätze, 8 Bäume. Berechnet aus der Geometrie, immer synchron mit Ready2Use.",
+        "links": [
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
+            "text": "Planungsphase 0: Planungsrecht (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-fachkonzepte.json",
+            "text": "Planungsphase 0: Fachkonzepte (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json",
+            "text": "Planungsphase 1: Ready2Use (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json",
+            "text": "Planungsphase 1: Ready2hack (Style)"
+          }
+        ],
+        "keywords": [
+          "adhoc",
+          "pb-63bd9074",
+          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var n = { gruen: 'Grünfläche mit Hecke', strasse: 'Privatstraße', parken: 'Stellplätze', parken_braun: 'Stellplätze (gepflastert)', haus: p.titel, baum: 'Baum', strassenachse: 'Privatstraße' }; return { header: 'Planungsphase 1: Entwurf', headerColor: '#5d7430', title: n[p.kind] || 'Entwurf', additionalInfo: p.text || '' }; }"
+        ]
+      }
+    }
+  },
+  "sources": {
+    "entwurf": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "gruen"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.1483135,
+                      51.2562625
+                    ],
+                    [
+                      7.1483151,
+                      51.2562315
+                    ],
+                    [
+                      7.1483222,
+                      51.2562252
+                    ],
+                    [
+                      7.1485338,
+                      51.2562294
+                    ],
+                    [
+                      7.1484578,
+                      51.2563137
+                    ],
+                    [
+                      7.1484547,
+                      51.2563126
+                    ],
+                    [
+                      7.1483135,
+                      51.2562625
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      7.1494214,
+                      51.2562473
+                    ],
+                    [
+                      7.1497282,
+                      51.2562535
+                    ],
+                    [
+                      7.1496894,
+                      51.2563378
+                    ],
+                    [
+                      7.149593,
+                      51.2563082
+                    ],
+                    [
+                      7.1495663,
+                      51.256299
+                    ],
+                    [
+                      7.149529,
+                      51.2562858
+                    ],
+                    [
+                      7.1494214,
+                      51.2562473
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      7.1498439,
+                      51.2563354
+                    ],
+                    [
+                      7.1498784,
+                      51.256261
+                    ],
+                    [
+                      7.1498509,
+                      51.256256
+                    ],
+                    [
+                      7.1503926,
+                      51.2562669
+                    ],
+                    [
+                      7.1503429,
+                      51.2563708
+                    ],
+                    [
+                      7.1503251,
+                      51.2563768
+                    ],
+                    [
+                      7.1503025,
+                      51.2564232
+                    ],
+                    [
+                      7.1501309,
+                      51.2564197
+                    ],
+                    [
+                      7.1500071,
+                      51.2563947
+                    ],
+                    [
+                      7.1500196,
+                      51.2563675
+                    ],
+                    [
+                      7.1498439,
+                      51.2563354
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "gruen"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.1492205,
+                      51.2561303
+                    ],
+                    [
+                      7.1492358,
+                      51.256098
+                    ],
+                    [
+                      7.1492451,
+                      51.256095
+                    ],
+                    [
+                      7.1492557,
+                      51.2560916
+                    ],
+                    [
+                      7.1492425,
+                      51.2560752
+                    ],
+                    [
+                      7.1492495,
+                      51.2560345
+                    ],
+                    [
+                      7.1492803,
+                      51.2559734
+                    ],
+                    [
+                      7.1493553,
+                      51.2559749
+                    ],
+                    [
+                      7.1496024,
+                      51.2560201
+                    ],
+                    [
+                      7.1496016,
+                      51.2560213
+                    ],
+                    [
+                      7.1495894,
+                      51.2560453
+                    ],
+                    [
+                      7.1495871,
+                      51.25605
+                    ],
+                    [
+                      7.1495851,
+                      51.2560547
+                    ],
+                    [
+                      7.1495832,
+                      51.2560594
+                    ],
+                    [
+                      7.1495814,
+                      51.2560642
+                    ],
+                    [
+                      7.1495798,
+                      51.2560689
+                    ],
+                    [
+                      7.1495783,
+                      51.2560737
+                    ],
+                    [
+                      7.1495777,
+                      51.2560763
+                    ],
+                    [
+                      7.1495771,
+                      51.2560789
+                    ],
+                    [
+                      7.1495767,
+                      51.2560815
+                    ],
+                    [
+                      7.1495767,
+                      51.2560842
+                    ],
+                    [
+                      7.1495767,
+                      51.2560868
+                    ],
+                    [
+                      7.1495769,
+                      51.2560895
+                    ],
+                    [
+                      7.1495776,
+                      51.2560932
+                    ],
+                    [
+                      7.149579,
+                      51.2560969
+                    ],
+                    [
+                      7.1495813,
+                      51.2561004
+                    ],
+                    [
+                      7.1495842,
+                      51.2561036
+                    ],
+                    [
+                      7.149588,
+                      51.2561065
+                    ],
+                    [
+                      7.1495922,
+                      51.2561091
+                    ],
+                    [
+                      7.1495973,
+                      51.2561116
+                    ],
+                    [
+                      7.1496026,
+                      51.2561139
+                    ],
+                    [
+                      7.1496082,
+                      51.2561159
+                    ],
+                    [
+                      7.149614,
+                      51.2561176
+                    ],
+                    [
+                      7.1496201,
+                      51.256119
+                    ],
+                    [
+                      7.1496263,
+                      51.2561201
+                    ],
+                    [
+                      7.1496377,
+                      51.2561217
+                    ],
+                    [
+                      7.1496492,
+                      51.2561231
+                    ],
+                    [
+                      7.1496607,
+                      51.2561242
+                    ],
+                    [
+                      7.1496723,
+                      51.2561251
+                    ],
+                    [
+                      7.1496839,
+                      51.2561257
+                    ],
+                    [
+                      7.1496955,
+                      51.256126
+                    ],
+                    [
+                      7.1497093,
+                      51.256126
+                    ],
+                    [
+                      7.149723,
+                      51.2561257
+                    ],
+                    [
+                      7.1497368,
+                      51.256125
+                    ],
+                    [
+                      7.1497505,
+                      51.2561241
+                    ],
+                    [
+                      7.1497642,
+                      51.2561229
+                    ],
+                    [
+                      7.1497777,
+                      51.2561214
+                    ],
+                    [
+                      7.1497859,
+                      51.2561204
+                    ],
+                    [
+                      7.1497914,
+                      51.2561194
+                    ],
+                    [
+                      7.1497967,
+                      51.2561181
+                    ],
+                    [
+                      7.1498016,
+                      51.2561163
+                    ],
+                    [
+                      7.1498062,
+                      51.2561142
+                    ],
+                    [
+                      7.1498103,
+                      51.2561118
+                    ],
+                    [
+                      7.1498139,
+                      51.2561089
+                    ],
+                    [
+                      7.1498168,
+                      51.2561059
+                    ],
+                    [
+                      7.1498191,
+                      51.2561026
+                    ],
+                    [
+                      7.1498419,
+                      51.2560648
+                    ],
+                    [
+                      7.1498368,
+                      51.2560631
+                    ],
+                    [
+                      7.1503257,
+                      51.2561526
+                    ],
+                    [
+                      7.1492205,
+                      51.2561303
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "strasse"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.1483535,
+                      51.2561976
+                    ],
+                    [
+                      7.148416,
+                      51.2561424
+                    ],
+                    [
+                      7.148421,
+                      51.2561425
+                    ],
+                    [
+                      7.1485417,
+                      51.2561995
+                    ],
+                    [
+                      7.1485458,
+                      51.2562014
+                    ],
+                    [
+                      7.1483535,
+                      51.2561976
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      7.1493078,
+                      51.2562038
+                    ],
+                    [
+                      7.1493281,
+                      51.2561607
+                    ],
+                    [
+                      7.1503844,
+                      51.256182
+                    ],
+                    [
+                      7.1503815,
+                      51.2562384
+                    ],
+                    [
+                      7.149343,
+                      51.2562175
+                    ],
+                    [
+                      7.1493078,
+                      51.2562038
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "strassenachse",
+              "text": "Privatstraße"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1483363,
+                  51.256169
+                ],
+                [
+                  7.1503829,
+                  51.2562102
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "parken"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.1483426,
+                      51.2562256
+                    ],
+                    [
+                      7.1483436,
+                      51.2562063
+                    ],
+                    [
+                      7.1483535,
+                      51.2561976
+                    ],
+                    [
+                      7.1485458,
+                      51.2562014
+                    ],
+                    [
+                      7.1485551,
+                      51.2562058
+                    ],
+                    [
+                      7.1485484,
+                      51.2562133
+                    ],
+                    [
+                      7.1485338,
+                      51.2562294
+                    ],
+                    [
+                      7.1483426,
+                      51.2562256
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      7.149343,
+                      51.2562175
+                    ],
+                    [
+                      7.1503723,
+                      51.2562382
+                    ],
+                    [
+                      7.1503709,
+                      51.2562664
+                    ],
+                    [
+                      7.1498509,
+                      51.256256
+                    ],
+                    [
+                      7.1497368,
+                      51.256235
+                    ],
+                    [
+                      7.1497282,
+                      51.2562535
+                    ],
+                    [
+                      7.1494214,
+                      51.2562473
+                    ],
+                    [
+                      7.1494011,
+                      51.2562401
+                    ],
+                    [
+                      7.149343,
+                      51.2562175
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "parken_braun"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.1483426,
+                      51.2562256
+                    ],
+                    [
+                      7.1483436,
+                      51.2562063
+                    ],
+                    [
+                      7.1483535,
+                      51.2561976
+                    ],
+                    [
+                      7.1485458,
+                      51.2562014
+                    ],
+                    [
+                      7.1485551,
+                      51.2562058
+                    ],
+                    [
+                      7.1485484,
+                      51.2562133
+                    ],
+                    [
+                      7.1485338,
+                      51.2562294
+                    ],
+                    [
+                      7.1483426,
+                      51.2562256
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.148344,
+                  51.2561974
+                ],
+                [
+                  7.1483426,
+                  51.2562256
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1483891,
+                  51.2561983
+                ],
+                [
+                  7.1483876,
+                  51.2562265
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1484342,
+                  51.2561992
+                ],
+                [
+                  7.1484327,
+                  51.2562274
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1484792,
+                  51.2562001
+                ],
+                [
+                  7.1484778,
+                  51.2562283
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1485243,
+                  51.256201
+                ],
+                [
+                  7.1485229,
+                  51.2562292
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1494258,
+                  51.2562192
+                ],
+                [
+                  7.1494243,
+                  51.2562474
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1494709,
+                  51.2562201
+                ],
+                [
+                  7.1494694,
+                  51.2562483
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1495159,
+                  51.256221
+                ],
+                [
+                  7.1495145,
+                  51.2562492
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.149561,
+                  51.2562219
+                ],
+                [
+                  7.1495596,
+                  51.2562501
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1496061,
+                  51.2562228
+                ],
+                [
+                  7.1496046,
+                  51.256251
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1496512,
+                  51.2562237
+                ],
+                [
+                  7.1496497,
+                  51.2562519
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1496962,
+                  51.2562246
+                ],
+                [
+                  7.1496948,
+                  51.2562528
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1497864,
+                  51.2562264
+                ],
+                [
+                  7.1497849,
+                  51.2562546
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1498315,
+                  51.2562273
+                ],
+                [
+                  7.14983,
+                  51.2562555
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1498765,
+                  51.2562282
+                ],
+                [
+                  7.1498751,
+                  51.2562564
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1499216,
+                  51.2562291
+                ],
+                [
+                  7.1499201,
+                  51.2562574
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1499667,
+                  51.2562301
+                ],
+                [
+                  7.1499652,
+                  51.2562583
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1500117,
+                  51.256231
+                ],
+                [
+                  7.1500103,
+                  51.2562592
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1500568,
+                  51.2562319
+                ],
+                [
+                  7.1500554,
+                  51.2562601
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1501019,
+                  51.2562328
+                ],
+                [
+                  7.1501004,
+                  51.256261
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.150147,
+                  51.2562337
+                ],
+                [
+                  7.1501455,
+                  51.2562619
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.150192,
+                  51.2562346
+                ],
+                [
+                  7.1501906,
+                  51.2562628
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1502371,
+                  51.2562355
+                ],
+                [
+                  7.1502357,
+                  51.2562637
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1502822,
+                  51.2562364
+                ],
+                [
+                  7.1502807,
+                  51.2562646
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1503273,
+                  51.2562373
+                ],
+                [
+                  7.1503258,
+                  51.2562655
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1503723,
+                  51.2562382
+                ],
+                [
+                  7.1503709,
+                  51.2562664
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "parken"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.148416,
+                      51.2561424
+                    ],
+                    [
+                      7.1484177,
+                      51.2561409
+                    ],
+                    [
+                      7.148421,
+                      51.2561425
+                    ],
+                    [
+                      7.148416,
+                      51.2561424
+                    ]
+                  ]
+                ],
+                [
+                  [
+                    [
+                      7.1492161,
+                      51.2561396
+                    ],
+                    [
+                      7.1492205,
+                      51.2561303
+                    ],
+                    [
+                      7.1503257,
+                      51.2561526
+                    ],
+                    [
+                      7.1503763,
+                      51.2561618
+                    ],
+                    [
+                      7.1503752,
+                      51.2561818
+                    ],
+                    [
+                      7.1493281,
+                      51.2561607
+                    ],
+                    [
+                      7.1493284,
+                      51.2561602
+                    ],
+                    [
+                      7.1492161,
+                      51.2561396
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "parken_braun"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.148416,
+                      51.2561424
+                    ],
+                    [
+                      7.1484177,
+                      51.2561409
+                    ],
+                    [
+                      7.148421,
+                      51.2561425
+                    ],
+                    [
+                      7.148416,
+                      51.2561424
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1492484,
+                  51.2561591
+                ],
+                [
+                  7.1492498,
+                  51.2561309
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1492935,
+                  51.25616
+                ],
+                [
+                  7.1492949,
+                  51.2561318
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1493385,
+                  51.2561609
+                ],
+                [
+                  7.14934,
+                  51.2561327
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1493836,
+                  51.2561618
+                ],
+                [
+                  7.1493851,
+                  51.2561336
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1494287,
+                  51.2561627
+                ],
+                [
+                  7.1494301,
+                  51.2561345
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1494738,
+                  51.2561637
+                ],
+                [
+                  7.1494752,
+                  51.2561354
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1495188,
+                  51.2561646
+                ],
+                [
+                  7.1495203,
+                  51.2561364
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1495639,
+                  51.2561655
+                ],
+                [
+                  7.1495654,
+                  51.2561373
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.149609,
+                  51.2561664
+                ],
+                [
+                  7.1496104,
+                  51.2561382
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1496541,
+                  51.2561673
+                ],
+                [
+                  7.1496555,
+                  51.2561391
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1496991,
+                  51.2561682
+                ],
+                [
+                  7.1497006,
+                  51.25614
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1497442,
+                  51.2561691
+                ],
+                [
+                  7.1497457,
+                  51.2561409
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1497893,
+                  51.25617
+                ],
+                [
+                  7.1497907,
+                  51.2561418
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1498344,
+                  51.2561709
+                ],
+                [
+                  7.1498358,
+                  51.2561427
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1498794,
+                  51.2561718
+                ],
+                [
+                  7.1498809,
+                  51.2561436
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1499245,
+                  51.2561727
+                ],
+                [
+                  7.1499259,
+                  51.2561445
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1499696,
+                  51.2561736
+                ],
+                [
+                  7.149971,
+                  51.2561454
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1500146,
+                  51.2561745
+                ],
+                [
+                  7.1500161,
+                  51.2561463
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1500597,
+                  51.2561755
+                ],
+                [
+                  7.1500612,
+                  51.2561472
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1501048,
+                  51.2561764
+                ],
+                [
+                  7.1501062,
+                  51.2561482
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1501499,
+                  51.2561773
+                ],
+                [
+                  7.1501513,
+                  51.2561491
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1501949,
+                  51.2561782
+                ],
+                [
+                  7.1501964,
+                  51.25615
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.15024,
+                  51.2561791
+                ],
+                [
+                  7.1502415,
+                  51.2561509
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1502851,
+                  51.25618
+                ],
+                [
+                  7.1502865,
+                  51.2561518
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1503302,
+                  51.2561809
+                ],
+                [
+                  7.1503316,
+                  51.2561527
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "stellplatz_linie"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1503752,
+                  51.2561818
+                ],
+                [
+                  7.1503767,
+                  51.2561536
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "haus",
+              "titel": "Reihenhaus 120 a",
+              "text": "3 Einheiten"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.1500257,
+                      51.2562934
+                    ],
+                    [
+                      7.1503178,
+                      51.2562992
+                    ],
+                    [
+                      7.150312,
+                      51.2564121
+                    ],
+                    [
+                      7.1500199,
+                      51.2564062
+                    ],
+                    [
+                      7.1500257,
+                      51.2562934
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "haus_teilung"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.150123,
+                  51.2562953
+                ],
+                [
+                  7.1501172,
+                  51.2564082
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "haus_teilung"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1502204,
+                  51.2562973
+                ],
+                [
+                  7.1502146,
+                  51.2564101
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "haus_teilung"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1500228,
+                  51.2563498
+                ],
+                [
+                  7.1503149,
+                  51.2563557
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "beschriftung",
+              "text": "120 a"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1501688,
+                51.2563527
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "haus",
+              "titel": "Reihenhaus 145 b",
+              "text": "2 Einheiten"
+            },
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.1492619,
+                      51.2559843
+                    ],
+                    [
+                      7.1494566,
+                      51.2559882
+                    ],
+                    [
+                      7.1494508,
+                      51.2561011
+                    ],
+                    [
+                      7.1492561,
+                      51.2560971
+                    ],
+                    [
+                      7.1492619,
+                      51.2559843
+                    ]
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "haus_teilung"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.1493535,
+                  51.2560991
+                ],
+                [
+                  7.1493593,
+                  51.2559863
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "haus_teilung"
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  7.149259,
+                  51.2560407
+                ],
+                [
+                  7.1494537,
+                  51.2560446
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "beschriftung",
+              "text": "145 b"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1493564,
+                51.2560427
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.1496742,
+                    51.2562661
+                  ],
+                  [
+                    7.1496723,
+                    51.2562722
+                  ],
+                  [
+                    7.1496668,
+                    51.2562773
+                  ],
+                  [
+                    7.1496586,
+                    51.2562807
+                  ],
+                  [
+                    7.149649,
+                    51.2562819
+                  ],
+                  [
+                    7.1496393,
+                    51.2562807
+                  ],
+                  [
+                    7.1496311,
+                    51.2562773
+                  ],
+                  [
+                    7.1496256,
+                    51.2562722
+                  ],
+                  [
+                    7.1496237,
+                    51.2562661
+                  ],
+                  [
+                    7.1496256,
+                    51.2562601
+                  ],
+                  [
+                    7.1496311,
+                    51.256255
+                  ],
+                  [
+                    7.1496393,
+                    51.2562515
+                  ],
+                  [
+                    7.149649,
+                    51.2562503
+                  ],
+                  [
+                    7.1496586,
+                    51.2562515
+                  ],
+                  [
+                    7.1496668,
+                    51.256255
+                  ],
+                  [
+                    7.1496723,
+                    51.2562601
+                  ],
+                  [
+                    7.1496742,
+                    51.2562661
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.1498996,
+                    51.2562707
+                  ],
+                  [
+                    7.1498977,
+                    51.2562767
+                  ],
+                  [
+                    7.1498922,
+                    51.2562818
+                  ],
+                  [
+                    7.149884,
+                    51.2562853
+                  ],
+                  [
+                    7.1498743,
+                    51.2562865
+                  ],
+                  [
+                    7.1498647,
+                    51.2562853
+                  ],
+                  [
+                    7.1498565,
+                    51.2562818
+                  ],
+                  [
+                    7.149851,
+                    51.2562767
+                  ],
+                  [
+                    7.1498491,
+                    51.2562707
+                  ],
+                  [
+                    7.149851,
+                    51.2562646
+                  ],
+                  [
+                    7.1498565,
+                    51.2562595
+                  ],
+                  [
+                    7.1498647,
+                    51.2562561
+                  ],
+                  [
+                    7.1498743,
+                    51.2562549
+                  ],
+                  [
+                    7.149884,
+                    51.2562561
+                  ],
+                  [
+                    7.1498922,
+                    51.2562595
+                  ],
+                  [
+                    7.1498977,
+                    51.2562646
+                  ],
+                  [
+                    7.1498996,
+                    51.2562707
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.150125,
+                    51.2562752
+                  ],
+                  [
+                    7.150123,
+                    51.2562813
+                  ],
+                  [
+                    7.1501176,
+                    51.2562864
+                  ],
+                  [
+                    7.1501094,
+                    51.2562898
+                  ],
+                  [
+                    7.1500997,
+                    51.256291
+                  ],
+                  [
+                    7.15009,
+                    51.2562898
+                  ],
+                  [
+                    7.1500819,
+                    51.2562864
+                  ],
+                  [
+                    7.1500764,
+                    51.2562813
+                  ],
+                  [
+                    7.1500745,
+                    51.2562752
+                  ],
+                  [
+                    7.1500764,
+                    51.2562692
+                  ],
+                  [
+                    7.1500819,
+                    51.256264
+                  ],
+                  [
+                    7.15009,
+                    51.2562606
+                  ],
+                  [
+                    7.1500997,
+                    51.2562594
+                  ],
+                  [
+                    7.1501094,
+                    51.2562606
+                  ],
+                  [
+                    7.1501176,
+                    51.256264
+                  ],
+                  [
+                    7.150123,
+                    51.2562692
+                  ],
+                  [
+                    7.150125,
+                    51.2562752
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.1503503,
+                    51.2562797
+                  ],
+                  [
+                    7.1503484,
+                    51.2562858
+                  ],
+                  [
+                    7.1503429,
+                    51.2562909
+                  ],
+                  [
+                    7.1503347,
+                    51.2562943
+                  ],
+                  [
+                    7.1503251,
+                    51.2562955
+                  ],
+                  [
+                    7.1503154,
+                    51.2562943
+                  ],
+                  [
+                    7.1503072,
+                    51.2562909
+                  ],
+                  [
+                    7.1503017,
+                    51.2562858
+                  ],
+                  [
+                    7.1502998,
+                    51.2562797
+                  ],
+                  [
+                    7.1503017,
+                    51.2562737
+                  ],
+                  [
+                    7.1503072,
+                    51.2562686
+                  ],
+                  [
+                    7.1503154,
+                    51.2562651
+                  ],
+                  [
+                    7.1503251,
+                    51.2562639
+                  ],
+                  [
+                    7.1503347,
+                    51.2562651
+                  ],
+                  [
+                    7.1503429,
+                    51.2562686
+                  ],
+                  [
+                    7.1503484,
+                    51.2562737
+                  ],
+                  [
+                    7.1503503,
+                    51.2562797
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.1494561,
+                    51.2561203
+                  ],
+                  [
+                    7.1494542,
+                    51.2561264
+                  ],
+                  [
+                    7.1494487,
+                    51.2561315
+                  ],
+                  [
+                    7.1494405,
+                    51.2561349
+                  ],
+                  [
+                    7.1494309,
+                    51.2561361
+                  ],
+                  [
+                    7.1494212,
+                    51.2561349
+                  ],
+                  [
+                    7.149413,
+                    51.2561315
+                  ],
+                  [
+                    7.1494075,
+                    51.2561264
+                  ],
+                  [
+                    7.1494056,
+                    51.2561203
+                  ],
+                  [
+                    7.1494075,
+                    51.2561143
+                  ],
+                  [
+                    7.149413,
+                    51.2561091
+                  ],
+                  [
+                    7.1494212,
+                    51.2561057
+                  ],
+                  [
+                    7.1494309,
+                    51.2561045
+                  ],
+                  [
+                    7.1494405,
+                    51.2561057
+                  ],
+                  [
+                    7.1494487,
+                    51.2561091
+                  ],
+                  [
+                    7.1494542,
+                    51.2561143
+                  ],
+                  [
+                    7.1494561,
+                    51.2561203
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.1496815,
+                    51.2561249
+                  ],
+                  [
+                    7.1496796,
+                    51.2561309
+                  ],
+                  [
+                    7.1496741,
+                    51.256136
+                  ],
+                  [
+                    7.1496659,
+                    51.2561395
+                  ],
+                  [
+                    7.1496562,
+                    51.2561407
+                  ],
+                  [
+                    7.1496466,
+                    51.2561395
+                  ],
+                  [
+                    7.1496384,
+                    51.256136
+                  ],
+                  [
+                    7.1496329,
+                    51.2561309
+                  ],
+                  [
+                    7.149631,
+                    51.2561249
+                  ],
+                  [
+                    7.1496329,
+                    51.2561188
+                  ],
+                  [
+                    7.1496384,
+                    51.2561137
+                  ],
+                  [
+                    7.1496466,
+                    51.2561103
+                  ],
+                  [
+                    7.1496562,
+                    51.2561091
+                  ],
+                  [
+                    7.1496659,
+                    51.2561103
+                  ],
+                  [
+                    7.1496741,
+                    51.2561137
+                  ],
+                  [
+                    7.1496796,
+                    51.2561188
+                  ],
+                  [
+                    7.1496815,
+                    51.2561249
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.1499069,
+                    51.2561294
+                  ],
+                  [
+                    7.1499049,
+                    51.2561354
+                  ],
+                  [
+                    7.1498995,
+                    51.2561406
+                  ],
+                  [
+                    7.1498913,
+                    51.256144
+                  ],
+                  [
+                    7.1498816,
+                    51.2561452
+                  ],
+                  [
+                    7.1498719,
+                    51.256144
+                  ],
+                  [
+                    7.1498637,
+                    51.2561406
+                  ],
+                  [
+                    7.1498583,
+                    51.2561354
+                  ],
+                  [
+                    7.1498564,
+                    51.2561294
+                  ],
+                  [
+                    7.1498583,
+                    51.2561233
+                  ],
+                  [
+                    7.1498637,
+                    51.2561182
+                  ],
+                  [
+                    7.1498719,
+                    51.2561148
+                  ],
+                  [
+                    7.1498816,
+                    51.2561136
+                  ],
+                  [
+                    7.1498913,
+                    51.2561148
+                  ],
+                  [
+                    7.1498995,
+                    51.2561182
+                  ],
+                  [
+                    7.1499049,
+                    51.2561233
+                  ],
+                  [
+                    7.1499069,
+                    51.2561294
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "kind": "baum",
+              "titel": "Baum"
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    7.1501322,
+                    51.2561339
+                  ],
+                  [
+                    7.1501303,
+                    51.25614
+                  ],
+                  [
+                    7.1501248,
+                    51.2561451
+                  ],
+                  [
+                    7.1501166,
+                    51.2561485
+                  ],
+                  [
+                    7.150107,
+                    51.2561497
+                  ],
+                  [
+                    7.1500973,
+                    51.2561485
+                  ],
+                  [
+                    7.1500891,
+                    51.2561451
+                  ],
+                  [
+                    7.1500836,
+                    51.25614
+                  ],
+                  [
+                    7.1500817,
+                    51.2561339
+                  ],
+                  [
+                    7.1500836,
+                    51.2561279
+                  ],
+                  [
+                    7.1500891,
+                    51.2561228
+                  ],
+                  [
+                    7.1500973,
+                    51.2561193
+                  ],
+                  [
+                    7.150107,
+                    51.2561181
+                  ],
+                  [
+                    7.1501166,
+                    51.2561193
+                  ],
+                  [
+                    7.1501248,
+                    51.2561228
+                  ],
+                  [
+                    7.1501303,
+                    51.2561279
+                  ],
+                  [
+                    7.1501322,
+                    51.2561339
+                  ]
+                ]
+              ]
+            }
+          }
+        ],
+        "stats": {
+          "haeuser": 2,
+          "einheiten": 5,
+          "baeume": 8,
+          "stellplaetze": 90,
+          "winkel_grad": 1.8,
+          "modul": 1.26
+        }
+      }
+    }
+  },
+  "layers": [
+    {
+      "id": "entwurf-gruen",
+      "type": "fill",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "gruen"
+      ],
+      "paint": {
+        "fill-color": "#a9bd88"
+      }
+    },
+    {
+      "id": "entwurf-hecke",
+      "type": "line",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "gruen"
+      ],
+      "layout": {
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#5d7430",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          14,
+          1.5,
+          20,
+          5
+        ]
+      }
+    },
+    {
+      "id": "entwurf-strasse",
+      "type": "fill",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "strasse"
+      ],
+      "paint": {
+        "fill-color": "#d8d8d8"
+      }
+    },
+    {
+      "id": "entwurf-parken",
+      "type": "fill",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "parken"
+      ],
+      "paint": {
+        "fill-color": "#ececec"
+      }
+    },
+    {
+      "id": "entwurf-parken-braun",
+      "type": "fill",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "parken_braun"
+      ],
+      "paint": {
+        "fill-color": "#a8795a",
+        "fill-outline-color": "#5b3d2a"
+      }
+    },
+    {
+      "id": "entwurf-stellplatz-linie",
+      "type": "line",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "stellplatz_linie"
+      ],
+      "paint": {
+        "line-color": "#8d8d8d",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          14,
+          0.3,
+          20,
+          1.2
+        ]
+      }
+    },
+    {
+      "id": "entwurf-haus",
+      "type": "fill",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "haus"
+      ],
+      "paint": {
+        "fill-color": "#ffffff"
+      }
+    },
+    {
+      "id": "entwurf-haus-rand",
+      "type": "line",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "haus"
+      ],
+      "paint": {
+        "line-color": "#1c1c1c",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          14,
+          0.6,
+          20,
+          2
+        ]
+      }
+    },
+    {
+      "id": "entwurf-haus-teilung",
+      "type": "line",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "haus_teilung"
+      ],
+      "paint": {
+        "line-color": "#1c1c1c",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          14,
+          0.4,
+          20,
+          1.4
+        ]
+      }
+    },
+    {
+      "id": "entwurf-baum",
+      "type": "fill",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "baum"
+      ],
+      "paint": {
+        "fill-color": "#86ab62",
+        "fill-outline-color": "#41602b"
+      }
+    },
+    {
+      "id": "entwurf-baum-rand",
+      "type": "line",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "baum"
+      ],
+      "paint": {
+        "line-color": "#41602b",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          14,
+          0.4,
+          20,
+          1.5
+        ]
+      }
+    },
+    {
+      "id": "entwurf-strassenname",
+      "type": "symbol",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "strassenachse"
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": [
+          "get",
+          "text"
+        ],
+        "text-font": [
+          "Open Sans Semibold"
+        ],
+        "text-size": 11,
+        "text-letter-spacing": 0.05
+      },
+      "paint": {
+        "text-color": "#222222"
+      },
+      "minzoom": 17
+    },
+    {
+      "id": "entwurf-hausnummer",
+      "type": "symbol",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "beschriftung"
+      ],
+      "layout": {
+        "text-field": [
+          "get",
+          "text"
+        ],
+        "text-font": [
+          "Open Sans Semibold"
+        ],
+        "text-size": 11,
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-color": "#111111",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1
+      },
+      "minzoom": 17.5
+    }
+  ]
+}
