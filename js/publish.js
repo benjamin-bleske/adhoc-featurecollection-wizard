@@ -2,7 +2,7 @@
 //   Planungsphase 0: Planungsrecht   (FNP, Regionalplan, LEP, B-Plan, Landschaft/Naturschutz)
 //   Planungsphase 0: Fachkonzepte    (Bodenfunktion, dezentrale Wärmeversorgung, Stadtbaumkonzept)
 //   Planungsphase 1: Ready2Use       (Geltungsbereich: gleiche Geometrie wie der Projektbereich, schwarz gestrichelt)
-//   Planungsphase 1: Ready2hack      (zwei Punkte TwinFlow 101/103 relativ zu Ready2Use, per Filter-Button schaltbar)
+//   Planungsphase 1: Ready2hack      (TwinFlow 101 bis 106 nach festen Abstandsregeln relativ zu Ready2Use, per Filter-Button schaltbar, mit Datenblatt)
 //   Planungsphase 1: Entwurf         (Bebauungsentwurf, aus der Geometrie von Ready2Use berechnet, siehe js/entwurf.js)
 // Weil alles aus derselben FeatureCollection entsteht und in einem Commit landet, sind die Styles immer synchron:
 // ein neuer Bereich ersetzt alle fünf gemeinsam.
@@ -16,9 +16,14 @@ const Publish = (() => {
     entwurf: 'published/planungsphase-1-entwurf.json',
     projektbereich: 'published/projektbereich.geojson',
     entwurfgeo: 'published/entwurf.geojson',
+    datenblatt: 'published/twinflow-datenblatt.html',
+    ressorts: 'published/twinflow-ressorts.json',
   };
   const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack', entwurf: 'Planungsphase 1: Entwurf' };
   // fester Text in der Infobox von Ready2Use
+  const PAGES = `https://${CFG.owner}.github.io/${CFG.repo}/`; // GitHub Pages: liefert HTML (raw.githubusercontent.com liefert nur Text)
+  // true, sobald die Komponente twinFlowSIM in carma ausgeliefert ist (docs/carma-datenblatt/): Info-Symbol öffnet dann das Datenblatt im Geoportal-Fenster
+  const USE_SIM = false;
   const READY2USE_TEXT = 'Der TwinFlow Umlauf wurde am 24. November 2026 von Benjamin Bleske gestartet.';
   // frühere Dateinamen: werden beim Publishen entfernt (Planungsphase 0 steht dauerhaft im Tag planungsphase-0)
   const LEGACY = ['published/style.json', 'published/planungsrecht.json', 'published/fachkonzepte.json', 'published/geltungsbereich.json'];
@@ -105,18 +110,20 @@ const Publish = (() => {
     };
   }
 
-  // zwei Punkte relativ zum Geltungsbereich (Ready2Use): Mitte der Ausdehnung und, auf gleicher Höhe, 20 % der Ost-West-Ausdehnung weiter östlich
-  const TWINFLOW = [
-    { name: 'TwinFlow 101', color: '#e8590c', text: 'Mitte des Geltungsbereichs' },
-    { name: 'TwinFlow 103', color: '#0b6bcb', text: 'auf gleicher Höhe, 20 % der Ausdehnung östlich der Mitte' },
-  ];
+  // TwinFlows relativ zum Geltungsbereich (Ready2Use) nach festen Abstandsregeln (siehe js/ressorts.js):
+  // Ausgangspunkt ist die Mitte der Ausdehnung; dx/dy sind Anteile der Ost-West-Breite bzw. Nord-Süd-Höhe (Schritt 20 %).
+  //   101 Mitte · 102 20 % westlich · 103 20 % östlich · 104 20 % nördlich · 105 20 % südlich · 106 40 % östlich
   function twinflowPoints(bounds) {
     const [x0, y0] = Fachdaten.merc([bounds[0], bounds[1]]), [x1, y1] = Fachdaten.merc([bounds[2], bounds[3]]);
-    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, dx = 0.2 * (x1 - x0);
-    return [[cx, cy], [cx + dx, cy]].map((m, i) => ({
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, w = x1 - x0, h = y1 - y0;
+    return Ressorts.LISTE.map(r => ({
       type: 'Feature',
-      properties: { name: TWINFLOW[i].name, info_title: TWINFLOW[i].name, info_text: `Planungsphase 1: Ready2hack\nLage: ${TWINFLOW[i].text}` },
-      geometry: { type: 'Point', coordinates: Fachdaten.unmerc(m).map(v => +v.toFixed(7)) },
+      properties: {
+        name: r.twinflow, ressort: r.id, ressort_name: r.name, farbe: r.farbe, lage: r.regel,
+        beitrag: r.beitraege[0], datenblatt: `${PAGES}${FILES.datenblatt}#${Datenblatt.slug(r.twinflow)}`,
+        info_title: r.twinflow, info_text: `Planungsphase 1: Ready2hack\nLage: ${r.regel}`,
+      },
+      geometry: { type: 'Point', coordinates: Fachdaten.unmerc([cx + r.dx * w, cy + r.dy * h]).map(v => +v.toFixed(7)) },
     }));
   }
 
@@ -124,8 +131,9 @@ const Publish = (() => {
   // die Punkte sind über den Filter-Button im Layer-Chip einzeln schaltbar
   function ready2hackStyle(fc, bounds, pbId) {
     const title = TITLES.ready2hack;
+    const infobox = "function createInfoBoxInfo(p){ var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; return { header: 'Planungsphase 1: Ready2hack', headerColor: p.farbe, title: p.name, subtitle: 'Ressort ' + p.ressort + ': ' + p.ressort_name, additionalInfo: '<html><b>Lage:</b> ' + e(p.lage) + '<br/><b>Beitrag:</b> ' + e(p.beitrag) + '<br/><small>Weitere Angaben im Datenblatt (Info-Symbol).</small></html>', genericLinks: [{ url: p.datenblatt, tooltip: 'Datenblatt', iconname: 'info' }]" + (USE_SIM ? ", modal: 'twinFlowSIM'" : '') + " }; }";
     const dot = c => `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='${encodeURIComponent(c)}'/%3E%3C/svg%3E`;
-    const colorMatch = ['match', ['get', 'name'], ...TWINFLOW.flatMap(t => [t.name, t.color]), '#555555'];
+    const colorMatch = ['match', ['get', 'name'], ...Ressorts.LISTE.flatMap(r => [r.twinflow, r.farbe]), '#555555'];
     return {
       version: 8, name: title,
       glyphs: 'https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf',
@@ -133,10 +141,10 @@ const Publish = (() => {
         adhoc: { projektbereich: pbId, folgt: FILES.ready2use },
         carmaConf: { ...zoomTool(bounds),
           filterConfig: { filterType: 'button', filterMode: 'or', layerPattern: 'r2h-', styles: { iconSize: '12px', selectedBorderColor: 'none' },
-            filters: TWINFLOW.map((t, i) => ({ key: 'tf' + (101 + 2 * i), label: t.name, icon: dot(t.color), propertyName: 'name', propertyValue: t.name })) },
-          layerInfo: { title, description: `Punkte TwinFlow 101 (Mitte) und TwinFlow 103 (20 % der Ausdehnung östlich) relativ zum Geltungsbereich „${TITLES.ready2use}“, Projektbereich ${pbId}.`,
+            filters: Ressorts.LISTE.map(r => ({ key: 'tf' + r.id, label: r.twinflow, icon: dot(r.farbe), propertyName: 'name', propertyValue: r.twinflow })) },
+          layerInfo: { title, description: `TwinFlows 101 bis 106 (je Ressort einer) nach festen Abstandsregeln relativ zum Geltungsbereich „${TITLES.ready2use}“, Projektbereich ${pbId}. Datenblatt über das Info-Symbol in der Infobox.`,
             links: siblings('ready2hack'),
-            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping([], {})}`] } },
+            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${infobox}`] } },
       },
       sources: { 'r2h-points': { type: 'geojson', data: { type: 'FeatureCollection', projektbereich_id: pbId, features: twinflowPoints(bounds) } } },
       layers: [
@@ -198,9 +206,8 @@ const Publish = (() => {
     return commit.sha;
   }
 
-  // Publiziert alle Styles gemeinsam. Die URLs enthalten die Commit-SHA: unveränderlich und sofort aktuell
-  // (raw.githubusercontent.com cached pro Pfad ~5 Min und ignoriert ?query).
-  async function publish(fc, token) {
+  // Alle Dateien des Publish (Pfad -> Inhalt; null = löschen), ohne Netzwerk. Vorher Fachdaten.load/analyse aufrufen (wie step-result.js).
+  function buildFiles(fc) {
     const design = Entwurf.build(fc), styles = buildStyles(fc, design), id = projektbereichId(fc);
     const files = {
       [FILES.planungsrecht]: JSON.stringify(styles.planungsrecht, null, 2),
@@ -208,13 +215,22 @@ const Publish = (() => {
       [FILES.ready2use]: JSON.stringify(styles.ready2use, null, 2),
       [FILES.ready2hack]: JSON.stringify(styles.ready2hack, null, 2),
       [FILES.entwurf]: JSON.stringify(styles.entwurf, null, 2),
-      [FILES.entwurfgeo]: JSON.stringify(design, null, 2),
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),
+      [FILES.entwurfgeo]: JSON.stringify(design, null, 2),
+      [FILES.ressorts]: JSON.stringify({ stand: Ressorts.STAND, ressorts: Ressorts.LISTE }, null, 2),
+      [FILES.datenblatt]: Datenblatt.build(twinflowPoints(extent(fc)), { id, zeilen: (fc.features[0]?.properties.info_text || '').split('\n') }),
       ...Object.fromEntries(LEGACY.map(p => [p, null])),
     };
-    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsphase 0 + 1, inkl. Entwurf) ${new Date().toISOString()}`);
+    return { id, files };
+  }
+
+  // Publiziert alle Styles gemeinsam. Die URLs enthalten die Commit-SHA: unveränderlich und sofort aktuell
+  // (raw.githubusercontent.com cached pro Pfad ~5 Min und ignoriert ?query).
+  async function publish(fc, token) {
+    const { id, files } = buildFiles(fc);
+    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsphase 0 + 1, inkl. Entwurf und Datenblatt) ${new Date().toISOString()}`);
     return { sha, id, urls: Object.fromEntries(Object.keys(FILES).map(k => [k, raw(FILES[k], sha)])) };
   }
 
-  return { publish, buildStyles, commitFiles, projektbereichId, extent, twinflowPoints, FILES, TITLES, CFG, raw };
+  return { publish, buildFiles, buildStyles, commitFiles, projektbereichId, extent, twinflowPoints, PAGES, FILES, TITLES, CFG, raw };
 })();

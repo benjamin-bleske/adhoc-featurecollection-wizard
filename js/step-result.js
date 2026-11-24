@@ -30,7 +30,7 @@ const ResultStep = (() => {
         const r = await Publish.publish(fc, tok.value);
         const names = { planungsrecht: 'Planungsphase 0: Planungsrecht', fachkonzepte: 'Planungsphase 0: Fachkonzepte', ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack', entwurf: 'Planungsphase 1: Entwurf', projektbereich: 'Projektbereich (GeoJSON)' };
         wrap.querySelector('#pubmsg').innerHTML = `Veröffentlicht in <b>einem</b> Commit (${r.sha.slice(0, 7)}), Projektbereich ${r.id}. Diese Links ins Geoportal ziehen:<ul>` +
-          Object.entries(r.urls).filter(([k]) => !['projektbereich', 'entwurfgeo'].includes(k)).map(([k, u]) => `<li>${names[k]}: <a target="_blank" rel="noopener" href="${u}">${u}</a></li>`).join('') + '</ul>';
+          Object.entries(r.urls).filter(([k]) => !['projektbereich', 'entwurfgeo', 'datenblatt', 'ressorts'].includes(k)).map(([k, u]) => `<li>${names[k]}: <a target="_blank" rel="noopener" href="${u}">${u}</a></li>`).join('') + '</ul>';
         api.status('Veröffentlicht.');
       } catch (err) { api.status('Fehler: ' + err.message); }
     };
