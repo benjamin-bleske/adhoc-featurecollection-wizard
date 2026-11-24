@@ -1,11 +1,10 @@
 // Erzeugt aus EINER FeatureCollection (Projektbereich) vier Styles und veröffentlicht sie in EINEM Git-Commit:
 //   Planungsphase 0: Planungsrecht   (FNP, Regionalplan, LEP, B-Plan, Landschaft/Naturschutz)
 //   Planungsphase 0: Fachkonzepte    (Bodenfunktion, dezentrale Wärmeversorgung, Stadtbaumkonzept)
-//   Planungsphase 1: Ready2Use       (Geltungsbereich: gleiche Geometrie wie der Projektbereich, schwarz gestrichelt)
+//   Planungsphase 1: Ready2Use       (Geltungsbereich, schwarz gestrichelt, + Bebauungsentwurf; Dropdown: "Geltungsbereich" / "Geltungsbereich und Entwurf")
 //   Planungsphase 1: Ready2hack      (TwinFlow 101 bis 106 nach festen Abstandsregeln relativ zu Ready2Use, per Filter-Button schaltbar, mit Datenblatt)
-//   Planungsphase 1: Entwurf         (Bebauungsentwurf, aus der Geometrie von Ready2Use berechnet, siehe js/entwurf.js)
 // Weil alles aus derselben FeatureCollection entsteht und in einem Commit landet, sind die Styles immer synchron:
-// ein neuer Bereich ersetzt alle fünf gemeinsam.
+// ein neuer Bereich ersetzt alle vier gemeinsam.
 const Publish = (() => {
   const CFG = { owner: 'benjamin-bleske', repo: 'adhoc-featurecollection-wizard', branch: 'main' };
   const FILES = {
@@ -13,20 +12,19 @@ const Publish = (() => {
     fachkonzepte: 'published/planungsphase-0-fachkonzepte.json',
     ready2use: 'published/planungsphase-1-ready2use.json',
     ready2hack: 'published/planungsphase-1-ready2hack.json',
-    entwurf: 'published/planungsphase-1-entwurf.json',
     projektbereich: 'published/projektbereich.geojson',
     entwurfgeo: 'published/entwurf.geojson',
     datenblatt: 'published/twinflow-datenblatt.html',
     ressorts: 'published/twinflow-ressorts.json',
   };
-  const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack', entwurf: 'Planungsphase 1: Entwurf' };
+  const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack' };
   // fester Text in der Infobox von Ready2Use
   const PAGES = `https://${CFG.owner}.github.io/${CFG.repo}/`; // GitHub Pages: liefert HTML (raw.githubusercontent.com liefert nur Text)
   // true, sobald die Komponente twinFlowSIM in carma ausgeliefert ist (docs/carma-datenblatt/): Info-Symbol öffnet dann das Datenblatt im Geoportal-Fenster
   const USE_SIM = false;
   const READY2USE_TEXT = 'Der TwinFlow Umlauf wurde am 24. November 2026 von Benjamin Bleske gestartet.';
   // frühere Dateinamen: werden beim Publishen entfernt (Planungsphase 0 steht dauerhaft im Tag planungsphase-0)
-  const LEGACY = ['published/style.json', 'published/planungsrecht.json', 'published/fachkonzepte.json', 'published/geltungsbereich.json'];
+  const LEGACY = ['published/style.json', 'published/planungsrecht.json', 'published/fachkonzepte.json', 'published/geltungsbereich.json', 'published/planungsphase-1-entwurf.json'];
   const raw = (path, ref = CFG.branch) => `https://raw.githubusercontent.com/${CFG.owner}/${CFG.repo}/${ref}/${path}`;
 
   // [west, süd, ost, nord] über alle Koordinaten der FeatureCollection
@@ -67,7 +65,7 @@ const Publish = (() => {
   const zoomTool = bounds => bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] };
   const sibling = (key, title) => ({ url: raw(FILES[key]), text: `${title} (Style)` });
   const titleOf = key => Fachdaten.GROUPS[key]?.title ?? TITLES[key];
-  const siblings = except => ['planungsrecht', 'fachkonzepte', 'ready2use', 'ready2hack', 'entwurf'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
+  const siblings = except => ['planungsrecht', 'fachkonzepte', 'ready2use', 'ready2hack'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
 
   // Style "Projektbereich: Planungsrecht" bzw. "Projektbereich: Fachkonzepte"
   function groupStyle(gid, fc, bounds, pbId) {
@@ -93,20 +91,36 @@ const Publish = (() => {
     };
   }
 
-  // Style "Planungsphase 1: Ready2Use": Geltungsbereich, Geometrie des Projektbereichs, schwarze gestrichelte Linie
-  function ready2useStyle(fc, bounds, pbId) {
-    const title = TITLES.ready2use;
+  // Infobox für Objekte des Entwurfs (Features mit `kind`); Header zeigt die gewählte Ebene
+  const ENTWURF_INFOBOX = "function createInfoBoxInfo(p){ var n = { gruen: 'Grünfläche mit Hecke', strasse: 'Privatstraße', parken: 'Stellplätze', parken_braun: 'Stellplätze (gepflastert)', haus: p.titel, baum: 'Baum', strassenachse: 'Privatstraße' }; return { header: 'Geltungsbereich und Entwurf', headerColor: '#5d7430', title: n[p.kind] || 'Entwurf', additionalInfo: p.text || '' }; }";
+
+  // Style "Planungsphase 1: Ready2Use": Geltungsbereich (Geometrie des Projektbereichs, schwarz gestrichelt) und der daraus berechnete Entwurf
+  // (js/entwurf.js). Im Dropdown des Layer-Buttons: "Geltungsbereich" (nur Umriss) oder "Geltungsbereich und Entwurf".
+  function ready2useStyle(fc, bounds, pbId, design) {
+    const title = TITLES.ready2use, st = design.stats;
+    const entLayers = Entwurf.layers('entwurf').map(l => ({ ...l, layout: { ...l.layout, visibility: 'none' } })); // Standard: nur Geltungsbereich
+    const ids = entLayers.map(l => l.id);
+    const options = [
+      { id: 'geltungsbereich', title: 'Geltungsbereich', vis_entwurf: 'none' },
+      { id: 'geltungsbereich_entwurf', title: 'Geltungsbereich und Entwurf', vis_entwurf: 'visible' },
+    ];
+    const geltung = Fachdaten.infoboxMapping([], { title: 'Geltungsbereich', intro: READY2USE_TEXT });
+    // eine Funktion für beide Objektarten: Entwurfs-Features tragen `kind`, der Geltungsbereich nicht
+    const infobox = `function createInfoBoxInfo(p){ var E = (${ENTWURF_INFOBOX}); var G = (${geltung}); return p.kind ? E(p) : G(p); }`;
+    const [fill, line] = outlineLayers('#000000');
     return {
       version: 8, name: title,
+      glyphs: 'https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf',
       metadata: {
-        adhoc: { projektbereich: pbId },
+        adhoc: { projektbereich: pbId, entwurf: st },
         carmaConf: { ...zoomTool(bounds),
-          layerInfo: { title, description: `Geltungsbereich zum Projektbereich ${pbId} (gleiche Geometrie wie der Projektbereich).`,
-            links: siblings('ready2use'),
-            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping([], { title: 'Geltungsbereich', intro: READY2USE_TEXT })}`] } },
+          dynamicStyling: [{ type: 'list', label: 'Ebene', default: 'geltungsbereich', showIcon: false, options, targets: { vis_entwurf: ids.map(id => `layers.${id}.layout.visibility`) } }],
+          layerInfo: { title, description: `Geltungsbereich zum Projektbereich ${pbId} (gleiche Geometrie wie der Projektbereich). Ebene „Geltungsbereich und Entwurf“: Bebauungsentwurf (Lageplan) mit ${st.haeuser} Reihenhaus-Zeilen (${st.einheiten} Einheiten), ${st.stellplaetze} Stellplätzen und ${st.baeume} Bäumen, berechnet aus der Geometrie (js/entwurf.js), immer synchron mit dem Geltungsbereich.`,
+            links: siblings('ready2use'), keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${infobox}`] } },
       },
-      sources: { adhoc: { type: 'geojson', data: fcFor(fc, [], pbId) } },
-      layers: outlineLayers('#000000'),
+      sources: { adhoc: { type: 'geojson', data: fcFor(fc, [], pbId) }, entwurf: { type: 'geojson', data: design } },
+      // Reihenfolge: unsichtbare Trefferfläche, Entwurf (klickbar, wenn sichtbar), Umriss oben
+      layers: [fill, ...entLayers, line],
     };
   }
 
@@ -156,33 +170,14 @@ const Publish = (() => {
     };
   }
 
-  // Style "Planungsphase 1: Entwurf": Bebauungsentwurf (Lageplan), berechnet aus der Geometrie von Ready2Use (siehe js/entwurf.js)
-  function entwurfStyle(design, bounds, pbId) {
-    const title = TITLES.entwurf, st = design.stats;
-    const infobox = "function createInfoBoxInfo(p){ var n = { gruen: 'Grünfläche mit Hecke', strasse: 'Privatstraße', parken: 'Stellplätze', parken_braun: 'Stellplätze (gepflastert)', haus: p.titel, baum: 'Baum', strassenachse: 'Privatstraße' }; return { header: 'Planungsphase 1: Entwurf', headerColor: '#5d7430', title: n[p.kind] || 'Entwurf', additionalInfo: p.text || '' }; }";
-    return {
-      version: 8, name: title,
-      glyphs: 'https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf',
-      metadata: {
-        adhoc: { projektbereich: pbId, folgt: FILES.ready2use, entwurf: st },
-        carmaConf: { ...zoomTool(bounds),
-          layerInfo: { title, description: `Bebauungsentwurf (Lageplan) zum Geltungsbereich „${TITLES.ready2use}“, Projektbereich ${pbId}: ${st.haeuser} Reihenhaus-Zeilen (${st.einheiten} Einheiten), ${st.stellplaetze} Stellplätze, ${st.baeume} Bäume. Berechnet aus der Geometrie, immer synchron mit Ready2Use.`,
-            links: siblings('entwurf'), keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${infobox}`] } },
-      },
-      sources: { entwurf: { type: 'geojson', data: design } },
-      layers: Entwurf.layers('entwurf'),
-    };
-  }
-
-  // alle fünf Styles aus derselben FeatureCollection
+  // alle vier Styles aus derselben FeatureCollection
   function buildStyles(fc, design = Entwurf.build(fc)) {
     const bounds = extent(fc), pbId = projektbereichId(fc);
     return {
       planungsrecht: groupStyle('planungsrecht', fc, bounds, pbId),
       fachkonzepte: groupStyle('fachkonzepte', fc, bounds, pbId),
-      ready2use: ready2useStyle(fc, bounds, pbId),
+      ready2use: ready2useStyle(fc, bounds, pbId, design),
       ready2hack: ready2hackStyle(fc, bounds, pbId),
-      entwurf: entwurfStyle(design, bounds, pbId),
     };
   }
 
@@ -214,7 +209,6 @@ const Publish = (() => {
       [FILES.fachkonzepte]: JSON.stringify(styles.fachkonzepte, null, 2),
       [FILES.ready2use]: JSON.stringify(styles.ready2use, null, 2),
       [FILES.ready2hack]: JSON.stringify(styles.ready2hack, null, 2),
-      [FILES.entwurf]: JSON.stringify(styles.entwurf, null, 2),
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),
       [FILES.entwurfgeo]: JSON.stringify(design, null, 2),
       [FILES.ressorts]: JSON.stringify({ stand: Ressorts.STAND, ressorts: Ressorts.LISTE }, null, 2),

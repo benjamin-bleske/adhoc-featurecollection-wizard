@@ -8,17 +8,16 @@ Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projek
 > **Planungsphase 1** (vier Styles: Planungsphase 0: Planungsrecht und Fachkonzepte, Planungsphase 1: Ready2Use und Ready2hack) ist als Git-Tag **`planungsphase-1`** gesichert und in [docs/planungsphase-1.md](docs/planungsphase-1.md) dokumentiert.
 > Dieses README beschreibt den Stand **nach** Planungsphase 0 (inklusive Planungsphase 1). Die beiden Planungsphase-0-Styles heißen jetzt „Planungsphase 0: Planungsrecht/Fachkonzepte“.
 
-## Die fünf Styles
-Aus **einer** FeatureCollection entstehen bei jedem Publishen alle fünf, in **einem Git-Commit**. Ein neuer Bereich ersetzt alle fünf gemeinsam, sie können nicht auseinanderlaufen.
+## Die vier Styles
+Aus **einer** FeatureCollection entstehen bei jedem Publishen alle vier, in **einem Git-Commit**. Ein neuer Bereich ersetzt alle vier gemeinsam, sie können nicht auseinanderlaufen.
 Sie tragen dieselbe Projektbereich-ID (`pb-…`) und verweisen in `layerInfo.links` aufeinander.
 
 | Style (Titel im Geoportal) | Datei | Inhalt |
 |---|---|---|
 | **Planungsphase 0: Planungsrecht** | `published/planungsphase-0-planungsrecht.json` | roter gestrichelter Umriss + Dropdown: FNP Hauptnutzungen, WMS Regionalplan NRW, WMS Landesentwicklungsplan NRW, B-Plan-Verfahren (rechtsverbindlich), Landschafts- und Naturschutz |
 | **Planungsphase 0: Fachkonzepte** | `published/planungsphase-0-fachkonzepte.json` | roter gestrichelter Umriss + Dropdown: Gesamtbewertung der Bodenfunktionen, Eignung dezentrale Wärmeversorgung, Stadtbaumkonzept |
-| **Planungsphase 1: Ready2Use** | `published/planungsphase-1-ready2use.json` | Geltungsbereich: gleiche Geometrie wie der Projektbereich, **schwarz** gestrichelt, ohne Fachdaten |
+| **Planungsphase 1: Ready2Use** | `published/planungsphase-1-ready2use.json` | Geltungsbereich (gleiche Geometrie wie der Projektbereich, **schwarz** gestrichelt) und der daraus berechnete **Entwurf**; Dropdown am Layer-Button: **„Geltungsbereich“** / **„Geltungsbereich und Entwurf“** |
 | **Planungsphase 1: Ready2hack** | `published/planungsphase-1-ready2hack.json` | sechs Punkte **TwinFlow 101 bis 106** (je Ressort einer), per **Filter-Button** im Layer-Chip einzeln schaltbar, mit **Datenblatt** |
-| **Planungsphase 1: Entwurf** | `published/planungsphase-1-entwurf.json` | Bebauungsentwurf (Lageplan), aus der Geometrie von Ready2Use **berechnet** |
 | (Datenblatt) | `published/twinflow-datenblatt.html`, `published/twinflow-ressorts.json` | Datenblatt zu den TwinFlows (HTML, per GitHub Pages) und seine Daten |
 | (Quelle) | `published/projektbereich.geojson`, `published/entwurf.geojson` | die gemeinsame Geometrie und die Geometrie des Entwurfs |
 
@@ -27,9 +26,9 @@ Alle haben eine Lupe (`zoomToExtent`) im Layer-Chip. Ready2Use liegt auf demselb
 ### Planungsphase 1: Ready2Use – Infobox
 Die Infobox zeigt immer den festen Satz „Der TwinFlow Umlauf wurde am 24. November 2026 von Benjamin Bleske gestartet.“ (Konstante `READY2USE_TEXT` in `js/publish.js`), darunter Gemarkung, Flur, Flurstück(e), Größe.
 
-### Planungsphase 1: Entwurf
-Ein Bebauungsentwurf im Stil eines Reihenhaus-Lageplans (grüne Flächen mit dunkler Hecke, weiße Reihenhaus-Zeilen mit Teilung der Einheiten, graue Privatstraße, Stellplatzreihen, braun gepflasterte Stellplätze, Bäume, Beschriftungen).
-Er wird in `js/entwurf.js` **rein rechnerisch** (ohne Zufall, ohne Bildmodell) aus der Geometrie von Ready2Use erzeugt und deshalb bei jedem Publishen im selben Commit mit angepasst:
+### Planungsphase 1: Ready2Use – Entwurf
+Im Style „Planungsphase 1: Ready2Use“ steckt auch der Bebauungsentwurf (zweite Ebene im Dropdown, „Geltungsbereich und Entwurf“). Ein Bebauungsentwurf im Stil eines Reihenhaus-Lageplans (grüne Flächen mit dunkler Hecke, weiße Reihenhaus-Zeilen mit Teilung der Einheiten, graue Privatstraße, Stellplatzreihen, braun gepflasterte Stellplätze, Bäume, Beschriftungen).
+Er wird in `js/entwurf.js` **rein rechnerisch** (im Browser beim Publishen, nicht auf einem Server; siehe [docs/architektur.md](docs/architektur.md)) (ohne Zufall, ohne Bildmodell) aus der Geometrie von Ready2Use erzeugt und deshalb bei jedem Publishen im selben Commit mit angepasst:
 - Hauptachse per Hauptkomponentenanalyse der Eckpunkte; das Layout liegt auf dem orientierten Rechteck der Fläche.
 - Maßstab des Entwurfs (Modul) folgt der Breite, die Zahl der Hausblöcke der Länge; alles wird auf den Geltungsbereich zugeschnitten.
 - Häuser nur, wo ein Block (5 bis 1 Einheiten) vollständig in die Fläche passt, sonst keine.

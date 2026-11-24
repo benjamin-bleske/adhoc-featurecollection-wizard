@@ -150,9 +150,9 @@ const Entwurf = (() => {
     { id: 'entwurf-baum', type: 'fill', source, filter: ['==', ['get', 'kind'], 'baum'], paint: { 'fill-color': '#86ab62', 'fill-outline-color': '#41602b' } },
     { id: 'entwurf-baum-rand', type: 'line', source, filter: ['==', ['get', 'kind'], 'baum'], paint: { 'line-color': '#41602b', 'line-width': ['interpolate', ['linear'], ['zoom'], 14, 0.4, 20, 1.5] } },
     { id: 'entwurf-strassenname', type: 'symbol', source, filter: ['==', ['get', 'kind'], 'strassenachse'],
-      layout: { 'symbol-placement': 'line', 'text-field': ['get', 'text'], 'text-font': ['Open Sans Semibold'], 'text-size': 11, 'text-letter-spacing': 0.05 }, paint: { 'text-color': '#222222' }, minzoom: 17 },
+      layout: { 'symbol-placement': 'line', 'text-field': ['get', 'text'], 'text-font': ['Open Sans Semibold'], 'text-size': 11, 'text-letter-spacing': 0.05 }, paint: { 'text-color': '#222222', 'text-opacity': ['interpolate', ['linear'], ['zoom'], 16.5, 0, 17.5, 1] } },
     { id: 'entwurf-hausnummer', type: 'symbol', source, filter: ['==', ['get', 'kind'], 'beschriftung'],
-      layout: { 'text-field': ['get', 'text'], 'text-font': ['Open Sans Semibold'], 'text-size': 11, 'text-allow-overlap': false }, paint: { 'text-color': '#111111', 'text-halo-color': '#ffffff', 'text-halo-width': 1 }, minzoom: 17.5 },
+      layout: { 'text-field': ['get', 'text'], 'text-font': ['Open Sans Semibold'], 'text-size': 11, 'text-allow-overlap': false }, paint: { 'text-color': '#111111', 'text-halo-color': '#ffffff', 'text-halo-width': 1, 'text-opacity': ['interpolate', ['linear'], ['zoom'], 17, 0, 18, 1] } },
   ];
 
   return { build, layers };
