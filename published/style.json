@@ -5,173 +5,78 @@
     "carmaConf": {
       "dynamicStyling": [
         {
-          "type": "toggle",
-          "label": "Luftbild",
-          "default": "an",
+          "type": "list",
+          "label": "Fachdaten",
+          "default": "luftbild+fnp+regionalplan",
           "showIcon": false,
           "options": [
             {
-              "id": "an",
-              "title": "Luftbild ausblenden",
-              "visibility": "visible",
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-an.svg"
+              "id": "luftbild+fnp+regionalplan",
+              "title": "Luftbild + FNP Hauptnutzungen + WMS Regionalplan NRW",
+              "vis_luftbild": "visible",
+              "vis_fnp": "visible",
+              "vis_regionalplan": "visible"
             },
             {
-              "id": "aus",
-              "title": "Luftbild einblenden",
-              "visibility": "none",
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-aus.svg",
-              "faded": true
+              "id": "luftbild",
+              "title": "Luftbild",
+              "vis_luftbild": "visible",
+              "vis_fnp": "none",
+              "vis_regionalplan": "none"
+            },
+            {
+              "id": "fnp",
+              "title": "FNP Hauptnutzungen",
+              "vis_luftbild": "none",
+              "vis_fnp": "visible",
+              "vis_regionalplan": "none"
+            },
+            {
+              "id": "regionalplan",
+              "title": "WMS Regionalplan NRW",
+              "vis_luftbild": "none",
+              "vis_fnp": "none",
+              "vis_regionalplan": "visible"
+            },
+            {
+              "id": "luftbild+fnp",
+              "title": "Luftbild + FNP Hauptnutzungen",
+              "vis_luftbild": "visible",
+              "vis_fnp": "visible",
+              "vis_regionalplan": "none"
+            },
+            {
+              "id": "luftbild+regionalplan",
+              "title": "Luftbild + WMS Regionalplan NRW",
+              "vis_luftbild": "visible",
+              "vis_fnp": "none",
+              "vis_regionalplan": "visible"
+            },
+            {
+              "id": "fnp+regionalplan",
+              "title": "FNP Hauptnutzungen + WMS Regionalplan NRW",
+              "vis_luftbild": "none",
+              "vis_fnp": "visible",
+              "vis_regionalplan": "visible"
+            },
+            {
+              "id": "keine",
+              "title": "Keine Fachdaten",
+              "vis_luftbild": "none",
+              "vis_fnp": "none",
+              "vis_regionalplan": "none"
             }
           ],
           "targets": {
-            "visibility": [
+            "vis_luftbild": [
               "layers.fd-luftbild.layout.visibility"
-            ]
-          }
-        },
-        {
-          "type": "list",
-          "label": "Luftbild: Deckkraft",
-          "default": "voll",
-          "showIcon": false,
-          "options": [
-            {
-              "id": "voll",
-              "title": "Deckkraft 100 %",
-              "opacity": 1,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-voll.svg"
-            },
-            {
-              "id": "mittel",
-              "title": "Deckkraft 60 %",
-              "opacity": 0.6,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-mittel.svg"
-            },
-            {
-              "id": "schwach",
-              "title": "Deckkraft 30 %",
-              "opacity": 0.3,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-schwach.svg"
-            }
-          ],
-          "targets": {
-            "opacity": [
-              "layers.fd-luftbild.paint.raster-opacity"
-            ]
-          }
-        },
-        {
-          "type": "toggle",
-          "label": "FNP",
-          "default": "an",
-          "showIcon": false,
-          "options": [
-            {
-              "id": "an",
-              "title": "FNP ausblenden",
-              "visibility": "visible",
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-an.svg"
-            },
-            {
-              "id": "aus",
-              "title": "FNP einblenden",
-              "visibility": "none",
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-aus.svg",
-              "faded": true
-            }
-          ],
-          "targets": {
-            "visibility": [
-              "layers.fd-fnp.layout.visibility"
-            ]
-          }
-        },
-        {
-          "type": "list",
-          "label": "FNP: Deckkraft",
-          "default": "mittel",
-          "showIcon": false,
-          "options": [
-            {
-              "id": "voll",
-              "title": "Deckkraft 100 %",
-              "opacity": 1,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-voll.svg"
-            },
-            {
-              "id": "mittel",
-              "title": "Deckkraft 60 %",
-              "opacity": 0.6,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-mittel.svg"
-            },
-            {
-              "id": "schwach",
-              "title": "Deckkraft 30 %",
-              "opacity": 0.3,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-schwach.svg"
-            }
-          ],
-          "targets": {
-            "opacity": [
-              "layers.fd-fnp.paint.raster-opacity"
-            ]
-          }
-        },
-        {
-          "type": "toggle",
-          "label": "Regionalplan",
-          "default": "an",
-          "showIcon": false,
-          "options": [
-            {
-              "id": "an",
-              "title": "Regionalplan ausblenden",
-              "visibility": "visible",
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-an.svg"
-            },
-            {
-              "id": "aus",
-              "title": "Regionalplan einblenden",
-              "visibility": "none",
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-aus.svg",
-              "faded": true
-            }
-          ],
-          "targets": {
-            "visibility": [
+            ],
+            "vis_fnp": [
+              "layers.fd-fnp-fill.layout.visibility",
+              "layers.fd-fnp-line.layout.visibility"
+            ],
+            "vis_regionalplan": [
               "layers.fd-regionalplan.layout.visibility"
-            ]
-          }
-        },
-        {
-          "type": "list",
-          "label": "Regionalplan: Deckkraft",
-          "default": "mittel",
-          "showIcon": false,
-          "options": [
-            {
-              "id": "voll",
-              "title": "Deckkraft 100 %",
-              "opacity": 1,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-voll.svg"
-            },
-            {
-              "id": "mittel",
-              "title": "Deckkraft 60 %",
-              "opacity": 0.6,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-mittel.svg"
-            },
-            {
-              "id": "schwach",
-              "title": "Deckkraft 30 %",
-              "opacity": 0.3,
-              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-schwach.svg"
-            }
-          ],
-          "targets": {
-            "opacity": [
-              "layers.fd-regionalplan.paint.raster-opacity"
             ]
           }
         }
@@ -192,7 +97,17 @@
       ],
       "layerInfo": {
         "title": "Adhoc-Projektbereich",
-        "description": "Ad-hoc FeatureCollection aus dem Wizard",
+        "description": "Ad-hoc FeatureCollection aus dem Wizard\nLuftbild: Luftbild der Stadt Wuppertal (True-Ortho 2024). (Quelle: Stadt Wuppertal, maps.wuppertal.de/karten)\nFNP Hauptnutzungen: Flächennutzungsplan der Stadt Wuppertal, Hauptnutzungen (Vektordaten). (Quelle: Stadt Wuppertal, tiles.cismet.de/hauptnutzungen)\nWMS Regionalplan NRW: Stellt Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet dar. (Quelle: Land NRW, WMS Regionalplan NRW)",
+        "links": [
+          {
+            "url": "https://tiles.cismet.de/hauptnutzungen/style.json",
+            "text": "FNP Hauptnutzungen (Style)"
+          },
+          {
+            "url": "https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&SERVICE=WMS",
+            "text": "WMS Regionalplan NRW (GetCapabilities)"
+          }
+        ],
         "keywords": [
           "adhoc",
           "carmaconf://infoBoxMapping:title: p.info_title",
@@ -202,12 +117,12 @@
     }
   },
   "sources": {
-    "fd-luftbild": {
+    "fd-luftbild-raster": {
       "type": "raster",
+      "tileSize": 256,
       "tiles": [
         "https://maps.wuppertal.de/karten?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=R102:trueortho2024&styles=&format=image/jpeg"
       ],
-      "tileSize": 256,
       "bounds": [
         7.151293,
         51.255394,
@@ -216,33 +131,34 @@
       ],
       "attribution": "Stadt Wuppertal, maps.wuppertal.de/karten"
     },
-    "fd-fnp": {
-      "type": "raster",
+    "fd-fnp-vector": {
+      "type": "vector",
+      "minzoom": 9,
+      "maxzoom": 14,
       "tiles": [
-        "https://maps.wuppertal.de/planung?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=r102_fnp_haupt_fl&styles=default&format=image/png&transparent=true"
+        "https://tiles.cismet.de/hauptnutzungen/{z}/{x}/{y}.pbf"
       ],
-      "tileSize": 256,
       "bounds": [
         7.151293,
         51.255394,
         7.15325,
         51.256148
       ],
-      "attribution": "Stadt Wuppertal, maps.wuppertal.de/planung"
+      "attribution": "Stadt Wuppertal, tiles.cismet.de/hauptnutzungen"
     },
-    "fd-regionalplan": {
+    "fd-regionalplan-raster": {
       "type": "raster",
+      "tileSize": 256,
       "tiles": [
         "https://www.wms.nrw.de/wms/wms_nw_regionalplan?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=regionalplan&styles=&format=image/png&transparent=true"
       ],
-      "tileSize": 256,
       "bounds": [
         7.151293,
         51.255394,
         7.15325,
         51.256148
       ],
-      "attribution": "Land NRW, wms.nrw.de/wms/wms_nw_regionalplan"
+      "attribution": "Land NRW, WMS Regionalplan NRW"
     },
     "adhoc": {
       "type": "geojson",
@@ -565,35 +481,65 @@
   "layers": [
     {
       "id": "fd-luftbild",
+      "source": "fd-luftbild-raster",
       "type": "raster",
-      "source": "fd-luftbild",
       "paint": {
         "raster-opacity": 1
       },
       "metadata": {
-        "fachdaten": "Luftbild (Wuppertal, True-Ortho 2024)"
+        "fachdaten": "Luftbild"
       }
     },
     {
-      "id": "fd-fnp",
-      "type": "raster",
-      "source": "fd-fnp",
+      "id": "fd-fnp-fill",
+      "source": "fd-fnp-vector",
+      "type": "fill",
+      "source-layer": "hauptnutzungen",
       "paint": {
-        "raster-opacity": 0.6
+        "fill-color": [
+          "get",
+          "farbe"
+        ],
+        "fill-opacity": 0.5
       },
       "metadata": {
-        "fachdaten": "FNP-Arbeitskarte (aktualisiert), Hauptnutzungen"
+        "fachdaten": "FNP Hauptnutzungen"
+      }
+    },
+    {
+      "id": "fd-fnp-line",
+      "source": "fd-fnp-vector",
+      "type": "line",
+      "source-layer": "hauptnutzungen",
+      "filter": [
+        "==",
+        [
+          "get",
+          "rechtswirksam"
+        ],
+        null
+      ],
+      "paint": {
+        "line-color": [
+          "get",
+          "farbe"
+        ],
+        "line-opacity": 1,
+        "line-width": 2
+      },
+      "metadata": {
+        "fachdaten": "FNP Hauptnutzungen"
       }
     },
     {
       "id": "fd-regionalplan",
+      "source": "fd-regionalplan-raster",
       "type": "raster",
-      "source": "fd-regionalplan",
       "paint": {
-        "raster-opacity": 0.6
+        "raster-opacity": 0.7
       },
       "metadata": {
-        "fachdaten": "Regionalplan (NRW)"
+        "fachdaten": "WMS Regionalplan NRW"
       }
     },
     {
