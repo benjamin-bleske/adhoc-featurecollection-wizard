@@ -14,7 +14,7 @@ const FachdatenStep = (() => {
       const txt = document.createElement('span');
       txt.innerHTML = `<b></b><br><small></small>`;
       txt.querySelector('b').textContent = c.label;
-      txt.querySelector('small').textContent = 'Quelle: ' + c.source;
+      txt.querySelector('small').textContent = `${c.description} Quelle: ${c.source}`;
       label.append(cb, txt);
       wrap.append(label);
     }

@@ -19,11 +19,15 @@ Statische Seite, kein Build:
     python3 -m http.server 8080   # dann http://localhost:8080
 
 ## Frage 2 – Fachdaten
-Optional als WMS-Kartenebenen im Style des Projektbereichs: Luftbild (Wuppertal True-Ortho 2024), FNP-Arbeitskarte (Hauptnutzungen) und Regionalplan NRW.
+Optional als Kartenebenen im Style des Projektbereichs, benannt nach dem Kartenwerk:
+- **Luftbild** (Wuppertal, True-Ortho 2024, WMS `maps.wuppertal.de/karten`)
+- **FNP Hauptnutzungen** (Vektor-Style `https://tiles.cismet.de/hauptnutzungen/style.json`)
+- **WMS Regionalplan NRW** (Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet; `https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&SERVICE=WMS`)
+
 Die Ebenen werden nur im Rechteck um den Projektbereich geladen (MapLibre kann Raster nicht an einem Polygon ausschneiden).
-Im Geoportal sind sie über `carmaConf.dynamicStyling` je Fachdatum **an/aus** schaltbar und in der **Deckkraft** (100/60/30 %) abblendbar
-(Symbole L/F/R im Layer-Chip, Icons aus `icons/` über GitHub Pages). Die erste Auswahlliste (Luftbild-Deckkraft) erscheint am Layer-Symbol vorn im Chip.
-Hinweis: Eine Auskunft in der Infobox (z. B. „FNP: Wohnbaufläche“) ist nicht umgesetzt, weil weder der FNP-WMS noch der Regionalplan-WMS abfragbar sind (`queryable=0`).
+Im Geoportal gibt es **ein Dropdown „Fachdaten“** am Layer-Symbol im Chip (`carmaConf.dynamicStyling`, Typ `list`) mit allen Kombinationen der gewählten Kartenwerke.
+Ein echter Filter-Button (wie beim Ölberg) ist nicht möglich, weil er nur Vektor-Features filtert, nicht Raster-WMS.
+Eine Auskunft in der Infobox (z. B. „FNP: Wohnbaufläche“) ist noch nicht umgesetzt; die FNP-Vector-Tiles haben dafür die Eigenschaft `nutzung`.
 
 ## Erweitern
 Neue Fragen = neues Step-Objekt `{id, title, mount, isValid, toFeatures}` in `js/wizard.js` (`STEPS`, vor `ResultStep`).

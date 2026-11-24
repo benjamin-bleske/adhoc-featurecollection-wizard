@@ -28,7 +28,7 @@ const Publish = (() => {
     const ds = Fachdaten.toDynamicStyling(fc.fachdaten);
     return {
       version: 8, name: title,
-      metadata: { carmaConf: { ...(ds.length && { dynamicStyling: ds }), ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc', ...INFOBOX_MAPPING.map(l => `carmaconf://infoBoxMapping:${l}`)] } } },
+      metadata: { carmaConf: { ...(ds.length && { dynamicStyling: ds }), ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: ['Ad-hoc FeatureCollection aus dem Wizard', ...Fachdaten.describe(fc.fachdaten)].join('\n'), ...(Fachdaten.links(fc.fachdaten).length && { links: Fachdaten.links(fc.fachdaten) }), keywords: ['adhoc', ...INFOBOX_MAPPING.map(l => `carmaconf://infoBoxMapping:${l}`)] } } },
       sources: { ...fd.sources, adhoc: { type: 'geojson', data: fc } },
       layers: [
         ...fd.layers,
