@@ -144,28 +144,17 @@ const AreaStep = (() => {
       info.append(el('p', { className: 'hint', textContent: 'Klicken Sie auf Flurstücke in der Karte, um sie zu (ab)zuwählen.' })); return;
     }
 
-    // Gruppen je Gemarkung + Flur
-    const groups = new Map();
-    for (const f of parcels) {
-      const p = f.properties, key = `${p.gemarkung}|${p.flur}`;
-      (groups.get(key) ?? groups.set(key, { gem: p.gemarkung, flur: p.flur, ps: [] }).get(key)).ps.push(p);
-    }
-    const num = x => parseInt(x, 10) || 0;
-    const und = l => l.length < 2 ? l.join('') : `${l.slice(0, -1).join(', ')} und ${l.at(-1)}`;
-    const ca = m2 => `ca. ${fmt(m2 >= 1000 ? Math.round(m2 / 100) * 100 : Math.round(m2 / 10) * 10)} m²`;
-    const sorted = [...groups.values()].sort((x, y) => x.gem.localeCompare(y.gem) || num(x.flur) - num(y.flur));
+    const sorted = Format.groups(parcels);
     for (const g of sorted) {
-      g.ps.sort((x, y) => num(x.flurstuecksnummer) - num(y.flurstuecksnummer));
-      const sum = g.ps.reduce((t, p) => t + p.flaeche_m2, 0);
       info.append(el('div', { className: 'block' },
         el('div', { textContent: `Gemarkung: ${g.gem}` }),
         el('div', { textContent: `Flur: ${g.flur}` }),
-        el('div', { textContent: `${g.ps.length > 1 ? 'Flurstücke' : 'Flurstück'} ${und(g.ps.map(p => p.flurstuecksnummer))}` }),
-        el('div', { textContent: `Größe: ${ca(sum)}` })));
+        el('div', { textContent: g.parcelsText }),
+        el('div', { textContent: `Größe: ${Format.ca(g.sum)}` })));
     }
     if (sorted.length > 1) {
       const total = parcels.reduce((t, f) => t + f.properties.flaeche_m2, 0);
-      info.append(el('div', { className: 'sum', textContent: `Gesamt: ${parcels.length} Flurstücke, Größe ${ca(total)}` }));
+      info.append(el('div', { className: 'sum', textContent: `Gesamt: ${parcels.length} Flurstücke, Größe ${Format.ca(total)}` }));
     }
     if (a.mode === 'draw' && a.drawnPartial)
       info.append(el('p', { className: 'warn', textContent: 'Der Bereich ragt aus dem Kartenausschnitt – Flurstückliste ggf. unvollständig. Bitte so zoomen, dass der ganze Bereich sichtbar ist.' }));
@@ -178,25 +167,35 @@ const AreaStep = (() => {
     return !!a && (a.mode === 'draw' ? !!a.drawn : a.parcels.length > 0);
   }
 
+  // Fertige Infobox-Texte (werden im Style per infoboxMapping angezeigt)
+  const infoFor = g => ({
+    info_title: `Gemarkung: ${g.gem}`,
+    info_subtitle: `Flur: ${g.flur}`,
+    info_text: `${g.parcelsText}\nGröße: ${Format.ca(g.sum)}`,
+  });
+
   function toFeatures(state) {
     const a = state.area;
-    const summary = parcels => parcels.map(f => ({
-      gemarkung: f.properties.gemarkung, flur: f.properties.flur,
-      flurstueck: f.properties.flurstuecksnummer, flaeche_m2: f.properties.flaeche_m2,
-    }));
     if (a.mode === 'draw') {
+      const parcels = a.drawnParcels ?? [];
+      const gs = Format.groups(parcels);
+      const area = Math.round(Geo.ringArea(a.drawn.coordinates[0]));
       return [{
         type: 'Feature', geometry: a.drawn,
         properties: {
-          role: 'projektbereich', mode: 'draw',
-          flaeche_m2: Math.round(Geo.ringArea(a.drawn.coordinates[0])),
-          flurstuecke: summary(a.drawnParcels ?? []),
+          role: 'projektbereich', mode: 'draw', flaeche_m2: area,
+          flurstuecke: parcels.map(f => ({ gemarkung: f.properties.gemarkung, flur: f.properties.flur, flurstueck: f.properties.flurstuecksnummer, flaeche_m2: f.properties.flaeche_m2 })),
+          info_title: 'Gezeichneter Projektbereich',
+          info_subtitle: `Größe: ${Format.ca(area)}`,
+          info_text: gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n'),
         },
       }];
     }
+    const byKey = new Map(Format.groups(a.parcels).map(g => [`${g.gem}|${g.flur}`, g]));
     return a.parcels.map(f => ({
       type: 'Feature', geometry: f.geometry,
-      properties: { role: 'projektbereich', mode: 'flurstueck', ...f.properties },
+      properties: { role: 'projektbereich', mode: 'flurstueck', ...f.properties,
+        ...infoFor(byKey.get(`${f.properties.gemarkung}|${f.properties.flur}`)) },
     }));
   }
 
