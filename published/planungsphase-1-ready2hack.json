@@ -95,7 +95,7 @@
         "keywords": [
           "adhoc",
           "pb-63bd9074",
-          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; return { header: 'Planungsphase 1: Ready2hack', headerColor: p.farbe, title: p.name, subtitle: 'Ressort ' + p.ressort + ': ' + p.ressort_name, additionalInfo: '<html><b>Lage:</b> ' + e(p.lage) + '<br/><b>Beitrag:</b> ' + e(p.beitrag) + '<br/><small>Weitere Angaben im Datenblatt (Info-Symbol).</small></html>', genericLinks: [{ url: p.datenblatt, tooltip: 'Datenblatt', iconname: 'info' }] }; }"
+          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; return { header: 'Planungsphase 1: Ready2hack', headerColor: p.farbe, title: p.name, subtitle: 'Ressort ' + p.ressort + ': ' + p.ressort_name, additionalInfo: '<html><b>Lage:</b> ' + e(p.lage) + '<br/><b>Beitrag:</b> ' + e(p.beitrag) + '<br/><small>Stellungnahme, Datenangebot und Diskussion im Datenblatt (Info-Symbol).</small>' + (p.bild ? '<br/><img src=\\'' + p.bild + '\\' alt=\\'Schlagloch\\' style=\\'width:100%;margin-top:6px\\'/><br/><small>' + e(p.bild_hinweis) + '</small>' : '') + '</html>', genericLinks: [{ url: p.datenblatt, tooltip: 'Datenblatt', iconname: 'info' }] }; }"
         ]
       }
     }
@@ -114,7 +114,8 @@
               "ressort": "101",
               "ressort_name": "Stadtentwicklung und Städtebau",
               "farbe": "#e8590c",
-              "lage": "Mitte der Ausdehnung des Geltungsbereichs",
+              "lage": "Mitte der Ausdehnung des Geltungsbereichs, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. 2 m)",
+              "verschoben_m": 2,
               "beitrag": "Einordnung des Vorhabens in die gesamtstädtische Stadtentwicklung und die Zentralen Versorgungsbereiche (Einzelhandel, Nahversorgung)",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-101",
               "info_title": "TwinFlow 101",
@@ -123,7 +124,7 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1493575,
+                7.149384,
                 51.256197
               ]
             }
@@ -135,7 +136,8 @@
               "ressort": "102",
               "ressort_name": "Vermessung, Katasteramt und Geodaten",
               "farbe": "#7b3fa0",
-              "lage": "20 % der Ost-West-Ausdehnung westlich der Mitte",
+              "lage": "20 % der Ost-West-Ausdehnung westlich der Mitte, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. 31 m)",
+              "verschoben_m": 31,
               "beitrag": "Amtliche Grundlagen: Flurstücke, Gebäude und tatsächliche Nutzung (ALKIS), Adressen, Straßenverzeichnis, Stadtkarten",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-102",
               "info_title": "TwinFlow 102",
@@ -144,8 +146,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1489329,
-                51.256197
+                7.1484818,
+                51.2562088
               ]
             }
           },
@@ -157,6 +159,7 @@
               "ressort_name": "Grünflächen und Forsten",
               "farbe": "#0b6bcb",
               "lage": "20 % der Ost-West-Ausdehnung östlich der Mitte",
+              "verschoben_m": 0,
               "beitrag": "Freiraum im Umfeld: Kleingartenanlagen und Grünflächen",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-103",
               "info_title": "TwinFlow 103",
@@ -177,17 +180,20 @@
               "ressort": "104",
               "ressort_name": "Straßen und Verkehr",
               "farbe": "#d4a000",
-              "lage": "20 % der Nord-Süd-Ausdehnung nördlich der Mitte",
+              "lage": "20 % der Nord-Süd-Ausdehnung nördlich der Mitte, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. 12 m)",
+              "verschoben_m": 12,
               "beitrag": "Erschließung und Verkehrsberuhigung: Tempo-30-Zonen",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-104",
+              "bild": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/img/schlagloch-104.jpg",
+              "bild_hinweis": "Illustration (simuliert), kein Foto der Örtlichkeit",
               "info_title": "TwinFlow 104",
               "info_text": "Planungsphase 1: Ready2hack\nLage: 20 % der Nord-Süd-Ausdehnung nördlich der Mitte"
             },
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1493575,
-                51.256291
+                7.1495167,
+                51.2562499
               ]
             }
           },
@@ -199,6 +205,7 @@
               "ressort_name": "Bauen und Wohnen",
               "farbe": "#c2255c",
               "lage": "20 % der Nord-Süd-Ausdehnung südlich der Mitte",
+              "verschoben_m": 0,
               "beitrag": "Denkmalschutz: Baudenkmäler und Denkmalbereichssatzungen (rechtsverbindlich und nicht rechtsverbindlich) im Umfeld",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-105",
               "info_title": "TwinFlow 105",
@@ -220,6 +227,7 @@
               "ressort_name": "Umweltschutz",
               "farbe": "#2b8a3e",
               "lage": "40 % der Ost-West-Ausdehnung östlich der Mitte (zwei Schritte von 20 %)",
+              "verschoben_m": 0,
               "beitrag": "Immissionsschutz: Luftqualität (NO2-Passivsammler, Luftmessstationen) und Umweltzonen",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-106",
               "info_title": "TwinFlow 106",

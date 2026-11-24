@@ -124,28 +124,55 @@ const Publish = (() => {
     };
   }
 
-  // TwinFlows relativ zum Geltungsbereich (Ready2Use) nach festen Abstandsregeln (siehe js/ressorts.js):
+  // Lage der TwinFlows: feste Abstandsregeln relativ zur Ausdehnung des Geltungsbereichs (siehe js/ressorts.js):
   // Ausgangspunkt ist die Mitte der Ausdehnung; dx/dy sind Anteile der Ost-West-Breite bzw. Nord-Süd-Höhe (Schritt 20 %).
   //   101 Mitte · 102 20 % westlich · 103 20 % östlich · 104 20 % nördlich · 105 20 % südlich · 106 40 % östlich
-  function twinflowPoints(bounds) {
+  // Alle Punkte müssen INNERHALB des Geltungsbereichs liegen: liegt der Sollpunkt außerhalb der Fläche (unregelmäßige Form,
+  // Löcher), wird er auf die nächstgelegene geeignete Stelle innerhalb verschoben (Mindestabstand zum Rand und zu bereits gesetzten Punkten).
+  function twinflowPoints(bounds, fc) {
     const [x0, y0] = Fachdaten.merc([bounds[0], bounds[1]]), [x1, y1] = Fachdaten.merc([bounds[2], bounds[3]]);
-    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, w = x1 - x0, h = y1 - y0;
-    return Ressorts.LISTE.map(r => ({
-      type: 'Feature',
-      properties: {
-        name: r.twinflow, ressort: r.id, ressort_name: r.name, farbe: r.farbe, lage: r.regel,
-        beitrag: r.beitraege[0], datenblatt: `${PAGES}${FILES.datenblatt}#${Datenblatt.slug(r.twinflow)}`,
-        info_title: r.twinflow, info_text: `Planungsphase 1: Ready2hack\nLage: ${r.regel}`,
-      },
-      geometry: { type: 'Point', coordinates: Fachdaten.unmerc([cx + r.dx * w, cy + r.dy * h]).map(v => +v.toFixed(7)) },
-    }));
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, w = x1 - x0, h = y1 - y0, s = 1 / Math.cos(bounds[1] * Math.PI / 180);
+    const polys = fc ? fc.features.flatMap(f => f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates).map(poly => poly.map(r => r.map(Fachdaten.merc))) : [];
+    const pip = (pt, ring) => { let ins = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) ins = !ins; } return ins; };
+    const inside = pt => polys.some(poly => pip(pt, poly[0]) && !poly.slice(1).some(r => pip(pt, r)));
+    const dEdge = pt => { let m = Infinity; for (const poly of polys) for (const ring of poly) for (let i = 0; i < ring.length - 1; i++) { const [ax, ay] = ring[i], [bx, by] = ring[i + 1], vx = bx - ax, vy = by - ay; const t = Math.max(0, Math.min(1, ((pt[0] - ax) * vx + (pt[1] - ay) * vy) / (vx * vx + vy * vy || 1))); m = Math.min(m, Math.hypot(pt[0] - ax - t * vx, pt[1] - ay - t * vy)); } return m; };
+    const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+    const ext = Math.max(w, h), margin = 0.02 * ext, minSep = 0.07 * ext;
+    // Kandidaten: Gitter über die Ausdehnung, nur Punkte innerhalb mit Randabstand
+    const cand = [];
+    if (polys.length) for (let i = 0; i <= 80; i++) for (let j = 0; j <= 80; j++) { const pt = [x0 + w * i / 80, y0 + h * j / 80]; if (inside(pt) && dEdge(pt) >= margin) cand.push(pt); }
+    const target = Ressorts.LISTE.map(r => [cx + r.dx * w, cy + r.dy * h]);
+    const placed = new Array(target.length), done = [];
+    // zuerst die Punkte, die schon innerhalb liegen (exakte Regel), dann die übrigen nach nächstem Kandidaten
+    target.forEach((t, k) => { if (!polys.length || (inside(t) && dEdge(t) >= margin && done.every(q => dist(q, t) >= minSep))) { placed[k] = t; done.push(t); } });
+    target.forEach((t, k) => {
+      if (placed[k]) return;
+      const free = cand.filter(c => done.every(q => dist(q, c) >= minSep));
+      const best = (free.length ? free : cand).reduce((a, c) => !a || dist(c, t) < dist(a, t) ? c : a, null) || t;
+      placed[k] = best; done.push(best);
+    });
+    return Ressorts.LISTE.map((r, k) => {
+      const moved = dist(placed[k], target[k]) / s;
+      return {
+        type: 'Feature',
+        properties: {
+          name: r.twinflow, ressort: r.id, ressort_name: r.name, farbe: r.farbe,
+          lage: moved > 1 ? `${r.regel}, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. ${Math.round(moved)} m)` : r.regel,
+          verschoben_m: Math.round(moved),
+          beitrag: r.beitraege[0], datenblatt: `${PAGES}${FILES.datenblatt}#${Datenblatt.slug(r.twinflow)}`,
+          ...(r.bild && { bild: `${PAGES}published/${r.bild}`, bild_hinweis: r.bild_hinweis }),
+          info_title: r.twinflow, info_text: `Planungsphase 1: Ready2hack\nLage: ${r.regel}`,
+        },
+        geometry: { type: 'Point', coordinates: Fachdaten.unmerc(placed[k]).map(v => +v.toFixed(7)) },
+      };
+    });
   }
 
   // Style "Planungsphase 1: Ready2hack": Geometrie folgt Ready2Use (gleiche FeatureCollection, gleicher Commit);
   // die Punkte sind über den Filter-Button im Layer-Chip einzeln schaltbar
   function ready2hackStyle(fc, bounds, pbId) {
     const title = TITLES.ready2hack;
-    const infobox = "function createInfoBoxInfo(p){ var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; return { header: 'Planungsphase 1: Ready2hack', headerColor: p.farbe, title: p.name, subtitle: 'Ressort ' + p.ressort + ': ' + p.ressort_name, additionalInfo: '<html><b>Lage:</b> ' + e(p.lage) + '<br/><b>Beitrag:</b> ' + e(p.beitrag) + '<br/><small>Weitere Angaben im Datenblatt (Info-Symbol).</small></html>', genericLinks: [{ url: p.datenblatt, tooltip: 'Datenblatt', iconname: 'info' }]" + (USE_SIM ? ", modal: 'twinFlowSIM'" : '') + " }; }";
+    const infobox = "function createInfoBoxInfo(p){ var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; return { header: 'Planungsphase 1: Ready2hack', headerColor: p.farbe, title: p.name, subtitle: 'Ressort ' + p.ressort + ': ' + p.ressort_name, additionalInfo: '<html><b>Lage:</b> ' + e(p.lage) + '<br/><b>Beitrag:</b> ' + e(p.beitrag) + '<br/><small>Stellungnahme, Datenangebot und Diskussion im Datenblatt (Info-Symbol).</small>' + (p.bild ? '<br/><img src=\\'' + p.bild + '\\' alt=\\'Schlagloch\\' style=\\'width:100%;margin-top:6px\\'/><br/><small>' + e(p.bild_hinweis) + '</small>' : '') + '</html>', genericLinks: [{ url: p.datenblatt, tooltip: 'Datenblatt', iconname: 'info' }]" + (USE_SIM ? ", modal: 'twinFlowSIM'" : '') + " }; }";
     const dot = c => `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='${encodeURIComponent(c)}'/%3E%3C/svg%3E`;
     const colorMatch = ['match', ['get', 'name'], ...Ressorts.LISTE.flatMap(r => [r.twinflow, r.farbe]), '#555555'];
     return {
@@ -160,7 +187,7 @@ const Publish = (() => {
             links: siblings('ready2hack'),
             keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${infobox}`] } },
       },
-      sources: { 'r2h-points': { type: 'geojson', data: { type: 'FeatureCollection', projektbereich_id: pbId, features: twinflowPoints(bounds) } } },
+      sources: { 'r2h-points': { type: 'geojson', data: { type: 'FeatureCollection', projektbereich_id: pbId, features: twinflowPoints(bounds, fc) } } },
       layers: [
         { id: 'r2h-circle', type: 'circle', source: 'r2h-points', paint: { 'circle-radius': 8, 'circle-color': colorMatch, 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2 } },
         { id: 'r2h-label', type: 'symbol', source: 'r2h-points',
@@ -212,7 +239,7 @@ const Publish = (() => {
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),
       [FILES.entwurfgeo]: JSON.stringify(design, null, 2),
       [FILES.ressorts]: JSON.stringify({ stand: Ressorts.STAND, ressorts: Ressorts.LISTE }, null, 2),
-      [FILES.datenblatt]: Datenblatt.build(twinflowPoints(extent(fc)), { id, zeilen: (fc.features[0]?.properties.info_text || '').split('\n') }),
+      [FILES.datenblatt]: Datenblatt.build(twinflowPoints(extent(fc), fc), { id, zeilen: (fc.features[0]?.properties.info_text || '').split('\n') }),
       ...Object.fromEntries(LEGACY.map(p => [p, null])),
     };
     return { id, files };

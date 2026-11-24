@@ -124,3 +124,11 @@ Das Geoportal merkt sich Layer aus früheren Sitzungen; beim Testen alte Chips e
 
 ## Erweitern
 Neue Fragen = neues Step-Objekt `{id, title, mount, isValid, toFeatures}` in `js/wizard.js` (`STEPS`, vor `ResultStep`). Neue Fachdaten = Eintrag in `CATALOG` in `js/fachdaten.js` (mit `group`) und ggf. in `VEC` in `js/alkis.js` (Auswertung für die Infobox).
+
+## Datenblatt, Stellungnahmen und Zusammenfassung der Styles
+
+- Das Datenblatt (`published/twinflow-datenblatt.html`) ist im Stil der carma-Datenblätter gestaltet und enthält je Ressort eine **simulierte Beispiel-Stellungnahme** und eine **simulierte Diskussion** (1–2 Antworten eines anderen Bereichs). Texte stehen in `js/ressorts.js` (`stellungnahme`, `diskussion`).
+- **TwinFlow 104** zeigt in Infobox und Datenblatt eine Schlagloch-Illustration (`published/img/schlagloch-104.jpg`, simuliert).
+- **TwinFlow 106** zeigt im Datenblatt die Ganglinie des Pegels Kluserbrücke (Wupperverband, FROST-API, Datastream 3000408, echte Stundenmittel 20.–27.08.2026, Schnappschuss in `js/sensordaten.js`).
+- Alle TwinFlows liegen innerhalb des Geltungsbereichs: Liegt der Sollpunkt der Abstandsregel außerhalb der Fläche, wird er auf die nächstgelegene geeignete Stelle innerhalb verschoben (Infobox/Datenblatt nennen die Verschiebung).
+- Vorschlag zur Aggregation der vier Styles: [docs/aggregation.md](docs/aggregation.md).

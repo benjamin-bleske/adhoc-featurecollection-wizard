@@ -2,6 +2,7 @@
 // Zuordnung: TwinFlow NNN gehört zum Ressort NNN (Annahme aus der Reihe TwinFlow 101 / 103).
 // Quellen (Stand 2026-11-24): Open-Data-Portal NRW (CKAN, Organisation "Wuppertal": Felder author/maintainer/publisher je Datensatz)
 // sowie die Produktnamen der Stadt auf wuppertal.de (Ressort 102). Die Datensatzlinks führen zum Open-Data-Portal.
+// "stellungnahme" und "diskussion" sind generische, simulierte Beispieltexte (passen zu jeder Bebauung), keine Aussagen der Ämter.
 // Die Texte unter "beitraege" fassen zusammen, was die Datensätze und Leistungen der genannten Stellen für einen Planungsprozess hergeben;
 // sie sind keine amtliche Aufgabenbeschreibung.
 const Ressorts = (() => {
@@ -48,7 +49,26 @@ const Ressorts = (() => {
     ]
    }
   ],
-  "twinflow": "TwinFlow 101"
+  "twinflow": "TwinFlow 101",
+  "stellungnahme": {
+   "titel": "Einordnung in die Stadtentwicklung",
+   "text": "Das Vorhaben ist in das gesamtstädtische Stadtentwicklungsgefüge einzuordnen. Zu prüfen sind die Lage zu den Zentralen Versorgungsbereichen (2020) sowie die Wirkung auf Nahversorgung und Einzelhandel. Der Gebäude- und Wohnungsbestand dient als Bedarfsgrundlage; Dichte, Wohnungsmix und Gebietscharakter sollen sich am Umfeld orientieren.",
+   "hinweise": [
+    "Zentrale Versorgungsbereiche beachten: zentrenrelevanter Einzelhandel gehört in die Zentren",
+    "Bedarf anhand der Bestandsstatistik zu Gebäuden und Wohnungen nachweisen",
+    "Bei überörtlicher Wirkung frühzeitig die regionale Abstimmung suchen"
+   ]
+  },
+  "diskussion": [
+   {
+    "von": "105",
+    "text": "Wir sehen die Einordnung positiv. Beim Wohnungsmix bitten wir um frühe Abstimmung zu Barrierefreiheit und Denkmalumfeld."
+   },
+   {
+    "von": "101",
+    "text": "Gern. Wir legen den Wohnungsmix in der nächsten Abstimmung offen und nehmen den Denkmalumfeld-Hinweis auf."
+   }
+  ]
  },
  {
   "id": "102",
@@ -296,7 +316,27 @@ const Ressorts = (() => {
     "hinweis": "Herausgeber Geobasis NRW"
    }
   ],
-  "twinflow": "TwinFlow 102"
+  "twinflow": "TwinFlow 102",
+  "stellungnahme": {
+   "titel": "Kataster, Vermessung und Planungsrecht",
+   "text": "Vor Planungsbeginn sind Flurstücksgrenzen, Gebäudebestand und tatsächliche Nutzung aus dem Liegenschaftskataster (ALKIS) zu prüfen. Für den Bauantrag wird ein Amtlicher Lageplan benötigt; Teilungen und Zusammenlegungen sind als Fortführungsvermessung rechtzeitig zu beantragen. Das geltende Planungsrecht (Bebauungsplan, Flächennutzungsplan, Satzungen) ist über die Auszüge Planungsrecht zu klären, Baulasten und Dienstbarkeiten über das Baulastenverzeichnis.",
+   "hinweise": [
+    "Amtlichen Lageplan und Fortführungsvermessungen frühzeitig beauftragen",
+    "Auszug Planungsrecht und Baulastenverzeichnis vor der Entwurfsplanung einholen",
+    "Nach Fertigstellung ist die Gebäudeeinmessung erforderlich",
+    "Geodaten (ALKIS, Höhenlinien, Stadtkarten) über das Geodatenzentrum beziehen"
+   ]
+  },
+  "diskussion": [
+   {
+    "von": "105",
+    "text": "Ist die Gebäudeeinmessung nach Fertigstellung als Hinweis in der Baugenehmigung verankert?"
+   },
+   {
+    "von": "102",
+    "text": "Ja, die Meldung kommt von der Bauordnung. Bitte den Fertigstellungstermin zeitnah weitergeben, damit wir die Einmessung einplanen."
+   }
+  ]
  },
  {
   "id": "103",
@@ -351,7 +391,26 @@ const Ressorts = (() => {
     "hinweis": "Herausgeber EFTAS, über Geodaten bereitgestellt"
    }
   ],
-  "twinflow": "TwinFlow 103"
+  "twinflow": "TwinFlow 103",
+  "stellungnahme": {
+   "titel": "Freiraum und Baumbestand",
+   "text": "Der vorhandene Baumbestand (Stammpositionen und Kronen) ist zu erfassen und im Entwurf zu berücksichtigen; Erhalt hat Vorrang, Ersatzpflanzungen sind einzuplanen. Im Umfeld liegende Kleingartenanlagen und Grünflächen sind bei Erschließung und Baustellenlogistik zu schonen. Grünstreifen und Hecken im Entwurf sollen standortgerecht bepflanzt werden.",
+   "hinweise": [
+    "Baumbestand aufnehmen, Wurzel- und Kronenbereiche schützen",
+    "Ersatzpflanzungen mit Pflanzliste und Standortansprüchen abstimmen",
+    "Kleingartenanlagen und Grünflächen im Umfeld während der Bauzeit schonen"
+   ]
+  },
+  "diskussion": [
+   {
+    "von": "104",
+    "text": "Die Bäume entlang der Stellplätze bitte mit uns auf Leitungen und Sichtdreiecke abstimmen."
+   },
+   {
+    "von": "103",
+    "text": "Einverstanden. Wir liefern eine Pflanzliste mit Standortansprüchen und passen Standorte bei Konflikten an."
+   }
+  ]
  },
  {
   "id": "104",
@@ -510,7 +569,29 @@ const Ressorts = (() => {
     ]
    }
   ],
-  "twinflow": "TwinFlow 104"
+  "twinflow": "TwinFlow 104",
+  "stellungnahme": {
+   "titel": "Erschließung, Parken und Verkehr",
+   "text": "Die Erschließung ist an das öffentliche Straßennetz anzubinden; im Umfeld gelten Tempo-30-Zonen. Das Stellplatzkonzept ist mit den Bewohnerparkzonen und City-Parkzonen abzustimmen, Radabstellanlagen und die ÖPNV-Anbindung (Park and Ride, Bike and Ride, Nahverkehrsplan) sind einzubeziehen. Die vorhandene Straßenbeleuchtung ist zu berücksichtigen. Bei der Bestandsaufnahme der Erschließungsstraße wurden Fahrbahnschäden festgestellt (siehe Illustration, Schlagloch): Die Instandsetzung ist vor Baubeginn zu klären, der Zustand vor dem Baustellenverkehr per Beweissicherung zu dokumentieren.",
+   "hinweise": [
+    "Stellplatznachweis mit Bewohnerparkzonen und City-Parkzonen abstimmen",
+    "Radabstellanlagen und ÖPNV-Anbindung (P+R, B+R, Nahverkehrsplan) nachweisen",
+    "Straßenbeleuchtung im Bestand beachten",
+    "Fahrbahnschäden (Schlagloch) vor Baubeginn instand setzen, Zustand per Beweissicherung dokumentieren"
+   ]
+  },
+  "diskussion": [
+   {
+    "von": "106",
+    "text": "Beim Baustellenverkehr bitte Umweltzone und NO2-Belastung im Blick behalten. Routen so wählen, dass Belastungsschwerpunkte nicht zusätzlich getroffen werden."
+   },
+   {
+    "von": "104",
+    "text": "Die Routen legen wir im Verkehrskonzept fest und stimmen sie mit euch ab. Die Instandsetzung des Schlaglochs setzen wir vor Baubeginn an."
+   }
+  ],
+  "bild": "img/schlagloch-104.jpg",
+  "bild_hinweis": "Illustration (simuliert), kein Foto der Örtlichkeit"
  },
  {
   "id": "105",
@@ -568,7 +649,26 @@ const Ressorts = (() => {
     ]
    }
   ],
-  "twinflow": "TwinFlow 105"
+  "twinflow": "TwinFlow 105",
+  "stellungnahme": {
+   "titel": "Bauordnung und Denkmalschutz",
+   "text": "Das Vorhaben bedarf der Baugenehmigung; die Bauvorlagen sind vollständig einzureichen. Im Umfeld sind Baudenkmäler und Denkmalbereichssatzungen (rechtsverbindlich und nicht rechtsverbindlich) auf Umgebungsschutz zu prüfen; Erhaltungs- und Gestaltungssatzungen können Anforderungen an die Gestaltung stellen. Nach Fertigstellung meldet die Bauordnungsbehörde die Gebäudedaten an Ressort 102 zur Gebäudeeinmessung.",
+   "hinweise": [
+    "Bauvorlagen vollständig und rechtzeitig einreichen",
+    "Baudenkmäler und Denkmalbereichssatzungen im Umfeld prüfen (Umgebungsschutz)",
+    "Gestaltungsanforderungen aus Erhaltungs- und Gestaltungssatzungen beachten"
+   ]
+  },
+  "diskussion": [
+   {
+    "von": "101",
+    "text": "Bitte den Denkmalbereich frühzeitig klären, das beeinflusst die zulässige Dichte."
+   },
+   {
+    "von": "105",
+    "text": "Wir prüfen den Umgebungsschutz, sobald die Entwurfsplanung vorliegt, und melden uns mit Auflagen."
+   }
+  ]
  },
  {
   "id": "106",
@@ -702,7 +802,28 @@ const Ressorts = (() => {
     "hinweis": "thematisch nah, anderer Herausgeber"
    }
   ],
-  "twinflow": "TwinFlow 106"
+  "twinflow": "TwinFlow 106",
+  "stellungnahme": {
+   "titel": "Immissionsschutz, Naturschutz und Hochwasser",
+   "text": "Die Luftqualität im Umfeld ist anhand der NO2-Messungen (Passivsammler) und der Umweltzone zu bewerten; Baustellenverkehr darf Belastungsschwerpunkte nicht zusätzlich verschärfen. Landschaftspläne sowie Landschafts- und Naturschutzgebiete sind auf Betroffenheit zu prüfen. Zum Wasserhaushalt: Der nahe Pegel Kluserbrücke (Wupperverband) stieg am 22.08.2026 binnen weniger Stunden von rund 18 cm auf 58,5 cm (siehe Grafik). Das zeigt, wie schnell das Einzugsgebiet auf Starkregen reagiert. Hochwassergefahrenkarte und Starkregensimulation sind auszuwerten, ein Entwässerungs- und Rückhaltekonzept ist nachzuweisen, zusätzliche Abflussspitzen sind zu vermeiden (z. B. Dachbegrünung, Versickerung).",
+   "hinweise": [
+    "NO2-Belastung und Umweltzone bei Verkehrs- und Baustellenplanung beachten",
+    "Betroffenheit von Landschaftsplan und Schutzgebieten prüfen",
+    "Hochwassergefahrenkarte und Starkregensimulation auswerten",
+    "Entwässerungs- und Rückhaltekonzept nachweisen, Gründach- und Solarkataster nutzen"
+   ]
+  },
+  "diskussion": [
+   {
+    "von": "102",
+    "text": "Hochwassergefahrenkarte, Starkregensimulation und Höhenlinien 2020 liefern wir im Geoportal. Für die Fließwegbetrachtung sind die Höhenlinien nützlich."
+   },
+   {
+    "von": "106",
+    "text": "Danke. Im Bauantrag brauchen wir die Entwässerungsplanung mit Rückhaltevolumen und den Nachweis zur Regenwasserbewirtschaftung."
+   }
+  ],
+  "grafik": "sensor"
  }
 ];
   // Lage der TwinFlows relativ zur Ausdehnung des Geltungsbereichs: dx = Anteil der Ost-West-Breite (+ östlich), dy = Anteil der Nord-Süd-Höhe (+ nördlich)
