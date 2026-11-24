@@ -39,17 +39,45 @@
             "propertyValue": "TwinFlow 101"
           },
           {
+            "key": "tf102",
+            "label": "TwinFlow 102",
+            "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='%237b3fa0'/%3E%3C/svg%3E",
+            "propertyName": "name",
+            "propertyValue": "TwinFlow 102"
+          },
+          {
             "key": "tf103",
             "label": "TwinFlow 103",
             "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='%230b6bcb'/%3E%3C/svg%3E",
             "propertyName": "name",
             "propertyValue": "TwinFlow 103"
+          },
+          {
+            "key": "tf104",
+            "label": "TwinFlow 104",
+            "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='%23d4a000'/%3E%3C/svg%3E",
+            "propertyName": "name",
+            "propertyValue": "TwinFlow 104"
+          },
+          {
+            "key": "tf105",
+            "label": "TwinFlow 105",
+            "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='%23c2255c'/%3E%3C/svg%3E",
+            "propertyName": "name",
+            "propertyValue": "TwinFlow 105"
+          },
+          {
+            "key": "tf106",
+            "label": "TwinFlow 106",
+            "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='%232b8a3e'/%3E%3C/svg%3E",
+            "propertyName": "name",
+            "propertyValue": "TwinFlow 106"
           }
         ]
       },
       "layerInfo": {
         "title": "Planungsphase 1: Ready2hack",
-        "description": "Punkte TwinFlow 101 (Mitte) und TwinFlow 103 (20 % der Ausdehnung östlich) relativ zum Geltungsbereich „Planungsphase 1: Ready2Use“, Projektbereich pb-63bd9074.",
+        "description": "TwinFlows 101 bis 106 (je Ressort einer) nach festen Abstandsregeln relativ zum Geltungsbereich „Planungsphase 1: Ready2Use“, Projektbereich pb-63bd9074. Datenblatt über das Info-Symbol in der Infobox.",
         "links": [
           {
             "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
@@ -71,7 +99,7 @@
         "keywords": [
           "adhoc",
           "pb-63bd9074",
-          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var M = {  }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = (p.info_text || '').split('\\n').filter(function (l) { return l; }).map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + \"\" + t + \"\" + '</html>' }; }"
+          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; return { header: 'Planungsphase 1: Ready2hack', headerColor: p.farbe, title: p.name, subtitle: 'Ressort ' + p.ressort + ': ' + p.ressort_name, additionalInfo: '<html><b>Lage:</b> ' + e(p.lage) + '<br/><b>Beitrag:</b> ' + e(p.beitrag) + '<br/><small>Weitere Angaben im Datenblatt (Info-Symbol).</small></html>', genericLinks: [{ url: p.datenblatt, tooltip: 'Datenblatt', iconname: 'info' }] }; }"
         ]
       }
     }
@@ -87,8 +115,14 @@
             "type": "Feature",
             "properties": {
               "name": "TwinFlow 101",
+              "ressort": "101",
+              "ressort_name": "Stadtentwicklung und Städtebau",
+              "farbe": "#e8590c",
+              "lage": "Mitte der Ausdehnung des Geltungsbereichs",
+              "beitrag": "Einordnung des Vorhabens in die gesamtstädtische Stadtentwicklung und die Zentralen Versorgungsbereiche (Einzelhandel, Nahversorgung)",
+              "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-101",
               "info_title": "TwinFlow 101",
-              "info_text": "Planungsphase 1: Ready2hack\nLage: Mitte des Geltungsbereichs"
+              "info_text": "Planungsphase 1: Ready2hack\nLage: Mitte der Ausdehnung des Geltungsbereichs"
             },
             "geometry": {
               "type": "Point",
@@ -101,14 +135,104 @@
           {
             "type": "Feature",
             "properties": {
+              "name": "TwinFlow 102",
+              "ressort": "102",
+              "ressort_name": "Vermessung, Katasteramt und Geodaten",
+              "farbe": "#7b3fa0",
+              "lage": "20 % der Ost-West-Ausdehnung westlich der Mitte",
+              "beitrag": "Amtliche Grundlagen: Flurstücke, Gebäude und tatsächliche Nutzung (ALKIS), Adressen, Straßenverzeichnis, Stadtkarten",
+              "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-102",
+              "info_title": "TwinFlow 102",
+              "info_text": "Planungsphase 1: Ready2hack\nLage: 20 % der Ost-West-Ausdehnung westlich der Mitte"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1489329,
+                51.256197
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
               "name": "TwinFlow 103",
+              "ressort": "103",
+              "ressort_name": "Grünflächen und Forsten",
+              "farbe": "#0b6bcb",
+              "lage": "20 % der Ost-West-Ausdehnung östlich der Mitte",
+              "beitrag": "Freiraum im Umfeld: Kleingartenanlagen und Grünflächen",
+              "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-103",
               "info_title": "TwinFlow 103",
-              "info_text": "Planungsphase 1: Ready2hack\nLage: auf gleicher Höhe, 20 % der Ausdehnung östlich der Mitte"
+              "info_text": "Planungsphase 1: Ready2hack\nLage: 20 % der Ost-West-Ausdehnung östlich der Mitte"
             },
             "geometry": {
               "type": "Point",
               "coordinates": [
                 7.1497821,
+                51.256197
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "name": "TwinFlow 104",
+              "ressort": "104",
+              "ressort_name": "Straßen und Verkehr",
+              "farbe": "#d4a000",
+              "lage": "20 % der Nord-Süd-Ausdehnung nördlich der Mitte",
+              "beitrag": "Erschließung und Verkehrsberuhigung: Tempo-30-Zonen",
+              "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-104",
+              "info_title": "TwinFlow 104",
+              "info_text": "Planungsphase 1: Ready2hack\nLage: 20 % der Nord-Süd-Ausdehnung nördlich der Mitte"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1493575,
+                51.256291
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "name": "TwinFlow 105",
+              "ressort": "105",
+              "ressort_name": "Bauen und Wohnen",
+              "farbe": "#c2255c",
+              "lage": "20 % der Nord-Süd-Ausdehnung südlich der Mitte",
+              "beitrag": "Denkmalschutz: Baudenkmäler und Denkmalbereichssatzungen (rechtsverbindlich und nicht rechtsverbindlich) im Umfeld",
+              "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-105",
+              "info_title": "TwinFlow 105",
+              "info_text": "Planungsphase 1: Ready2hack\nLage: 20 % der Nord-Süd-Ausdehnung südlich der Mitte"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1493575,
+                51.256103
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "properties": {
+              "name": "TwinFlow 106",
+              "ressort": "106",
+              "ressort_name": "Umweltschutz",
+              "farbe": "#2b8a3e",
+              "lage": "40 % der Ost-West-Ausdehnung östlich der Mitte (zwei Schritte von 20 %)",
+              "beitrag": "Immissionsschutz: Luftqualität (NO2-Passivsammler, Luftmessstationen) und Umweltzonen",
+              "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-106",
+              "info_title": "TwinFlow 106",
+              "info_text": "Planungsphase 1: Ready2hack\nLage: 40 % der Ost-West-Ausdehnung östlich der Mitte (zwei Schritte von 20 %)"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                7.1502067,
                 51.256197
               ]
             }
@@ -132,8 +256,16 @@
           ],
           "TwinFlow 101",
           "#e8590c",
+          "TwinFlow 102",
+          "#7b3fa0",
           "TwinFlow 103",
           "#0b6bcb",
+          "TwinFlow 104",
+          "#d4a000",
+          "TwinFlow 105",
+          "#c2255c",
+          "TwinFlow 106",
+          "#2b8a3e",
           "#555555"
         ],
         "circle-stroke-color": "#ffffff",
