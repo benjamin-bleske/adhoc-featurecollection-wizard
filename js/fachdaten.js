@@ -6,10 +6,10 @@
 const Fachdaten = (() => {
   const caps = base => `${base}?REQUEST=GetCapabilities&SERVICE=WMS`;
 
-  // Zwei Styles im Geoportal: "Projektbereich: Planungsrecht" und "Projektbereich: Fachkonzepte"
+  // Zwei Fachdaten-Styles im Geoportal: "Planungsphase 0: Planungsrecht" und "Planungsphase 0: Fachkonzepte"
   const GROUPS = {
-    planungsrecht: { title: 'Projektbereich: Planungsrecht', file: 'published/planungsrecht.json' },
-    fachkonzepte: { title: 'Projektbereich: Fachkonzepte', file: 'published/fachkonzepte.json' },
+    planungsrecht: { title: 'Planungsphase 0: Planungsrecht', file: 'published/planungsphase-0-planungsrecht.json' },
+    fachkonzepte: { title: 'Planungsphase 0: Fachkonzepte', file: 'published/planungsphase-0-fachkonzepte.json' },
   };
 
   const CATALOG = [
@@ -195,11 +195,11 @@ const Fachdaten = (() => {
   function toDynamicStyling(ids, byEntry) {
     const sel = selected(ids).filter(c => byEntry[c.id]?.length);
     if (!sel.length) return [];
-    const opt = (id, title, on) => { const o = { id, title, vis_bbox: on.length ? 'visible' : 'none' }; for (const c of sel) o[`vis_${c.id}`] = on.includes(c) ? 'visible' : 'none'; return o; };
+    const opt = (id, title, on) => { const o = { id, title }; for (const c of sel) o[`vis_${c.id}`] = on.includes(c) ? 'visible' : 'none'; return o; };
     const options = [opt('nur', 'Nur Projektbereich', []), ...sel.map(c => opt(c.id, c.label, [c]))];
     return [{
       type: 'list', label: 'Fachdaten', default: 'nur', showIcon: false, options,
-      targets: { vis_bbox: ['layers.adhoc-bbox.layout.visibility'], ...Object.fromEntries(sel.map(c => [`vis_${c.id}`, byEntry[c.id].map(id => `layers.${id}.layout.visibility`)])) },
+      targets: { ...Object.fromEntries(sel.map(c => [`vis_${c.id}`, byEntry[c.id].map(id => `layers.${id}.layout.visibility`)])) },
     }];
   }
 
@@ -238,5 +238,5 @@ const Fachdaten = (() => {
   const describe = ids => selected(ids).map(c => `${c.label}: ${c.description} (Quelle: ${c.source})`);
   const links = ids => selected(ids).flatMap(c => [c.styleUrl && { url: c.styleUrl, text: `${c.label} (Style)` }, c.capabilities && { url: c.capabilities, text: `${c.label} (GetCapabilities)` }].filter(Boolean));
 
-  return { CATALOG, GROUPS, load, analyse, analysis, errors, abrufbereich, toStyleParts, toDynamicStyling, bboxFeature, infoboxMapping, describe, links };
+  return { merc, unmerc, CATALOG, GROUPS, load, analyse, analysis, errors, abrufbereich, toStyleParts, toDynamicStyling, bboxFeature, infoboxMapping, describe, links };
 })();

@@ -1,19 +1,22 @@
-// Erzeugt aus EINER FeatureCollection (Projektbereich) drei Styles und veröffentlicht sie in EINEM Git-Commit:
-//   published/planungsrecht.json    "Projektbereich: Planungsrecht"  (FNP, Regionalplan, LEP, B-Plan, Landschaft/Naturschutz)
-//   published/fachkonzepte.json     "Projektbereich: Fachkonzepte"   (Bodenfunktion, dezentrale Wärmeversorgung, Stadtbaumkonzept)
-//   published/geltungsbereich.json  "Geltungsbereich"                (gleiche Geometrie wie der Projektbereich, schwarz gestrichelt)
-//   published/projektbereich.geojson  die gemeinsame Geometrie
+// Erzeugt aus EINER FeatureCollection (Projektbereich) vier Styles und veröffentlicht sie in EINEM Git-Commit:
+//   Planungsphase 0: Planungsrecht   (FNP, Regionalplan, LEP, B-Plan, Landschaft/Naturschutz)
+//   Planungsphase 0: Fachkonzepte    (Bodenfunktion, dezentrale Wärmeversorgung, Stadtbaumkonzept)
+//   Planungsphase 1: Ready2Use       (Geltungsbereich: gleiche Geometrie wie der Projektbereich, schwarz gestrichelt)
+//   Planungsphase 1: Ready2hack      (zwei Punkte TwinFlow 101/103 relativ zu Ready2Use, per Filter-Button schaltbar)
 // Weil alles aus derselben FeatureCollection entsteht und in einem Commit landet, sind die Styles immer synchron:
-// ein neuer Bereich ersetzt alle drei gemeinsam.
+// ein neuer Bereich ersetzt alle vier gemeinsam.
 const Publish = (() => {
   const CFG = { owner: 'benjamin-bleske', repo: 'adhoc-featurecollection-wizard', branch: 'main' };
   const FILES = {
-    planungsrecht: 'published/planungsrecht.json',
-    fachkonzepte: 'published/fachkonzepte.json',
-    geltungsbereich: 'published/geltungsbereich.json',
+    planungsrecht: 'published/planungsphase-0-planungsrecht.json',
+    fachkonzepte: 'published/planungsphase-0-fachkonzepte.json',
+    ready2use: 'published/planungsphase-1-ready2use.json',
+    ready2hack: 'published/planungsphase-1-ready2hack.json',
     projektbereich: 'published/projektbereich.geojson',
   };
-  const LEGACY = ['published/style.json']; // Planungsphase 0 (steht dauerhaft im Tag planungsphase-0)
+  const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack' };
+  // frühere Dateinamen: werden beim Publishen entfernt (Planungsphase 0 steht dauerhaft im Tag planungsphase-0)
+  const LEGACY = ['published/style.json', 'published/planungsrecht.json', 'published/fachkonzepte.json', 'published/geltungsbereich.json'];
   const raw = (path, ref = CFG.branch) => `https://raw.githubusercontent.com/${CFG.owner}/${CFG.repo}/${ref}/${path}`;
 
   // [west, süd, ost, nord] über alle Koordinaten der FeatureCollection
@@ -53,6 +56,8 @@ const Publish = (() => {
 
   const zoomTool = bounds => bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] };
   const sibling = (key, title) => ({ url: raw(FILES[key]), text: `${title} (Style)` });
+  const titleOf = key => Fachdaten.GROUPS[key]?.title ?? TITLES[key];
+  const siblings = except => ['planungsrecht', 'fachkonzepte', 'ready2use', 'ready2hack'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
 
   // Style "Projektbereich: Planungsrecht" bzw. "Projektbereich: Fachkonzepte"
   function groupStyle(gid, fc, bounds, pbId) {
@@ -60,9 +65,7 @@ const Publish = (() => {
     const ids = (fc.fachdaten ?? []).filter(id => Fachdaten.CATALOG.find(c => c.id === id)?.group === gid);
     const fd = Fachdaten.toStyleParts(ids, bounds);
     const ds = Fachdaten.toDynamicStyling(ids, fd.byEntry);
-    const bbox = Fachdaten.bboxFeature(ids, bounds);
-    const others = Object.entries(Fachdaten.GROUPS).filter(([k]) => k !== gid).map(([k, o]) => sibling(k, o.title));
-    const links = [...Fachdaten.links(ids), ...others, sibling('geltungsbereich', 'Geltungsbereich')];
+    const links = [...Fachdaten.links(ids), ...siblings(gid)];
     const keywords = ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping(ids, { extraKey: 'info_' + gid })}`];
     return {
       version: 8, name: g.title,
@@ -70,41 +73,84 @@ const Publish = (() => {
       metadata: {
         adhoc: { projektbereich: pbId, styles: FILES },
         carmaConf: { ...(ds.length && { dynamicStyling: ds }), ...zoomTool(bounds),
-          layerInfo: { title: g.title, description: [`Projektbereich ${pbId}, gemeinsam veröffentlicht mit den Styles „Projektbereich: Planungsrecht“, „Projektbereich: Fachkonzepte“ und „Geltungsbereich“.`, ...Fachdaten.describe(ids)].join('\n'), links, keywords } },
+          layerInfo: { title: g.title, description: [`Projektbereich ${pbId}, gemeinsam veröffentlicht mit allen Planungsphase-Styles.`, ...Fachdaten.describe(ids)].join('\n'), links, keywords } },
       },
-      sources: { ...fd.sources, ...(bbox && { 'adhoc-bbox': { type: 'geojson', data: { type: 'FeatureCollection', features: [bbox] } } }), adhoc: { type: 'geojson', data: fcFor(fc, ['info_' + gid], pbId) } },
+      sources: { ...fd.sources, adhoc: { type: 'geojson', data: fcFor(fc, ['info_' + gid], pbId) } },
       layers: [
         ...fd.layers,
-        ...(bbox ? [{ id: 'adhoc-bbox', type: 'line', source: 'adhoc-bbox', layout: { visibility: 'none' }, paint: { 'line-color': '#0b6bcb', 'line-width': 1.5, 'line-dasharray': [4, 3] } }] : []),
         ...outlineLayers('#e00000'),
       ],
     };
   }
 
-  // Style "Geltungsbereich": Geometrie des Projektbereichs, schwarze gestrichelte Linie
-  function geltungsStyle(fc, bounds, pbId) {
-    const title = 'Geltungsbereich';
+  // Style "Planungsphase 1: Ready2Use": Geltungsbereich, Geometrie des Projektbereichs, schwarze gestrichelte Linie
+  function ready2useStyle(fc, bounds, pbId) {
+    const title = TITLES.ready2use;
     return {
       version: 8, name: title,
       metadata: {
         adhoc: { projektbereich: pbId },
         carmaConf: { ...zoomTool(bounds),
-          layerInfo: { title, description: `Geltungsbereich zum Projektbereich ${pbId} (gleiche Geometrie wie der Projektbereich, Planungsphase 0).`,
-            links: Object.entries(Fachdaten.GROUPS).map(([k, o]) => sibling(k, o.title)),
-            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping([], { title })}`] } },
+          layerInfo: { title, description: `Geltungsbereich zum Projektbereich ${pbId} (gleiche Geometrie wie der Projektbereich).`,
+            links: siblings('ready2use'),
+            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping([], { title: 'Geltungsbereich' })}`] } },
       },
       sources: { adhoc: { type: 'geojson', data: fcFor(fc, [], pbId) } },
       layers: outlineLayers('#000000'),
     };
   }
 
-  // alle drei Styles aus derselben FeatureCollection
+  // zwei Punkte relativ zum Geltungsbereich (Ready2Use): Mitte der Ausdehnung und, auf gleicher Höhe, 20 % der Ost-West-Ausdehnung weiter östlich
+  const TWINFLOW = [
+    { name: 'TwinFlow 101', color: '#e8590c', text: 'Mitte des Geltungsbereichs' },
+    { name: 'TwinFlow 103', color: '#0b6bcb', text: 'auf gleicher Höhe, 20 % der Ausdehnung östlich der Mitte' },
+  ];
+  function twinflowPoints(bounds) {
+    const [x0, y0] = Fachdaten.merc([bounds[0], bounds[1]]), [x1, y1] = Fachdaten.merc([bounds[2], bounds[3]]);
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, dx = 0.2 * (x1 - x0);
+    return [[cx, cy], [cx + dx, cy]].map((m, i) => ({
+      type: 'Feature',
+      properties: { name: TWINFLOW[i].name, info_title: TWINFLOW[i].name, info_text: `Planungsphase 1: Ready2hack\nLage: ${TWINFLOW[i].text}` },
+      geometry: { type: 'Point', coordinates: Fachdaten.unmerc(m).map(v => +v.toFixed(7)) },
+    }));
+  }
+
+  // Style "Planungsphase 1: Ready2hack": Geometrie folgt Ready2Use (gleiche FeatureCollection, gleicher Commit);
+  // die Punkte sind über den Filter-Button im Layer-Chip einzeln schaltbar
+  function ready2hackStyle(fc, bounds, pbId) {
+    const title = TITLES.ready2hack;
+    const dot = c => `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Ccircle cx='6' cy='6' r='5' fill='${encodeURIComponent(c)}'/%3E%3C/svg%3E`;
+    const colorMatch = ['match', ['get', 'name'], ...TWINFLOW.flatMap(t => [t.name, t.color]), '#555555'];
+    return {
+      version: 8, name: title,
+      glyphs: 'https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf',
+      metadata: {
+        adhoc: { projektbereich: pbId, folgt: FILES.ready2use },
+        carmaConf: { ...zoomTool(bounds),
+          filterConfig: { filterType: 'button', filterMode: 'or', layerPattern: 'r2h-', styles: { iconSize: '12px', selectedBorderColor: 'none' },
+            filters: TWINFLOW.map((t, i) => ({ key: 'tf' + (101 + 2 * i), label: t.name, icon: dot(t.color), propertyName: 'name', propertyValue: t.name })) },
+          layerInfo: { title, description: `Punkte TwinFlow 101 (Mitte) und TwinFlow 103 (20 % der Ausdehnung östlich) relativ zum Geltungsbereich „${TITLES.ready2use}“, Projektbereich ${pbId}.`,
+            links: siblings('ready2hack'),
+            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping([], {})}`] } },
+      },
+      sources: { 'r2h-points': { type: 'geojson', data: { type: 'FeatureCollection', projektbereich_id: pbId, features: twinflowPoints(bounds) } } },
+      layers: [
+        { id: 'r2h-circle', type: 'circle', source: 'r2h-points', paint: { 'circle-radius': 8, 'circle-color': colorMatch, 'circle-stroke-color': '#ffffff', 'circle-stroke-width': 2 } },
+        { id: 'r2h-label', type: 'symbol', source: 'r2h-points',
+          layout: { 'text-field': ['get', 'name'], 'text-font': ['Open Sans Semibold'], 'text-size': 13, 'text-anchor': 'top', 'text-offset': [0, 0.9], 'text-allow-overlap': true },
+          paint: { 'text-color': '#222222', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 } },
+      ],
+    };
+  }
+
+  // alle vier Styles aus derselben FeatureCollection
   function buildStyles(fc) {
     const bounds = extent(fc), pbId = projektbereichId(fc);
     return {
       planungsrecht: groupStyle('planungsrecht', fc, bounds, pbId),
       fachkonzepte: groupStyle('fachkonzepte', fc, bounds, pbId),
-      geltungsbereich: geltungsStyle(fc, bounds, pbId),
+      ready2use: ready2useStyle(fc, bounds, pbId),
+      ready2hack: ready2hackStyle(fc, bounds, pbId),
     };
   }
 
@@ -135,13 +181,14 @@ const Publish = (() => {
     const files = {
       [FILES.planungsrecht]: JSON.stringify(styles.planungsrecht, null, 2),
       [FILES.fachkonzepte]: JSON.stringify(styles.fachkonzepte, null, 2),
-      [FILES.geltungsbereich]: JSON.stringify(styles.geltungsbereich, null, 2),
+      [FILES.ready2use]: JSON.stringify(styles.ready2use, null, 2),
+      [FILES.ready2hack]: JSON.stringify(styles.ready2hack, null, 2),
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),
       ...Object.fromEntries(LEGACY.map(p => [p, null])),
     };
-    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsrecht, Fachkonzepte, Geltungsbereich) ${new Date().toISOString()}`);
+    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsphase 0 + 1) ${new Date().toISOString()}`);
     return { sha, id, urls: Object.fromEntries(Object.keys(FILES).map(k => [k, raw(FILES[k], sha)])) };
   }
 
-  return { publish, buildStyles, commitFiles, projektbereichId, extent, FILES, CFG, raw };
+  return { publish, buildStyles, commitFiles, projektbereichId, extent, twinflowPoints, FILES, TITLES, CFG, raw };
 })();
