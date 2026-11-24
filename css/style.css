@@ -47,3 +47,4 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .publish { display: flex; gap: 8px; } .publish input { flex: 1; font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); color: var(--fg); }
 a { color: var(--accent); }
 code { font-size: 12.5px; }
+.infobox .block { margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }

@@ -144,27 +144,28 @@ const AreaStep = (() => {
       info.append(el('p', { className: 'hint', textContent: 'Klicken Sie auf Flurstücke in der Karte, um sie zu (ab)zuwählen.' })); return;
     }
 
-    const tree = new Map();
+    // Gruppen je Gemarkung + Flur
+    const groups = new Map();
     for (const f of parcels) {
-      const p = f.properties;
-      const g = tree.get(p.gemarkung) ?? tree.set(p.gemarkung, new Map()).get(p.gemarkung);
-      (g.get(p.flur) ?? g.set(p.flur, []).get(p.flur)).push(p);
+      const p = f.properties, key = `${p.gemarkung}|${p.flur}`;
+      (groups.get(key) ?? groups.set(key, { gem: p.gemarkung, flur: p.flur, ps: [] }).get(key)).ps.push(p);
     }
-    const num = s => parseInt(s, 10) || 0;
-    for (const [gem, flure] of [...tree].sort()) {
-      info.append(el('h3', { textContent: `Gemarkung ${gem}` }));
-      for (const [flur, ps] of [...flure].sort((x, y) => num(x[0]) - num(y[0]))) {
-        ps.sort((x, y) => num(x.flurstuecksnummer) - num(y.flurstuecksnummer));
-        const sum = ps.reduce((s, p) => s + p.flaeche_m2, 0);
-        info.append(el('div', { className: 'flur' },
-          el('b', { textContent: `Flur ${flur}: ` }),
-          ps.map(p => `${p.flurstuecksnummer} (${fmt(p.flaeche_m2)} m²)`).join(', '),
-          ` – Summe ${fmt(sum)} m²`));
-      }
+    const num = x => parseInt(x, 10) || 0;
+    const und = l => l.length < 2 ? l.join('') : `${l.slice(0, -1).join(', ')} und ${l.at(-1)}`;
+    const ca = m2 => `ca. ${fmt(m2 >= 1000 ? Math.round(m2 / 100) * 100 : Math.round(m2 / 10) * 10)} m²`;
+    const sorted = [...groups.values()].sort((x, y) => x.gem.localeCompare(y.gem) || num(x.flur) - num(y.flur));
+    for (const g of sorted) {
+      g.ps.sort((x, y) => num(x.flurstuecksnummer) - num(y.flurstuecksnummer));
+      const sum = g.ps.reduce((t, p) => t + p.flaeche_m2, 0);
+      info.append(el('div', { className: 'block' },
+        el('div', { textContent: `Gemarkung: ${g.gem}` }),
+        el('div', { textContent: `Flur: ${g.flur}` }),
+        el('div', { textContent: `${g.ps.length > 1 ? 'Flurstücke' : 'Flurstück'} ${und(g.ps.map(p => p.flurstuecksnummer))}` }),
+        el('div', { textContent: `Größe: ${ca(sum)}` })));
     }
-    if (parcels.length) {
-      const total = parcels.reduce((s, f) => s + f.properties.flaeche_m2, 0);
-      info.append(el('div', { className: 'sum', textContent: `${parcels.length} Flurstück(e), ${fmt(total)} m² (amtliche Fläche)` }));
+    if (sorted.length > 1) {
+      const total = parcels.reduce((t, f) => t + f.properties.flaeche_m2, 0);
+      info.append(el('div', { className: 'sum', textContent: `Gesamt: ${parcels.length} Flurstücke, Größe ${ca(total)}` }));
     }
     if (a.mode === 'draw' && a.drawnPartial)
       info.append(el('p', { className: 'warn', textContent: 'Der Bereich ragt aus dem Kartenausschnitt – Flurstückliste ggf. unvollständig. Bitte so zoomen, dass der ganze Bereich sichtbar ist.' }));
