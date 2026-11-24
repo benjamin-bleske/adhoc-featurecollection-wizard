@@ -2,6 +2,10 @@
 
 Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` für Wuppertal erzeugt.
 
+> **Planungsphase 0** ist die Konfiguration mit **einem** Style (`published/style.json`). Sie ist als Git-Tag **`planungsphase-0`** gesichert
+> (`git checkout planungsphase-0`) und in [docs/planungsphase-0.md](docs/planungsphase-0.md) dokumentiert.
+> Style-Link Planungsphase 0 (unveränderlich): [style.json @ planungsphase-0](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/planungsphase-0/published/style.json).
+
 ## Frage 1 – Projektbereich
 - **Zeichnen**: Polygon/Rechteck in die Karte zeichnen. Die Infobox zeigt Fläche sowie die berührten Flurstücke.
 - **Flurstücke wählen**: ab Zoom 16 Klick auf ein Flurstück wählt/entfernt es (orange Hervorhebung).
