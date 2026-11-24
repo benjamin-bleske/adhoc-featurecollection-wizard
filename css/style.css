@@ -48,3 +48,4 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 a { color: var(--accent); }
 code { font-size: 12.5px; }
 .infobox .block { margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.fd-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); cursor: pointer; } .fd-item small { color: var(--muted); }

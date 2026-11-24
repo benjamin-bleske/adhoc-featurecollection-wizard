@@ -24,11 +24,14 @@ const Publish = (() => {
   function buildStyle(fc) {
     const title = 'Adhoc-Projektbereich';
     const bounds = extent(fc);
+    const fd = Fachdaten.toStyleParts(fc.fachdaten, bounds);
+    const ds = Fachdaten.toDynamicStyling(fc.fachdaten);
     return {
       version: 8, name: title,
-      metadata: { carmaConf: { ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc', ...INFOBOX_MAPPING.map(l => `carmaconf://infoBoxMapping:${l}`)] } } },
-      sources: { adhoc: { type: 'geojson', data: fc } },
+      metadata: { carmaConf: { ...(ds.length && { dynamicStyling: ds }), ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc', ...INFOBOX_MAPPING.map(l => `carmaconf://infoBoxMapping:${l}`)] } } },
+      sources: { ...fd.sources, adhoc: { type: 'geojson', data: fc } },
       layers: [
+        ...fd.layers,
         { id: 'adhoc-fill', type: 'fill', source: 'adhoc', paint: { 'fill-color': '#e8590c', 'fill-opacity': 0.35 } },
         { id: 'adhoc-line', type: 'line', source: 'adhoc', paint: { 'line-color': '#e8590c', 'line-width': 2 } },
       ],

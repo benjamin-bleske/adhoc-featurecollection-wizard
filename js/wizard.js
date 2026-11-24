@@ -1,5 +1,5 @@
 // Wizard-Gerüst. Neue Fragen = neues Step-Objekt {id,title,mount,isValid,toFeatures} in STEPS vor ResultStep.
-const STEPS = [AreaStep, ResultStep];
+const STEPS = [AreaStep, FachdatenStep, ResultStep];
 const state = {};
 let idx = 0;
 
@@ -14,6 +14,7 @@ const api = {
   buildFeatureCollection: () => ({
     type: 'FeatureCollection',
     features: STEPS.flatMap(s => s.toFeatures(state)),
+    fachdaten: state.fachdaten ?? [],
   }),
 };
 
