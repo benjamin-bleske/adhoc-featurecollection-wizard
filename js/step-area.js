@@ -1,6 +1,6 @@
 // Frage 1: Projektbereich – zeichnen ODER Flurstücke wählen
 const AreaStep = (() => {
-  const MIN_PARCEL_ZOOM = 17;
+  const MIN_ZOOM = Alkis.MIN_ZOOM;
   const WUPPERTAL = { center: [51.2562, 7.1508], bounds: [[51.16, 6.95], [51.36, 7.36]] };
   const fmt = n => n.toLocaleString('de-DE', { maximumFractionDigits: 0 });
   const el = (tag, props = {}, ...kids) => {
@@ -9,8 +9,7 @@ const AreaStep = (() => {
     return e;
   };
 
-  let map, drawLayer, viewLayer, selLayer, info, modeBtns, loadCtl;
-  const cache = new Map(); // idflurst -> Feature
+  let map, mgl, drawLayer, info, modeBtns;
 
   function mount(root, state, api) {
     state.area ??= { mode: 'draw', drawn: null, parcels: [] };
@@ -40,8 +39,14 @@ const AreaStep = (() => {
     L.rectangle(WUPPERTAL.bounds, { fill: false, weight: 0, interactive: false }).addTo(map);
 
     drawLayer = L.featureGroup().addTo(map);
-    viewLayer = L.featureGroup().addTo(map);
-    selLayer = L.featureGroup().addTo(map);
+
+    // ALKIS-Flurstücke/Gebäude als Vector Tiles (Stadt Wuppertal)
+    mgl = L.maplibreGL({ style: Alkis.STYLE, pane: 'overlayPane' }).addTo(map).getMaplibreMap();
+    Alkis.resetHighlight();
+    mgl.on('load', () => { Alkis.addHighlight(mgl); render(a, api); });
+    mgl.on('idle', () => refresh(a, api));
+    map.on('click', e => onMapClick(a, api, e));
+    map.on('zoomend', () => render(a, api));
 
     map.addControl(new L.Control.Draw({
       position: 'topleft',
@@ -61,7 +66,6 @@ const AreaStep = (() => {
     map.on(L.Draw.Event.DELETED, () => {
       if (!drawLayer.getLayers().length) { a.drawn = null; refreshDrawn(a, api); }
     });
-    map.on('moveend', () => { if (a.mode === 'select') loadViewParcels(a, api); });
 
     modeBtns.draw.onclick = () => setMode(a, 'draw', api);
     modeBtns.select.onclick = () => setMode(a, 'select', api);
@@ -70,71 +74,66 @@ const AreaStep = (() => {
     if (a.drawn) { drawLayer.addLayer(L.geoJSON(a.drawn).getLayers()[0]); }
     setMode(a, a.mode, api);
     if (a.drawn) map.fitBounds(drawLayer.getBounds().pad(0.3));
-    else if (a.parcels.length) map.fitBounds(selLayer.getBounds().pad(0.3));
+    else if (a.parcels.length) map.fitBounds(L.geoJSON(a.parcels).getBounds().pad(0.3));
   }
 
   function setMode(a, mode, api) {
     a.mode = mode;
     for (const [k, b] of Object.entries(modeBtns)) b.setAttribute('aria-pressed', String(k === mode));
     document.querySelector('.leaflet-draw').style.display = mode === 'draw' ? '' : 'none';
-    viewLayer.clearLayers();
-    if (mode === 'select') loadViewParcels(a, api);
     render(a, api);
   }
 
-  async function refreshDrawn(a, api) {
-    const ring = a.drawn?.coordinates[0];
+  function refreshDrawn(a, api) {
     a.drawnParcels = [];
+    a.drawnKey = '';
     render(a, api);
     api.changed();
-    if (!ring) return;
-    api.status('Lade Flurstücke zum gezeichneten Bereich …');
-    try {
-      const found = await Alkis.inBbox(Geo.bbox(ring), 500);
-      // Nur Flurstücke, die den gezeichneten Bereich tatsächlich berühren
-      a.drawnParcels = found.filter(f => f.geometry.coordinates.some(p => Geo.ringsIntersect(p[0], ring)));
-      a.drawnTruncated = found.length >= 500;
-      api.status('');
-    } catch (err) { api.status('Flurstücke nicht ladbar: ' + err.message); }
-    render(a, api);
+    refresh(a, api);
   }
 
-  async function loadViewParcels(a, api) {
-    loadCtl?.abort();
-    if (map.getZoom() < MIN_PARCEL_ZOOM) {
-      viewLayer.clearLayers(); api.status(`Bitte weiter hineinzoomen (ab Zoom ${MIN_PARCEL_ZOOM}), um Flurstücke zu sehen.`);
-      return;
+  // Wird bei jedem 'idle' der Karte aufgerufen: Daten aus den (nachgeladenen) Tiles auffrischen
+  function refresh(a, api) {
+    if (!mgl?.isStyleLoaded()) return;
+    let changed = false;
+    if (a.mode === 'draw' && a.drawn && map.getZoom() >= MIN_ZOOM) {
+      const ring = a.drawn.coordinates[0];
+      const parcels = Alkis.intersecting(mgl, ring, Geo);
+      const b = Geo.bbox(ring), vb = map.getBounds();
+      a.drawnPartial = !vb.contains([[b.s, b.w], [b.n, b.e]]);
+      const key = parcels.map(f => f.id).sort().join(',') + a.drawnPartial;
+      if (key !== a.drawnKey) { a.drawnKey = key; a.drawnParcels = parcels; changed = true; }
     }
-    loadCtl = new AbortController();
-    api.status('Lade Flurstücke …');
-    try {
-      const b = map.getBounds();
-      const fs = await Alkis.inBbox({ w: b.getWest(), s: b.getSouth(), e: b.getEast(), n: b.getNorth() }, 400, loadCtl.signal);
-      fs.forEach(f => cache.set(f.id, f));
-      viewLayer.clearLayers();
-      L.geoJSON(fs, {
-        style: { color: '#555', weight: 1, fillOpacity: 0.02 },
-        onEachFeature: (f, layer) => layer.on('click', () => toggleParcel(a, f, api)),
-      }).addTo(viewLayer);
-      api.status('');
-    } catch (err) { if (err.name !== 'AbortError') api.status('Flurstücke nicht ladbar: ' + err.message); }
+    if (a.mode === 'select' && map.getZoom() >= MIN_ZOOM) {
+      // unvollständige Geometrien (Tile-Rand) nachladen, sobald weitere Tiles da sind
+      a.parcels = a.parcels.map(f => {
+        if (f.properties.geometrie_vollstaendig) return f;
+        const nf = Alkis.featureFor(mgl, f._raw, f.geometry);
+        if (nf.properties.geometrie_vollstaendig) changed = true;
+        return nf.properties.geometrie_vollstaendig ? nf : f;
+      });
+    }
+    if (changed) render(a, api);
   }
 
-  function toggleParcel(a, f, api) {
-    const i = a.parcels.findIndex(p => p.id === f.id);
-    if (i >= 0) a.parcels.splice(i, 1); else a.parcels.push(f);
+  function onMapClick(a, api, e) {
+    if (a.mode !== 'select') return;
+    if (map.getZoom() < MIN_ZOOM) { api.status(`Bitte weiter hineinzoomen (ab Zoom ${MIN_ZOOM}), um Flurstücke zu wählen.`); return; }
+    // das GL-Canvas ist rundum größer als die Karte (padding) -> Klickpunkt umrechnen
+    const sz = map.getSize(), cv = mgl.getCanvas();
+    const hit = Alkis.parcelAt(mgl, { x: e.containerPoint.x + (cv.clientWidth - sz.x) / 2, y: e.containerPoint.y + (cv.clientHeight - sz.y) / 2 });
+    if (!hit) return;
+    const i = a.parcels.findIndex(p => p.id === hit.raw.fid);
+    if (i >= 0) a.parcels.splice(i, 1); else a.parcels.push(Alkis.featureFor(mgl, hit.raw, hit.geometry));
     render(a, api); api.changed();
-  }
-
-  function drawSelection(a) {
-    selLayer.clearLayers();
-    if (a.mode === 'select' && a.parcels.length)
-      L.geoJSON(a.parcels, { style: { color: '#e8590c', weight: 2, fillOpacity: 0.35 }, interactive: false }).addTo(selLayer);
   }
 
   // Infobox: Gemarkung → Flur → Flurstücke + Fläche
   function render(a, api) {
-    drawSelection(a);
+    if (mgl?.isStyleLoaded()) Alkis.setHighlight(mgl, a.mode === 'select' ? a.parcels.map(f => f.id) : []);
+    if (a.mode === 'select' && map.getZoom() < MIN_ZOOM) api.status(`Bitte weiter hineinzoomen (ab Zoom ${MIN_ZOOM}), um Flurstücke zu wählen.`);
+    else if (a.mode === 'draw' && a.drawn && map.getZoom() < MIN_ZOOM) api.status(`Für die Flurstückliste bitte weiter hineinzoomen (ab Zoom ${MIN_ZOOM}).`);
+    else api.status('');
     info.innerHTML = '';
     const parcels = a.mode === 'select' ? a.parcels : (a.drawnParcels ?? []);
 
@@ -167,8 +166,10 @@ const AreaStep = (() => {
       const total = parcels.reduce((s, f) => s + f.properties.flaeche_m2, 0);
       info.append(el('div', { className: 'sum', textContent: `${parcels.length} Flurstück(e), ${fmt(total)} m² (amtliche Fläche)` }));
     }
-    if (a.mode === 'draw' && a.drawnTruncated)
-      info.append(el('p', { className: 'warn', textContent: 'Achtung: Mehr als 500 Flurstücke – Liste unvollständig.' }));
+    if (a.mode === 'draw' && a.drawnPartial)
+      info.append(el('p', { className: 'warn', textContent: 'Der Bereich ragt aus dem Kartenausschnitt – Flurstückliste ggf. unvollständig. Bitte so zoomen, dass der ganze Bereich sichtbar ist.' }));
+    if (a.mode === 'select' && parcels.some(f => !f.properties.geometrie_vollstaendig))
+      info.append(el('p', { className: 'warn', textContent: 'Einzelne Flurstücke ragen aus dem geladenen Kartenbereich – Geometrie noch unvollständig. Kurz verschieben/herauszoomen, dann ergänzt sie sich.' }));
   }
 
   function isValid(state) {
