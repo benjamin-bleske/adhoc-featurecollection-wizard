@@ -18,16 +18,27 @@ Statische Seite, kein Build:
 
     python3 -m http.server 8080   # dann http://localhost:8080
 
-## Frage 2 – Fachdaten
-Optional als Kartenebenen im Style des Projektbereichs, benannt nach dem Kartenwerk:
-- **Luftbild** (Wuppertal, True-Ortho 2024, WMS `maps.wuppertal.de/karten`)
-- **FNP Hauptnutzungen** (Vektor-Style `https://tiles.cismet.de/hauptnutzungen/style.json`)
-- **WMS Regionalplan NRW** (Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet; `https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&SERVICE=WMS`)
+## Darstellung des Projektbereichs
+Dicke rote gestrichelte Umrisslinie wie die Begrenzung eines B-Plans, ohne sichtbare Füllung (die Fläche ist praktisch unsichtbar, damit ein Klick in den Bereich die Infobox öffnet).
 
+## Frage 2 – Fachdaten
+Optional als Kartenebenen im Style des Projektbereichs (keine Luftbilder), benannt nach dem Kartenwerk:
+- **FNP Hauptnutzungen** (Vektor-Style `https://tiles.cismet.de/hauptnutzungen/style.json`)
+- **WMS Regionalplan NRW** (`https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&SERVICE=WMS`)
+- **WMS Landesentwicklungsplan NRW** (`https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan?REQUEST=GetCapabilities&SERVICE=WMS`)
+- **B-Plan-Verfahren (rechtsverbindlich)** (`https://tiles.cismet.de/bplanverfahren/rechtsverbindlich.style.json`)
+- **Landschafts- und Naturschutz** (`https://tiles.cismet.de/landschaftsundnaturschutz/style.json`)
+- **Gesamtbewertung der Bodenfunktionen** (`https://tiles.cismet.de/bodenfunktion/style.json`)
+
+Die Vektor-Styles werden beim Publishen live von `tiles.cismet.de` geladen und in den Style eingebaut (Beschriftungs-Layer mit Sprite entfallen).
 Die Ebenen werden nur im Rechteck um den Projektbereich geladen (MapLibre kann Raster nicht an einem Polygon ausschneiden).
-Im Geoportal gibt es **ein Dropdown „Fachdaten“** am Layer-Symbol im Chip (`carmaConf.dynamicStyling`, Typ `list`) mit allen Kombinationen der gewählten Kartenwerke.
+Im Geoportal gibt es **ein Dropdown „Fachdaten“** am Layer-Symbol im Chip: Alle, jedes Kartenwerk einzeln oder keine.
 Ein echter Filter-Button (wie beim Ölberg) ist nicht möglich, weil er nur Vektor-Features filtert, nicht Raster-WMS.
-Eine Auskunft in der Infobox (z. B. „FNP: Wohnbaufläche“) ist noch nicht umgesetzt; die FNP-Vector-Tiles haben dafür die Eigenschaft `nutzung`.
+
+## Infobox im Geoportal
+Klick in den Projektbereich: Gemarkung, Flur, Flurstück(e), Größe, dazu die **FNP-Hauptnutzungen** mit Flächenanteil (aus den FNP-Vector-Tiles ermittelt)
+und die **Capabilities** (Dienst, Betreiber, Beschreibung, Link) der gewählten WMS (Regionalplan, Landesentwicklungsplan).
+Klick auf einen Fachdaten-Layer zeigt dessen eigene Infobox (B-Plan, Schutzgebiet, Bodenfunktion, FNP-Nutzung).
 
 ## Erweitern
 Neue Fragen = neues Step-Objekt `{id, title, mount, isValid, toFeatures}` in `js/wizard.js` (`STEPS`, vor `ResultStep`).

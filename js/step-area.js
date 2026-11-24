@@ -43,7 +43,7 @@ const AreaStep = (() => {
     // ALKIS-Flurstücke/Gebäude als Vector Tiles (Stadt Wuppertal)
     mgl = L.maplibreGL({ style: Alkis.STYLE, pane: 'overlayPane' }).addTo(map).getMaplibreMap();
     Alkis.resetHighlight();
-    mgl.on('load', () => { Alkis.addHighlight(mgl); render(a, api); });
+    mgl.on('load', () => { Alkis.addHighlight(mgl); Alkis.addFnp(mgl); render(a, api); });
     mgl.on('idle', () => refresh(a, api));
     map.on('click', e => onMapClick(a, api, e));
     map.on('zoomend', () => render(a, api));
@@ -113,7 +113,27 @@ const AreaStep = (() => {
         return nf.properties.geometrie_vollstaendig ? nf : f;
       });
     }
+    if (updateFnp(a)) changed = true;
     if (changed) render(a, api);
+  }
+
+  // Projektbereich als MultiPolygon-Koordinaten (gewählte Flurstücke vereinigt bzw. gezeichnetes Polygon)
+  function areaMulti(a) {
+    if (a.mode === 'draw') return a.drawn ? [a.drawn.coordinates] : null;
+    const polys = a.parcels.flatMap(f => f.geometry.coordinates);
+    return polys.length ? polygonClipping.union(...polys) : null;
+  }
+
+  // FNP-Hauptnutzungen zum Projektbereich (aus den Tiles); true, wenn sich das Ergebnis geändert hat
+  function updateFnp(a) {
+    const multi = a.mode === 'draw' || map.getZoom() >= MIN_ZOOM ? areaMulti(a) : null;
+    if (!multi) { const had = !!a.fnp; a.fnp = null; return had; }
+    const r = Alkis.fnpSummary(mgl, multi);
+    if (!r) return false;
+    const key = JSON.stringify([a.mode, r.items.map(i => [i.nutzung, Math.round(i.share * 100)]), a.parcels.map(f => f.id), a.drawn && a.drawn.coordinates[0].length]);
+    if (a.fnp?.key === key) return false;
+    a.fnp = { ...r, key };
+    return true;
   }
 
   function onMapClick(a, api, e) {
@@ -156,6 +176,7 @@ const AreaStep = (() => {
       const total = parcels.reduce((t, f) => t + f.properties.flaeche_m2, 0);
       info.append(el('div', { className: 'sum', textContent: `Gesamt: ${parcels.length} Flurstücke, Größe ${Format.ca(total)}` }));
     }
+    if (a.fnp?.items.length) info.append(el('div', { className: 'block' }, el('div', { textContent: 'FNP Hauptnutzung: ' + fnpText(a.fnp) })));
     if (a.mode === 'draw' && a.drawnPartial)
       info.append(el('p', { className: 'warn', textContent: 'Der Bereich ragt aus dem Kartenausschnitt – Flurstückliste ggf. unvollständig. Bitte so zoomen, dass der ganze Bereich sichtbar ist.' }));
     if (a.mode === 'select' && parcels.some(f => !f.properties.geometrie_vollstaendig))
@@ -167,10 +188,13 @@ const AreaStep = (() => {
     return !!a && (a.mode === 'draw' ? !!a.drawn : a.parcels.length > 0);
   }
 
+  const fnpText = f => f.items.map(i => `${i.nutzung} (${Math.max(1, Math.round(i.share * 100))} %)`).join(', ');
+  const fnpLines = a => a.fnp?.items.length ? `\nFNP Hauptnutzung: ${fnpText(a.fnp)}` + (a.fnp.recht.length === 1 ? `\n${a.fnp.recht[0]}` : '') : '';
+
   // Fertige Infobox-Texte (werden im Style per infoboxMapping angezeigt)
-  const infoFor = g => ({
+  const infoFor = (g, a) => ({
     info_title: `Gemarkung: ${g.gem}`,
-    info_text: `Flur: ${g.flur}\n${g.parcelsText}\nGröße: ${Format.ca(g.sum)}`,
+    info_text: `Flur: ${g.flur}\n${g.parcelsText}\nGröße: ${Format.ca(g.sum)}` + fnpLines(a),
   });
 
   function toFeatures(state) {
@@ -185,7 +209,7 @@ const AreaStep = (() => {
           role: 'projektbereich', mode: 'draw', flaeche_m2: area,
           flurstuecke: parcels.map(f => ({ gemarkung: f.properties.gemarkung, flur: f.properties.flur, flurstueck: f.properties.flurstuecksnummer, flaeche_m2: f.properties.flaeche_m2 })),
           info_title: 'Gezeichneter Projektbereich',
-          info_text: `Größe: ${Format.ca(area)}\n\n` + gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n'),
+          info_text: `Größe: ${Format.ca(area)}\n\n` + gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n') + (fnpLines(a) ? '\n' + fnpLines(a) : ''),
         },
       }];
     }
@@ -193,7 +217,7 @@ const AreaStep = (() => {
     return a.parcels.map(f => ({
       type: 'Feature', geometry: f.geometry,
       properties: { role: 'projektbereich', mode: 'flurstueck', ...f.properties,
-        ...infoFor(byKey.get(`${f.properties.gemarkung}|${f.properties.flur}`)) },
+        ...infoFor(byKey.get(`${f.properties.gemarkung}|${f.properties.flur}`), a) },
     }));
   }
 

@@ -18,22 +18,25 @@ const Publish = (() => {
     return fc.features.length ? [w, s, e, n].map(v => +v.toFixed(6)) : null;
   }
 
-  // Infobox des Geoportals: Zeilen "key: ausdruck" (p = Feature-Properties), als Keyword carmaconf://infoBoxMapping:<zeile>
-  const INFOBOX_MAPPING = ['title: p.info_title', 'additionalInfo: p.info_text'];
-
   function buildStyle(fc) {
     const title = 'Adhoc-Projektbereich';
     const bounds = extent(fc);
     const fd = Fachdaten.toStyleParts(fc.fachdaten, bounds);
-    const ds = Fachdaten.toDynamicStyling(fc.fachdaten);
+    const ds = Fachdaten.toDynamicStyling(fc.fachdaten, fd.byEntry);
+    // Infobox: eine Zuordnungsfunktion (Zeile mit "function"), siehe Fachdaten.infoboxMapping
+    const keywords = ['adhoc', `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping(fc.fachdaten)}`];
+    const links = Fachdaten.links(fc.fachdaten);
     return {
       version: 8, name: title,
-      metadata: { carmaConf: { ...(ds.length && { dynamicStyling: ds }), ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: ['Ad-hoc FeatureCollection aus dem Wizard', ...Fachdaten.describe(fc.fachdaten)].join('\n'), ...(Fachdaten.links(fc.fachdaten).length && { links: Fachdaten.links(fc.fachdaten) }), keywords: ['adhoc', ...INFOBOX_MAPPING.map(l => `carmaconf://infoBoxMapping:${l}`)] } } },
+      metadata: { carmaConf: { ...(ds.length && { dynamicStyling: ds }), ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }),
+        layerInfo: { title, description: ['Ad-hoc FeatureCollection aus dem Wizard', ...Fachdaten.describe(fc.fachdaten)].join('\n'), ...(links.length && { links }), keywords } } },
       sources: { ...fd.sources, adhoc: { type: 'geojson', data: fc } },
       layers: [
         ...fd.layers,
-        { id: 'adhoc-fill', type: 'fill', source: 'adhoc', paint: { 'fill-color': '#e8590c', 'fill-opacity': 0.35 } },
-        { id: 'adhoc-line', type: 'line', source: 'adhoc', paint: { 'line-color': '#e8590c', 'line-width': 2 } },
+        // praktisch unsichtbare Fläche, damit ein Klick in den Projektbereich die Infobox öffnet; nur der Umriss ist sichtbar
+        { id: 'adhoc-fill', type: 'fill', source: 'adhoc', paint: { 'fill-color': '#e00000', 'fill-opacity': 0.000001 } },
+        { id: 'adhoc-line', type: 'line', source: 'adhoc', layout: { 'line-join': 'round' },
+          paint: { 'line-color': '#e00000', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 2, 16, 4, 20, 6], 'line-dasharray': [3, 1.5] } },
       ],
     };
   }

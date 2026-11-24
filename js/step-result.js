@@ -24,6 +24,8 @@ const ResultStep = (() => {
       try { sessionStorage.setItem('gh-token', tok.value); } catch {}
       api.status('Publishe …');
       try {
+        const errs = await Fachdaten.load(fc.fachdaten);
+        if (errs.length) api.status('Hinweis, nicht ladbar: ' + errs.join('; '));
         const r = await Publish.publish(JSON.stringify(Publish.buildStyle(fc), null, 2), tok.value);
         wrap.querySelector('#pubmsg').innerHTML = `${r.replaced ? 'Vorherige Version überschrieben' : 'Neu angelegt'}: <a target="_blank" rel="noopener" href="${r.url}">${r.url}</a>`;
         api.status('Veröffentlicht.');

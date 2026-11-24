@@ -91,5 +91,39 @@ const Alkis = (() => {
   }
   const resetHighlight = () => { lastKey = ''; };
 
-  return { STYLE, MIN_ZOOM, parcelAt, featureFor, intersecting, addHighlight, setHighlight, resetHighlight };
+  // ---- FNP Hauptnutzungen (Vector Tiles der Stadt Wuppertal): welche Nutzungen berühren den Projektbereich?
+  const FNP = 'adhoc-fnp';
+  function addFnp(mgl) {
+    if (mgl.getSource(FNP)) return;
+    mgl.addSource(FNP, { type: 'vector', minzoom: 9, maxzoom: 14, tiles: ['https://tiles.cismet.de/hauptnutzungen/{z}/{x}/{y}.pbf'] });
+    // unsichtbare Fläche, damit MapLibre die Kacheln lädt (querySourceFeatures braucht einen Layer)
+    mgl.addLayer({ id: 'adhoc-fnp-probe', type: 'fill', source: FNP, 'source-layer': 'hauptnutzungen', paint: { 'fill-opacity': 0 } });
+  }
+  const multiArea = multi => multi.reduce((t, poly) => t + Geo.ringArea(poly[0]) - poly.slice(1).reduce((h, r) => h + Geo.ringArea(r), 0), 0);
+
+  // multi: MultiPolygon-Koordinaten des Projektbereichs -> { items: [{ nutzung, share }], recht } oder null (Tiles fehlen noch)
+  function fnpSummary(mgl, multi) {
+    if (!mgl.getSource(FNP) || !mgl.isSourceLoaded(FNP)) return null;
+    const groups = new Map();
+    for (const f of mgl.querySourceFeatures(FNP, { sourceLayer: 'hauptnutzungen' })) {
+      const n = f.properties.nutzung;
+      if (!n) continue;
+      const g = groups.get(n) ?? groups.set(n, { polys: [], recht: new Set() }).get(n);
+      g.polys.push(...polysOf(f.geometry));
+      if (f.properties.text_recht) g.recht.add(f.properties.text_recht);
+    }
+    const total = multiArea(multi);
+    if (!total) return { items: [], recht: [] };
+    const items = [], recht = new Set();
+    for (const [nutzung, g] of groups) {
+      if (!g.polys.length) continue;
+      let area = 0;
+      try { area = multiArea(polygonClipping.intersection(polygonClipping.union(...g.polys), multi)); } catch { continue; }
+      if (area / total >= 0.01) { items.push({ nutzung, share: area / total }); g.recht.forEach(r => recht.add(r)); }
+    }
+    items.sort((a, b) => b.share - a.share);
+    return { items, recht: [...recht] };
+  }
+
+  return { STYLE, MIN_ZOOM, addFnp, fnpSummary, parcelAt, featureFor, intersecting, addHighlight, setHighlight, resetHighlight };
 })();
