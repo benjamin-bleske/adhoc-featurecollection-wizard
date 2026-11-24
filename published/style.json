@@ -7,76 +7,121 @@
         {
           "type": "list",
           "label": "Fachdaten",
-          "default": "luftbild+fnp+regionalplan",
+          "default": "alle",
           "showIcon": false,
           "options": [
             {
-              "id": "luftbild+fnp+regionalplan",
-              "title": "Luftbild + FNP Hauptnutzungen + WMS Regionalplan NRW",
-              "vis_luftbild": "visible",
+              "id": "alle",
+              "title": "Alle Fachdaten",
               "vis_fnp": "visible",
-              "vis_regionalplan": "visible"
-            },
-            {
-              "id": "luftbild",
-              "title": "Luftbild",
-              "vis_luftbild": "visible",
-              "vis_fnp": "none",
-              "vis_regionalplan": "none"
+              "vis_regionalplan": "visible",
+              "vis_lep": "visible",
+              "vis_bplan": "visible",
+              "vis_landschaft": "visible",
+              "vis_boden": "visible"
             },
             {
               "id": "fnp",
               "title": "FNP Hauptnutzungen",
-              "vis_luftbild": "none",
               "vis_fnp": "visible",
-              "vis_regionalplan": "none"
+              "vis_regionalplan": "none",
+              "vis_lep": "none",
+              "vis_bplan": "none",
+              "vis_landschaft": "none",
+              "vis_boden": "none"
             },
             {
               "id": "regionalplan",
               "title": "WMS Regionalplan NRW",
-              "vis_luftbild": "none",
               "vis_fnp": "none",
-              "vis_regionalplan": "visible"
+              "vis_regionalplan": "visible",
+              "vis_lep": "none",
+              "vis_bplan": "none",
+              "vis_landschaft": "none",
+              "vis_boden": "none"
             },
             {
-              "id": "luftbild+fnp",
-              "title": "Luftbild + FNP Hauptnutzungen",
-              "vis_luftbild": "visible",
-              "vis_fnp": "visible",
-              "vis_regionalplan": "none"
-            },
-            {
-              "id": "luftbild+regionalplan",
-              "title": "Luftbild + WMS Regionalplan NRW",
-              "vis_luftbild": "visible",
+              "id": "lep",
+              "title": "WMS Landesentwicklungsplan NRW",
               "vis_fnp": "none",
-              "vis_regionalplan": "visible"
+              "vis_regionalplan": "none",
+              "vis_lep": "visible",
+              "vis_bplan": "none",
+              "vis_landschaft": "none",
+              "vis_boden": "none"
             },
             {
-              "id": "fnp+regionalplan",
-              "title": "FNP Hauptnutzungen + WMS Regionalplan NRW",
-              "vis_luftbild": "none",
-              "vis_fnp": "visible",
-              "vis_regionalplan": "visible"
+              "id": "bplan",
+              "title": "B-Plan-Verfahren (rechtsverbindlich)",
+              "vis_fnp": "none",
+              "vis_regionalplan": "none",
+              "vis_lep": "none",
+              "vis_bplan": "visible",
+              "vis_landschaft": "none",
+              "vis_boden": "none"
+            },
+            {
+              "id": "landschaft",
+              "title": "Landschafts- und Naturschutz",
+              "vis_fnp": "none",
+              "vis_regionalplan": "none",
+              "vis_lep": "none",
+              "vis_bplan": "none",
+              "vis_landschaft": "visible",
+              "vis_boden": "none"
+            },
+            {
+              "id": "boden",
+              "title": "Gesamtbewertung der Bodenfunktionen",
+              "vis_fnp": "none",
+              "vis_regionalplan": "none",
+              "vis_lep": "none",
+              "vis_bplan": "none",
+              "vis_landschaft": "none",
+              "vis_boden": "visible"
             },
             {
               "id": "keine",
               "title": "Keine Fachdaten",
-              "vis_luftbild": "none",
               "vis_fnp": "none",
-              "vis_regionalplan": "none"
+              "vis_regionalplan": "none",
+              "vis_lep": "none",
+              "vis_bplan": "none",
+              "vis_landschaft": "none",
+              "vis_boden": "none"
             }
           ],
           "targets": {
-            "vis_luftbild": [
-              "layers.fd-luftbild.layout.visibility"
-            ],
             "vis_fnp": [
-              "layers.fd-fnp-fill.layout.visibility",
-              "layers.fd-fnp-line.layout.visibility"
+              "layers.fd-fnp-hauptnutzungen-id.layout.visibility",
+              "layers.fd-fnp-hauptnutzungen-line-id.layout.visibility",
+              "layers.fd-fnp-hauptnutzungen-line-id-selection.layout.visibility"
             ],
             "vis_regionalplan": [
               "layers.fd-regionalplan.layout.visibility"
+            ],
+            "vis_lep": [
+              "layers.fd-lep.layout.visibility"
+            ],
+            "vis_bplan": [
+              "layers.fd-bplan-bplanverfahren-id.layout.visibility",
+              "layers.fd-bplan-selection-line-lowzoom.layout.visibility",
+              "layers.fd-bplan-bplanverfahren-line-gepr-id.layout.visibility",
+              "layers.fd-bplan-bplanverfahren-gepr-id.layout.visibility",
+              "layers.fd-bplan-bplanverfahren-line-ungepr-id.layout.visibility",
+              "layers.fd-bplan-bplanverfahren-ungepr-id.layout.visibility",
+              "layers.fd-bplan-selection-fill.layout.visibility",
+              "layers.fd-bplan-selection-line-top.layout.visibility"
+            ],
+            "vis_landschaft": [
+              "layers.fd-landschaft-landschaftsundnaturschutz-fill.layout.visibility",
+              "layers.fd-landschaft-landschaftsundnaturschutz-line.layout.visibility",
+              "layers.fd-landschaft-landschaftsundnaturschutz-selection.layout.visibility"
+            ],
+            "vis_boden": [
+              "layers.fd-boden-bodenfunktion-line-id.layout.visibility",
+              "layers.fd-boden-bodenfunktion-fill-id.layout.visibility",
+              "layers.fd-boden-bodenfunktion-line-id-selection.layout.visibility"
             ]
           }
         }
@@ -88,8 +133,8 @@
             "label": "Auf den Projektbereich zoomen",
             "bounds": [
               7.151382,
-              51.255428,
-              7.153161,
+              51.255265,
+              7.154708,
               51.256114
             ]
           }
@@ -97,7 +142,7 @@
       ],
       "layerInfo": {
         "title": "Adhoc-Projektbereich",
-        "description": "Ad-hoc FeatureCollection aus dem Wizard\nLuftbild: Luftbild der Stadt Wuppertal (True-Ortho 2024). (Quelle: Stadt Wuppertal, maps.wuppertal.de/karten)\nFNP Hauptnutzungen: Flächennutzungsplan der Stadt Wuppertal, Hauptnutzungen (Vektordaten). (Quelle: Stadt Wuppertal, tiles.cismet.de/hauptnutzungen)\nWMS Regionalplan NRW: Stellt Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet dar. (Quelle: Land NRW, WMS Regionalplan NRW)",
+        "description": "Ad-hoc FeatureCollection aus dem Wizard\nFNP Hauptnutzungen: Flächennutzungsplan der Stadt Wuppertal, Hauptnutzungen (Vektordaten). (Quelle: Stadt Wuppertal, tiles.cismet.de/hauptnutzungen)\nWMS Regionalplan NRW: Stellt Rasterdaten der Regionalpläne der sechs Planungsgebiete in NRW sowie des Regionalen Flächennutzungsplans im Kern-Ruhrgebiet dar. (Quelle: Land NRW, wms.nrw.de/wms/wms_nw_regionalplan)\nWMS Landesentwicklungsplan NRW: Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans NRW. (Quelle: Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan)\nB-Plan-Verfahren (rechtsverbindlich): Räumliche Geltungsbereiche rechtsverbindlicher Bebauungsplanverfahren in Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/bplanverfahren)\nLandschafts- und Naturschutz: Landschafts- und Naturschutzgebiete der Stadt Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/landschaftsundnaturschutz)\nGesamtbewertung der Bodenfunktionen: Gesamtbewertung der Bodenfunktionen in Wuppertal. (Quelle: Stadt Wuppertal, tiles.cismet.de/bodenfunktion)",
         "links": [
           {
             "url": "https://tiles.cismet.de/hauptnutzungen/style.json",
@@ -106,59 +151,119 @@
           {
             "url": "https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&SERVICE=WMS",
             "text": "WMS Regionalplan NRW (GetCapabilities)"
+          },
+          {
+            "url": "https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan?REQUEST=GetCapabilities&SERVICE=WMS",
+            "text": "WMS Landesentwicklungsplan NRW (GetCapabilities)"
+          },
+          {
+            "url": "https://tiles.cismet.de/bplanverfahren/rechtsverbindlich.style.json",
+            "text": "B-Plan-Verfahren (rechtsverbindlich) (Style)"
+          },
+          {
+            "url": "https://tiles.cismet.de/landschaftsundnaturschutz/style.json",
+            "text": "Landschafts- und Naturschutz (Style)"
+          },
+          {
+            "url": "https://tiles.cismet.de/bodenfunktion/style.json",
+            "text": "Gesamtbewertung der Bodenfunktionen (Style)"
           }
         ],
         "keywords": [
           "adhoc",
-          "carmaconf://infoBoxMapping:title: p.info_title",
-          "carmaconf://infoBoxMapping:additionalInfo: p.info_text"
+          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var M = { \"hauptnutzungen\": function createInfoBoxInfo(p){ return { header: 'FNP Hauptnutzungen', headerColor: p.farbe || '#7C7CA6', title: p.nutzung, subtitle: p.text_recht || '', additionalInfo: p.name || '' }; }, \"bplanverfahren\": function createInfoBoxInfo(p) { const f = p.targetProperties || p; let qualitaet; if (f.qualitaet.startsWith('ge')) { qualitaet = f.qualitaet + ' (flurstücksscharf)'; } if (f.qualitaet.startsWith('un')) { qualitaet = f.qualitaet + ' (auf +/- 1 m genau)'; } color = \"#20EE20\"; const info = { headerColor: color, genericLinks: [ { url: \"https://digital-twin-wuppertal-live.github.io/bplan-auskunft//#/docs/\" + f.verfahren + \"/1/1\", tooltip: \"Dokumente\", iconname: \"file-pdf-o\" }, { url: 'https://www.wuppertal.de/vv/produkte/102/Bebauungsplaene_B-Plan_Auskunft_und_Verkauf.php', tooltip: 'planungsrechtliche Auskunft' } ], header: 'B-Plan-Verfahren (rechtsverbindlich)', title: f.verfahren + ' ' + f.name, additionalInfo: 'Genauigkeit: ' + qualitaet, subtitle: 'Rechtskräftig seit: ' + f.datum, }; return info; }, \"landschaftsundnaturschutz\": function createInfoBoxInfo(p) { const isSchutzgebiet = p.carmaInfo?.sourceLayer === 'landschaftsundnaturschutz'; if (!isSchutzgebiet) return null; const headerColors = { 'LS': '#92D050', 'NS': '#FF6B6B' }; const headers = { 'LS': 'Landschaftsschutzgebiet', 'NS': 'Naturschutzgebiet' }; const headerColor = headerColors[p.sg_typ] || '#CCCCCC'; const header = headers[p.sg_typ] || 'Schutzgebiet'; if (p.sg_typ === 'NS') { return { headerColor: headerColor, header: header, title: p.nrw_name, additionalInfo: '<html>Objektkennung: ' + p.nrw_nummer + '<br/>' + 'Fläche: ' + (p.flaeche / 1000000).toFixed(2) + ' km²</html>' }; } if (p.sg_typ === 'LS') { return { headerColor: headerColor, header: header, title: '<html><span style=\"font-weight: normal; font-size: 12px; font-weight:500;\">Fläche: ' + (p.flaeche / 1000000).toFixed(2) + ' km²</span></html>' }; } return null; }, \"bodenfunktion\": function createInfoBoxInfo(p) {let color=''; let kategorie=''; if (p.ges=='0'){color='#E1E1E1', kategorie='Siedlungsfläche'} if (p.ges=='-9'){color='#0070FF', kategorie='Gewässer'} if (p.ges=='1'){color='#F9E3A0', kategorie='sehr gering'} if (p.ges=='2'){color='#F9E3A0', kategorie='gering'} if (p.ges=='3'){color='#F9E3A0', kategorie='mittel'} if (p.ges=='4'){color='#A0DD87', kategorie='hoch'} if (p.ges=='5'){color='#438443', kategorie='sehr hoch'} if (!p.ges){color='#FFFFFF', title='keine Daten'}; const info = { subtitle:  '<html><div style=\"width:100%; height:100%; margin-top:0px; display:flex; align-items:center; justify-content:left; font-size:18px; font-weight:normal; \">'+kategorie+'</div></html>', title: 'Schutzwürdigkeit:', header:'Gesamtbewertung der Bodenfunktion', headerColor:color, }; return info; } }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } var t = (p.info_text || '').split('\\n').join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + t + \"<br/><br/><b>WMS Regionalplan NRW</b><br/>Dienst: WMS NW REGIONALPLAN (Ministerium für Wirtschaft, Innovation, Digitalisierung und Energie des Landes Nordrhein-Westfalen)<br/>Dieser Dienst stellt die Rasterdaten der Regionalpläne der sechs Planungsgebiete des Landes NRW. Die Regionalpläne konkretisieren die Ziele und Grundsätze des Landesentwicklungsplans NRW für die einzelnen regionalen Teilräume/Planungsgebiete in NRW.<br/><a href=\\\"https://www.wms.nrw.de/wms/wms_nw_regionalplan?REQUEST=GetCapabilities&amp;SERVICE=WMS\\\">GetCapabilities</a><br/><br/><b>WMS Landesentwicklungsplan NRW</b><br/>Dienst: Zeichnerische Festlegungen des Landesentwicklungsplans NRW (Ministerium für Wirtschaft, Innovation, Digitalisierung und Energie des Landes Nordrhein-Westfalen)<br/>Der Datensatz beinhaltet die Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans des Landes Nordrhein-Westfalens (NRW).<br/><a href=\\\"https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan?REQUEST=GetCapabilities&amp;SERVICE=WMS\\\">GetCapabilities</a>\" + '</html>' }; }"
         ]
       }
     }
   },
   "sources": {
-    "fd-luftbild-raster": {
-      "type": "raster",
-      "tileSize": 256,
-      "tiles": [
-        "https://maps.wuppertal.de/karten?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=R102:trueortho2024&styles=&format=image/jpeg"
-      ],
-      "bounds": [
-        7.151293,
-        51.255394,
-        7.15325,
-        51.256148
-      ],
-      "attribution": "Stadt Wuppertal, maps.wuppertal.de/karten"
-    },
-    "fd-fnp-vector": {
+    "fd-fnp-hauptnutzungen-source": {
       "type": "vector",
-      "minzoom": 9,
-      "maxzoom": 14,
       "tiles": [
         "https://tiles.cismet.de/hauptnutzungen/{z}/{x}/{y}.pbf"
       ],
+      "minzoom": 9,
+      "maxzoom": 14,
       "bounds": [
-        7.151293,
-        51.255394,
-        7.15325,
-        51.256148
+        7.151216,
+        51.255223,
+        7.154874,
+        51.256156
       ],
       "attribution": "Stadt Wuppertal, tiles.cismet.de/hauptnutzungen"
     },
-    "fd-regionalplan-raster": {
+    "fd-regionalplan": {
       "type": "raster",
       "tileSize": 256,
       "tiles": [
         "https://www.wms.nrw.de/wms/wms_nw_regionalplan?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=regionalplan&styles=&format=image/png&transparent=true"
       ],
       "bounds": [
-        7.151293,
-        51.255394,
-        7.15325,
-        51.256148
+        7.151216,
+        51.255223,
+        7.154874,
+        51.256156
       ],
-      "attribution": "Land NRW, WMS Regionalplan NRW"
+      "attribution": "Land NRW, wms.nrw.de/wms/wms_nw_regionalplan"
+    },
+    "fd-lep": {
+      "type": "raster",
+      "tileSize": 256,
+      "tiles": [
+        "https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&layers=landesentwicklungsplan&styles=&format=image/png&transparent=true"
+      ],
+      "bounds": [
+        7.151216,
+        51.255223,
+        7.154874,
+        51.256156
+      ],
+      "attribution": "Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan"
+    },
+    "fd-bplan-bplanverfahren-source": {
+      "type": "vector",
+      "tiles": [
+        "https://tiles.cismet.de/bplanverfahren/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 9,
+      "maxzoom": 17,
+      "bounds": [
+        7.151216,
+        51.255223,
+        7.154874,
+        51.256156
+      ],
+      "attribution": "Stadt Wuppertal, tiles.cismet.de/bplanverfahren"
+    },
+    "fd-landschaft-landschaftsundnaturschutz-source": {
+      "type": "vector",
+      "tiles": [
+        "https://tiles.cismet.de/landschaftsundnaturschutz/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 9,
+      "maxzoom": 14,
+      "bounds": [
+        7.151216,
+        51.255223,
+        7.154874,
+        51.256156
+      ],
+      "attribution": "Stadt Wuppertal, tiles.cismet.de/landschaftsundnaturschutz"
+    },
+    "fd-boden-bodenfunktion-source": {
+      "type": "vector",
+      "tiles": [
+        "https://tiles.cismet.de/bodenfunktion/{z}/{x}/{y}.pbf"
+      ],
+      "minzoom": 9,
+      "maxzoom": 14,
+      "bounds": [
+        7.151216,
+        51.255223,
+        7.154874,
+        51.256156
+      ],
+      "attribution": "Stadt Wuppertal, tiles.cismet.de/bodenfunktion"
     },
     "adhoc": {
       "type": "geojson",
@@ -324,7 +429,7 @@
               "flurstueckskennzeichen": "05313515500073",
               "geometrie_vollstaendig": true,
               "info_title": "Gemarkung: Elberfeld",
-              "info_text": "Flur: 155\nFlurstück 73\nGröße: ca. 3.200 m²"
+              "info_text": "Flur: 155\nFlurstück 73\nGröße: ca. 3.200 m²\nFNP Hauptnutzung: Gemischte Baufläche - Kerngebiet (67 %), Gewässer 2. Ordnung (29 %), Fläche für den Gemeinbedarf - Schulische Zwecke (2 %)"
             }
           },
           {
@@ -335,120 +440,188 @@
                 [
                   [
                     [
-                      7.152316365391016,
-                      51.25559069889309
+                      7.1526543237268925,
+                      51.25579680560131
                     ],
                     [
-                      7.152418037876487,
-                      51.25554936203304
+                      7.152700088918209,
+                      51.25578935660937
                     ],
                     [
-                      7.152490457519889,
-                      51.25553561804341
+                      7.152825985103846,
+                      51.255768740731014
                     ],
                     [
-                      7.152490960434079,
-                      51.25553551312743
+                      7.15292489156127,
+                      51.2557479674702
                     ],
                     [
-                      7.152493726462126,
-                      51.255534988547595
+                      7.153019774705172,
+                      51.25572373198736
                     ],
                     [
-                      7.152538150548935,
-                      51.25552654281134
+                      7.1530975587666035,
+                      51.255700178443135
                     ],
                     [
-                      7.152711404487491,
-                      51.25549365163744
+                      7.153173414990306,
+                      51.255676729802445
                     ],
                     [
-                      7.152803856879473,
-                      51.25547581590334
+                      7.153225718066096,
+                      51.25566052033244
                     ],
                     [
-                      7.15280519798398,
-                      51.25547555361305
+                      7.153294198215008,
+                      51.25563906507048
                     ],
                     [
-                      7.152901841327548,
-                      51.25545693100082
+                      7.153324875980616,
+                      51.25562941282223
                     ],
                     [
-                      7.15304902754724,
-                      51.2554284987163
+                      7.153329653665423,
+                      51.255636652008576
                     ],
                     [
-                      7.153053721413016,
-                      51.25543778380009
+                      7.153644226491451,
+                      51.255545165395404
                     ],
                     [
-                      7.153067132458091,
-                      51.25546458987887
+                      7.154376721009612,
+                      51.25537415208666
                     ],
                     [
-                      7.153094038367271,
-                      51.25551846427959
+                      7.154409913346171,
+                      51.25536712269164
                     ],
                     [
-                      7.1531096287071705,
-                      51.25554957186489
+                      7.154434807598591,
+                      51.25536182441559
                     ],
                     [
-                      7.153111891821027,
-                      51.25554909974318
+                      7.154480488970876,
+                      51.25535211965095
                     ],
                     [
-                      7.153148269280791,
-                      51.25562238346623
+                      7.154500856995583,
+                      51.25534624433297
                     ],
                     [
-                      7.1531605906784534,
-                      51.25564703866533
+                      7.154527176171541,
+                      51.2553359625247
                     ],
                     [
-                      7.153039136901498,
-                      51.255670329947634
+                      7.154575958848,
+                      51.25530957603684
                     ],
                     [
-                      7.15295665897429,
-                      51.255686119751715
+                      7.154652904719114,
+                      51.25526461930198
                     ],
                     [
-                      7.152824057266116,
-                      51.25571156178336
+                      7.1547076385468245,
+                      51.25538878791312
                     ],
                     [
-                      7.152542173862457,
-                      51.25576559326785
+                      7.154705459252,
+                      51.25538752891748
                     ],
                     [
-                      7.15253496542573,
-                      51.25576700962628
+                      7.154702860862017,
+                      51.25538679450335
                     ],
                     [
-                      7.152526583522558,
-                      51.25576858335788
+                      7.154700011014938,
+                      51.25538653221258
                     ],
                     [
-                      7.152530439198017,
-                      51.255775979895475
+                      7.15469716116786,
+                      51.2553868469615
                     ],
                     [
-                      7.1523229870945215,
-                      51.2558075069679
+                      7.154694562777877,
+                      51.25538763383378
                     ],
                     [
-                      7.152409655973315,
-                      51.25578379609345
+                      7.154590878635645,
+                      51.25541176457756
                     ],
                     [
-                      7.152364477515221,
-                      51.2556905262077
+                      7.154516112059355,
+                      51.255429128213564
                     ],
                     [
-                      7.152316365391016,
-                      51.25559069889309
+                      7.154426341876388,
+                      51.255449796702294
+                    ],
+                    [
+                      7.154376218095422,
+                      51.25546133747878
+                    ],
+                    [
+                      7.15437076985836,
+                      51.25546259647237
+                    ],
+                    [
+                      7.154063154011965,
+                      51.255533362350036
+                    ],
+                    [
+                      7.153658140450716,
+                      51.25562762925438
+                    ],
+                    [
+                      7.1535781770944595,
+                      51.255649661558095
+                    ],
+                    [
+                      7.153517324477434,
+                      51.25566760214042
+                    ],
+                    [
+                      7.153380531817675,
+                      51.25570972576094
+                    ],
+                    [
+                      7.153281457722187,
+                      51.25574015126608
+                    ],
+                    [
+                      7.153124464675784,
+                      51.255789618897836
+                    ],
+                    [
+                      7.1530597563833,
+                      51.25580860857903
+                    ],
+                    [
+                      7.15299379080534,
+                      51.25582508028509
+                    ],
+                    [
+                      7.1529090497642756,
+                      51.25584328308713
+                    ],
+                    [
+                      7.152846688404679,
+                      51.25585576800199
+                    ],
+                    [
+                      7.152787931263447,
+                      51.25586631198203
+                    ],
+                    [
+                      7.152741746976972,
+                      51.255873656046305
+                    ],
+                    [
+                      7.1527002565562725,
+                      51.255880318160735
+                    ],
+                    [
+                      7.1526543237268925,
+                      51.25579680560131
                     ]
                   ]
                 ]
@@ -460,41 +633,35 @@
               "gemarkung": "Elberfeld",
               "gemarkungsnummer": 3135,
               "flur": "153",
-              "flurstuecksnummer": "70",
-              "flaeche_m2": 1389,
-              "adresse": "Döppersberg 36",
-              "flurstueckskennzeichen": "05313515300070",
+              "flurstuecksnummer": "43/37",
+              "flaeche_m2": 1423,
+              "adresse": "Flutgraben ",
+              "flurstueckskennzeichen": "053135153000430037",
               "geometrie_vollstaendig": true,
               "info_title": "Gemarkung: Elberfeld",
-              "info_text": "Flur: 153\nFlurstück 70\nGröße: ca. 1.400 m²"
+              "info_text": "Flur: 153\nFlurstück 43/37\nGröße: ca. 1.400 m²\nFNP Hauptnutzung: Gemischte Baufläche - Kerngebiet (67 %), Gewässer 2. Ordnung (29 %), Fläche für den Gemeinbedarf - Schulische Zwecke (2 %)"
             }
           }
         ],
         "fachdaten": [
-          "luftbild",
           "fnp",
-          "regionalplan"
+          "regionalplan",
+          "lep",
+          "bplan",
+          "landschaft",
+          "boden"
         ]
       }
     }
   },
   "layers": [
     {
-      "id": "fd-luftbild",
-      "source": "fd-luftbild-raster",
-      "type": "raster",
-      "paint": {
-        "raster-opacity": 1
-      },
-      "metadata": {
-        "fachdaten": "Luftbild"
-      }
-    },
-    {
-      "id": "fd-fnp-fill",
-      "source": "fd-fnp-vector",
+      "id": "fd-fnp-hauptnutzungen-id",
       "type": "fill",
+      "source": "fd-fnp-hauptnutzungen-source",
       "source-layer": "hauptnutzungen",
+      "minzoom": 0,
+      "maxzoom": 22,
       "paint": {
         "fill-color": [
           "get",
@@ -507,10 +674,12 @@
       }
     },
     {
-      "id": "fd-fnp-line",
-      "source": "fd-fnp-vector",
+      "id": "fd-fnp-hauptnutzungen-line-id",
       "type": "line",
+      "source": "fd-fnp-hauptnutzungen-source",
       "source-layer": "hauptnutzungen",
+      "minzoom": 0,
+      "maxzoom": 22,
       "filter": [
         "==",
         [
@@ -532,9 +701,41 @@
       }
     },
     {
+      "id": "fd-fnp-hauptnutzungen-line-id-selection",
+      "type": "line",
+      "source": "fd-fnp-hauptnutzungen-source",
+      "source-layer": "hauptnutzungen",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#3A7CEB",
+        "line-opacity": [
+          "case",
+          [
+            "boolean",
+            [
+              "feature-state",
+              "selected"
+            ],
+            false
+          ],
+          1,
+          0
+        ],
+        "line-width": 3
+      },
+      "metadata": {
+        "fachdaten": "FNP Hauptnutzungen"
+      }
+    },
+    {
       "id": "fd-regionalplan",
-      "source": "fd-regionalplan-raster",
       "type": "raster",
+      "source": "fd-regionalplan",
       "paint": {
         "raster-opacity": 0.7
       },
@@ -543,21 +744,608 @@
       }
     },
     {
+      "id": "fd-lep",
+      "type": "raster",
+      "source": "fd-lep",
+      "paint": {
+        "raster-opacity": 0.7
+      },
+      "metadata": {
+        "fachdaten": "WMS Landesentwicklungsplan NRW"
+      }
+    },
+    {
+      "id": "fd-bplan-bplanverfahren-id",
+      "type": "fill",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 4,
+      "maxzoom": 13,
+      "paint": {
+        "fill-color": "#80FF80",
+        "fill-opacity": 0.8
+      },
+      "metadata": {
+        "carmaConf": {
+          "selectionForwardingTo": [
+            "bplanverfahren",
+            "bplanverfahren_labels"
+          ]
+        },
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      },
+      "filter": [
+        "==",
+        [
+          "get",
+          "kategorie"
+        ],
+        "rechtsverbindlich"
+      ]
+    },
+    {
+      "id": "fd-bplan-selection-line-lowzoom",
+      "type": "line",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 0,
+      "maxzoom": 13,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#4892F0",
+        "line-width": 3,
+        "line-opacity": [
+          "case",
+          [
+            "boolean",
+            [
+              "feature-state",
+              "selected"
+            ],
+            false
+          ],
+          1,
+          0
+        ]
+      },
+      "metadata": {
+        "carmaConf": {
+          "selectionForwardingTo": [
+            "bplanverfahren",
+            "bplanverfahren_labels"
+          ]
+        },
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      },
+      "filter": [
+        "==",
+        [
+          "get",
+          "kategorie"
+        ],
+        "rechtsverbindlich"
+      ]
+    },
+    {
+      "id": "fd-bplan-bplanverfahren-line-gepr-id",
+      "type": "line",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 13,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kategorie"
+          ],
+          "rechtsverbindlich"
+        ],
+        [
+          "==",
+          [
+            "get",
+            "qualitaet"
+          ],
+          "geprüft"
+        ]
+      ],
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#00FF00",
+        "line-opacity": 1,
+        "line-width": 6
+      },
+      "metadata": {
+        "carmaConf": {
+          "selectionForwardingTo": [
+            "bplanverfahren",
+            "bplanverfahren_labels"
+          ]
+        },
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      }
+    },
+    {
+      "id": "fd-bplan-bplanverfahren-gepr-id",
+      "type": "fill",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 13,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kategorie"
+          ],
+          "rechtsverbindlich"
+        ],
+        [
+          "==",
+          [
+            "get",
+            "qualitaet"
+          ],
+          "geprüft"
+        ]
+      ],
+      "paint": {
+        "fill-color": "#80FF80",
+        "fill-opacity": 0.5
+      },
+      "metadata": {
+        "carmaConf": {
+          "selectionForwardingTo": [
+            "bplanverfahren",
+            "bplanverfahren_labels"
+          ]
+        },
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      }
+    },
+    {
+      "id": "fd-bplan-bplanverfahren-line-ungepr-id",
+      "type": "line",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 13,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kategorie"
+          ],
+          "rechtsverbindlich"
+        ],
+        [
+          "==",
+          [
+            "get",
+            "qualitaet"
+          ],
+          "ungeprüft"
+        ]
+      ],
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#00FF00",
+        "line-opacity": 1,
+        "line-width": 6,
+        "line-dasharray": [
+          3,
+          3
+        ]
+      },
+      "metadata": {
+        "carmaConf": {
+          "selectionForwardingTo": [
+            "bplanverfahren",
+            "bplanverfahren_labels"
+          ]
+        },
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      }
+    },
+    {
+      "id": "fd-bplan-bplanverfahren-ungepr-id",
+      "type": "fill",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 13,
+      "maxzoom": 22,
+      "filter": [
+        "all",
+        [
+          "==",
+          [
+            "get",
+            "kategorie"
+          ],
+          "rechtsverbindlich"
+        ],
+        [
+          "==",
+          [
+            "get",
+            "qualitaet"
+          ],
+          "ungeprüft"
+        ]
+      ],
+      "paint": {
+        "fill-color": "#80FF80",
+        "fill-opacity": 0.5
+      },
+      "metadata": {
+        "carmaConf": {
+          "selectionForwardingTo": [
+            "bplanverfahren",
+            "bplanverfahren_labels"
+          ]
+        },
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      }
+    },
+    {
+      "id": "fd-bplan-selection-fill",
+      "type": "fill",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 13,
+      "maxzoom": 22,
+      "paint": {
+        "fill-color": "#3A7CEB",
+        "fill-opacity": [
+          "case",
+          [
+            "boolean",
+            [
+              "feature-state",
+              "selected"
+            ],
+            false
+          ],
+          0.15,
+          0
+        ]
+      },
+      "metadata": {
+        "carmaConf": {
+          "selectionForwardingTo": [
+            "bplanverfahren",
+            "bplanverfahren_labels"
+          ]
+        },
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      },
+      "filter": [
+        "==",
+        [
+          "get",
+          "kategorie"
+        ],
+        "rechtsverbindlich"
+      ]
+    },
+    {
+      "id": "fd-bplan-selection-line-top",
+      "type": "line",
+      "source": "fd-bplan-bplanverfahren-source",
+      "source-layer": "bplanverfahren",
+      "minzoom": 13,
+      "maxzoom": 22,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#4892F0",
+        "line-width": 6,
+        "line-opacity": [
+          "case",
+          [
+            "boolean",
+            [
+              "feature-state",
+              "selected"
+            ],
+            false
+          ],
+          1,
+          0
+        ]
+      },
+      "filter": [
+        "==",
+        [
+          "get",
+          "kategorie"
+        ],
+        "rechtsverbindlich"
+      ],
+      "metadata": {
+        "fachdaten": "B-Plan-Verfahren (rechtsverbindlich)"
+      }
+    },
+    {
+      "id": "fd-landschaft-landschaftsundnaturschutz-fill",
+      "type": "fill",
+      "source": "fd-landschaft-landschaftsundnaturschutz-source",
+      "source-layer": "landschaftsundnaturschutz",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "paint": {
+        "fill-color": [
+          "case",
+          [
+            "==",
+            [
+              "get",
+              "sg_typ"
+            ],
+            "LS"
+          ],
+          "#92D050",
+          [
+            "==",
+            [
+              "get",
+              "sg_typ"
+            ],
+            "NS"
+          ],
+          "#FF6B6B",
+          "#CCCCCC"
+        ],
+        "fill-opacity": 0.7
+      },
+      "metadata": {
+        "fachdaten": "Landschafts- und Naturschutz"
+      }
+    },
+    {
+      "id": "fd-landschaft-landschaftsundnaturschutz-line",
+      "type": "line",
+      "source": "fd-landschaft-landschaftsundnaturschutz-source",
+      "source-layer": "landschaftsundnaturschutz",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": [
+          "case",
+          [
+            "==",
+            [
+              "get",
+              "sg_typ"
+            ],
+            "LS"
+          ],
+          "#4A8020",
+          [
+            "==",
+            [
+              "get",
+              "sg_typ"
+            ],
+            "NS"
+          ],
+          "#CC3333",
+          "#999999"
+        ],
+        "line-opacity": 1,
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          0.2,
+          13,
+          1,
+          22,
+          5
+        ]
+      },
+      "metadata": {
+        "fachdaten": "Landschafts- und Naturschutz"
+      }
+    },
+    {
+      "id": "fd-landschaft-landschaftsundnaturschutz-selection",
+      "type": "line",
+      "source": "fd-landschaft-landschaftsundnaturschutz-source",
+      "source-layer": "landschaftsundnaturschutz",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#3A7CEB",
+        "line-opacity": [
+          "case",
+          [
+            "boolean",
+            [
+              "feature-state",
+              "selected"
+            ],
+            false
+          ],
+          1,
+          0
+        ],
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          0.5,
+          13,
+          2,
+          22,
+          5
+        ]
+      },
+      "metadata": {
+        "fachdaten": "Landschafts- und Naturschutz"
+      }
+    },
+    {
+      "id": "fd-boden-bodenfunktion-line-id",
+      "type": "line",
+      "source": "fd-boden-bodenfunktion-source",
+      "source-layer": "bodenfunktion",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#FFFFFF",
+        "line-opacity": 1,
+        "line-width": 1
+      },
+      "metadata": {
+        "fachdaten": "Gesamtbewertung der Bodenfunktionen"
+      }
+    },
+    {
+      "id": "fd-boden-bodenfunktion-fill-id",
+      "type": "fill",
+      "source": "fd-boden-bodenfunktion-source",
+      "source-layer": "bodenfunktion",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "ges"
+          ],
+          "0",
+          "#E1E1E1",
+          "-9",
+          "#0070FF",
+          "1",
+          "#F9E3A0",
+          "2",
+          "#F9E3A0",
+          "3",
+          "#F9E3A0",
+          "4",
+          "#A0DD87",
+          "5",
+          "#438443",
+          "#FFFFFF"
+        ],
+        "fill-opacity": 0.7
+      },
+      "metadata": {
+        "fachdaten": "Gesamtbewertung der Bodenfunktionen"
+      }
+    },
+    {
+      "id": "fd-boden-bodenfunktion-line-id-selection",
+      "type": "line",
+      "source": "fd-boden-bodenfunktion-source",
+      "source-layer": "bodenfunktion",
+      "minzoom": 0,
+      "maxzoom": 22,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-color": "#3A7CEB",
+        "line-opacity": [
+          "case",
+          [
+            "boolean",
+            [
+              "feature-state",
+              "selected"
+            ],
+            false
+          ],
+          1,
+          0
+        ],
+        "line-width": 3
+      },
+      "metadata": {
+        "fachdaten": "Gesamtbewertung der Bodenfunktionen"
+      }
+    },
+    {
       "id": "adhoc-fill",
       "type": "fill",
       "source": "adhoc",
       "paint": {
-        "fill-color": "#e8590c",
-        "fill-opacity": 0.35
+        "fill-color": "#e00000",
+        "fill-opacity": 0.000001
       }
     },
     {
       "id": "adhoc-line",
       "type": "line",
       "source": "adhoc",
+      "layout": {
+        "line-join": "round"
+      },
       "paint": {
-        "line-color": "#e8590c",
-        "line-width": 2
+        "line-color": "#e00000",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          2,
+          16,
+          4,
+          20,
+          6
+        ],
+        "line-dasharray": [
+          3,
+          1.5
+        ]
       }
     }
   ]
