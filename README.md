@@ -5,7 +5,8 @@ Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projek
 > **Planungsphase 0** (ein einziger Style `published/style.json`) ist als Git-Tag **`planungsphase-0`** gesichert und in [docs/planungsphase-0.md](docs/planungsphase-0.md) dokumentiert:
 > `git checkout planungsphase-0`. Ihr Style bleibt unter
 > [style.json @ planungsphase-0](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/planungsphase-0/published/style.json) abrufbar.
-> Dieses README beschreibt den Stand **nach** Planungsphase 0 (Planungsphase 1 kommt hinzu). Die beiden Planungsphase-0-Styles heißen jetzt „Planungsphase 0: Planungsrecht/Fachkonzepte“.
+> **Planungsphase 1** (vier Styles: Planungsphase 0: Planungsrecht und Fachkonzepte, Planungsphase 1: Ready2Use und Ready2hack) ist als Git-Tag **`planungsphase-1`** gesichert und in [docs/planungsphase-1.md](docs/planungsphase-1.md) dokumentiert.
+> Dieses README beschreibt den Stand **nach** Planungsphase 0 (inklusive Planungsphase 1). Die beiden Planungsphase-0-Styles heißen jetzt „Planungsphase 0: Planungsrecht/Fachkonzepte“.
 
 ## Die vier Styles
 Aus **einer** FeatureCollection entstehen bei jedem Publishen alle vier, in **einem Git-Commit**. Ein neuer Bereich ersetzt alle vier gemeinsam, sie können nicht auseinanderlaufen.
