@@ -21,6 +21,14 @@ Statische Seite, kein Build:
 ## Erweitern
 Neue Fragen = neues Step-Objekt `{id, title, mount, isValid, toFeatures}` in `js/wizard.js` (`STEPS`, vor `ResultStep`).
 
+## Style-Link zum Reinziehen ins Geoportal
+Diese URL (Rechtsklick → Link kopieren, oder direkt aus dem Browser) ins Geoportal ziehen:
+
+    https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/style.json
+
+Danach über das „+“ in „Externe Dienste“ zur Karte hinzufügen. Nach einer neuen Veröffentlichung die URL mit Cache-Buster
+(`…/style.json?v=<beliebige Zahl>`, der Wizard zeigt sie nach dem Publishen an) ziehen, sonst liefert GitHub bis zu 5 Minuten die alte Version.
+
 ## Publishen
 Im Ergebnisschritt schreibt „Ins Repo publishen“ die FeatureCollection per GitHub Contents API als MapLibre-`style.json` (FeatureCollection inline + Fill/Line-Layer + `carmaConf` mit `zoomToExtent`-Lupe; bewusst ohne `instant`, sonst fehlt die Lupe) nach
 `published/style.json`. Die Datei muss auf `.json` enden, damit das Geoportal sie per Drag&Drop als Style akzeptiert. Sie wird bei jeder neuen Veröffentlichung **überschrieben**
