@@ -14,13 +14,13 @@
               "id": "an",
               "title": "Luftbild ausblenden",
               "visibility": "visible",
-              "faIcon": "image"
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-an.svg"
             },
             {
               "id": "aus",
               "title": "Luftbild einblenden",
               "visibility": "none",
-              "faIcon": "image",
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-aus.svg",
               "faded": true
             }
           ],
@@ -39,17 +39,20 @@
             {
               "id": "voll",
               "title": "Deckkraft 100 %",
-              "opacity": 1
+              "opacity": 1,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-voll.svg"
             },
             {
               "id": "mittel",
               "title": "Deckkraft 60 %",
-              "opacity": 0.6
+              "opacity": 0.6,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-mittel.svg"
             },
             {
               "id": "schwach",
               "title": "Deckkraft 30 %",
-              "opacity": 0.3
+              "opacity": 0.3,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/luftbild-schwach.svg"
             }
           ],
           "targets": {
@@ -68,13 +71,13 @@
               "id": "an",
               "title": "FNP ausblenden",
               "visibility": "visible",
-              "faIcon": "map"
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-an.svg"
             },
             {
               "id": "aus",
               "title": "FNP einblenden",
               "visibility": "none",
-              "faIcon": "map",
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-aus.svg",
               "faded": true
             }
           ],
@@ -93,17 +96,20 @@
             {
               "id": "voll",
               "title": "Deckkraft 100 %",
-              "opacity": 1
+              "opacity": 1,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-voll.svg"
             },
             {
               "id": "mittel",
               "title": "Deckkraft 60 %",
-              "opacity": 0.6
+              "opacity": 0.6,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-mittel.svg"
             },
             {
               "id": "schwach",
               "title": "Deckkraft 30 %",
-              "opacity": 0.3
+              "opacity": 0.3,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/fnp-schwach.svg"
             }
           ],
           "targets": {
@@ -122,13 +128,13 @@
               "id": "an",
               "title": "Regionalplan ausblenden",
               "visibility": "visible",
-              "faIcon": "layer-group"
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-an.svg"
             },
             {
               "id": "aus",
               "title": "Regionalplan einblenden",
               "visibility": "none",
-              "faIcon": "layer-group",
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-aus.svg",
               "faded": true
             }
           ],
@@ -147,17 +153,20 @@
             {
               "id": "voll",
               "title": "Deckkraft 100 %",
-              "opacity": 1
+              "opacity": 1,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-voll.svg"
             },
             {
               "id": "mittel",
               "title": "Deckkraft 60 %",
-              "opacity": 0.6
+              "opacity": 0.6,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-mittel.svg"
             },
             {
               "id": "schwach",
               "title": "Deckkraft 30 %",
-              "opacity": 0.3
+              "opacity": 0.3,
+              "icon": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/icons/regionalplan-schwach.svg"
             }
           ],
           "targets": {
