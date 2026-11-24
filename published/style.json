@@ -3,6 +3,170 @@
   "name": "Adhoc-Projektbereich",
   "metadata": {
     "carmaConf": {
+      "dynamicStyling": [
+        {
+          "type": "toggle",
+          "label": "Luftbild",
+          "default": "an",
+          "showIcon": false,
+          "options": [
+            {
+              "id": "an",
+              "title": "Luftbild ausblenden",
+              "visibility": "visible",
+              "faIcon": "image"
+            },
+            {
+              "id": "aus",
+              "title": "Luftbild einblenden",
+              "visibility": "none",
+              "faIcon": "image",
+              "faded": true
+            }
+          ],
+          "targets": {
+            "visibility": [
+              "layers.fd-luftbild.layout.visibility"
+            ]
+          }
+        },
+        {
+          "type": "list",
+          "label": "Luftbild: Deckkraft",
+          "default": "voll",
+          "showIcon": false,
+          "options": [
+            {
+              "id": "voll",
+              "title": "Deckkraft 100 %",
+              "opacity": 1
+            },
+            {
+              "id": "mittel",
+              "title": "Deckkraft 60 %",
+              "opacity": 0.6
+            },
+            {
+              "id": "schwach",
+              "title": "Deckkraft 30 %",
+              "opacity": 0.3
+            }
+          ],
+          "targets": {
+            "opacity": [
+              "layers.fd-luftbild.paint.raster-opacity"
+            ]
+          }
+        },
+        {
+          "type": "toggle",
+          "label": "FNP",
+          "default": "an",
+          "showIcon": false,
+          "options": [
+            {
+              "id": "an",
+              "title": "FNP ausblenden",
+              "visibility": "visible",
+              "faIcon": "map"
+            },
+            {
+              "id": "aus",
+              "title": "FNP einblenden",
+              "visibility": "none",
+              "faIcon": "map",
+              "faded": true
+            }
+          ],
+          "targets": {
+            "visibility": [
+              "layers.fd-fnp.layout.visibility"
+            ]
+          }
+        },
+        {
+          "type": "list",
+          "label": "FNP: Deckkraft",
+          "default": "mittel",
+          "showIcon": false,
+          "options": [
+            {
+              "id": "voll",
+              "title": "Deckkraft 100 %",
+              "opacity": 1
+            },
+            {
+              "id": "mittel",
+              "title": "Deckkraft 60 %",
+              "opacity": 0.6
+            },
+            {
+              "id": "schwach",
+              "title": "Deckkraft 30 %",
+              "opacity": 0.3
+            }
+          ],
+          "targets": {
+            "opacity": [
+              "layers.fd-fnp.paint.raster-opacity"
+            ]
+          }
+        },
+        {
+          "type": "toggle",
+          "label": "Regionalplan",
+          "default": "an",
+          "showIcon": false,
+          "options": [
+            {
+              "id": "an",
+              "title": "Regionalplan ausblenden",
+              "visibility": "visible",
+              "faIcon": "layer-group"
+            },
+            {
+              "id": "aus",
+              "title": "Regionalplan einblenden",
+              "visibility": "none",
+              "faIcon": "layer-group",
+              "faded": true
+            }
+          ],
+          "targets": {
+            "visibility": [
+              "layers.fd-regionalplan.layout.visibility"
+            ]
+          }
+        },
+        {
+          "type": "list",
+          "label": "Regionalplan: Deckkraft",
+          "default": "mittel",
+          "showIcon": false,
+          "options": [
+            {
+              "id": "voll",
+              "title": "Deckkraft 100 %",
+              "opacity": 1
+            },
+            {
+              "id": "mittel",
+              "title": "Deckkraft 60 %",
+              "opacity": 0.6
+            },
+            {
+              "id": "schwach",
+              "title": "Deckkraft 30 %",
+              "opacity": 0.3
+            }
+          ],
+          "targets": {
+            "opacity": [
+              "layers.fd-regionalplan.paint.raster-opacity"
+            ]
+          }
+        }
+      ],
       "tools": [
         {
           "kind": "zoomToExtent",
