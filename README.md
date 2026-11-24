@@ -17,7 +17,7 @@ Sie tragen dieselbe Projektbereich-ID (`pb-…`) und verweisen in `layerInfo.lin
 | **Planungsphase 0: Planungsrecht** | `published/planungsphase-0-planungsrecht.json` | roter gestrichelter Umriss + Dropdown: FNP Hauptnutzungen, WMS Regionalplan NRW, WMS Landesentwicklungsplan NRW, B-Plan-Verfahren (rechtsverbindlich), Landschafts- und Naturschutz |
 | **Planungsphase 0: Fachkonzepte** | `published/planungsphase-0-fachkonzepte.json` | roter gestrichelter Umriss + Dropdown: Gesamtbewertung der Bodenfunktionen, Eignung dezentrale Wärmeversorgung, Stadtbaumkonzept |
 | **Planungsphase 1: Ready2Use** | `published/planungsphase-1-ready2use.json` | Geltungsbereich: gleiche Geometrie wie der Projektbereich, **schwarz** gestrichelt, ohne Fachdaten |
-| **Planungsphase 1: Ready2hack** | `published/planungsphase-1-ready2hack.json` | zwei Punkte **TwinFlow 101** und **TwinFlow 103**, per **Filter-Button** im Layer-Chip einzeln schaltbar |
+| **Planungsphase 1: Ready2hack** | `published/planungsphase-1-ready2hack.json` | sechs Punkte **TwinFlow 101 bis 106** (je Ressort einer), per **Filter-Button** im Layer-Chip einzeln schaltbar, mit **Datenblatt** |
 | **Planungsphase 1: Entwurf** | `published/planungsphase-1-entwurf.json` | Bebauungsentwurf (Lageplan), aus der Geometrie von Ready2Use **berechnet** |
 | (Datenblatt) | `published/twinflow-datenblatt.html`, `published/twinflow-ressorts.json` | Datenblatt zu den TwinFlows (HTML, per GitHub Pages) und seine Daten |
 | (Quelle) | `published/projektbereich.geojson`, `published/entwurf.geojson` | die gemeinsame Geometrie und die Geometrie des Entwurfs |
