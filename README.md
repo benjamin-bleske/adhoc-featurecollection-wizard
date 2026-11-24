@@ -19,7 +19,7 @@ Statische Seite, kein Build:
 Neue Fragen = neues Step-Objekt `{id, title, mount, isValid, toFeatures}` in `js/wizard.js` (`STEPS`, vor `ResultStep`).
 
 ## Publishen
-Im Ergebnisschritt schreibt „Ins Repo publishen“ die FeatureCollection per GitHub Contents API nach
-`published/featurecollection.geojson`. Die Datei wird bei jeder neuen Veröffentlichung **überschrieben**
+Im Ergebnisschritt schreibt „Ins Repo publishen“ die FeatureCollection per GitHub Contents API als MapLibre-`style.json` (FeatureCollection inline + Fill/Line-Layer + `carmaConf`) nach
+`published/style.json`. Die Datei muss auf `.json` enden, damit das Geoportal sie per Drag&Drop als Style akzeptiert. Sie wird bei jeder neuen Veröffentlichung **überschrieben**
 (abrufbar über die raw-URL im Ergebnisschritt). Nötig: ein fine-grained Token mit *Contents: Read and write*
 für dieses Repo – wird nur im Browser-Tab gehalten, nie im Code gespeichert.
