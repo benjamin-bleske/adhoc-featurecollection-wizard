@@ -4,7 +4,6 @@
 //                  (Sources/Layer mit Präfix fd-<id>; Beschriftungs-Layer mit Sprite entfallen).
 // `bounds` begrenzt die Quellen auf das Rechteck um den Projektbereich.
 const Fachdaten = (() => {
-  const wms = (base, params) => `${base}?service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&bbox={bbox-epsg-3857}&${params}`;
   const caps = base => `${base}?REQUEST=GetCapabilities&SERVICE=WMS`;
 
   const CATALOG = [
@@ -21,12 +20,12 @@ const Fachdaten = (() => {
       legend: 'https://www.wms.nrw.de/legends/wms/wms_nw_regionalplan/Legende.png',
       // keine Flächenauswertung: gerenderte Farben weichen von der Legende ab, Topographie-Unterlage, Darstellung nur ab 1:8000
       noAnalysis: 'Festlegungen im Projektbereich sind aus dem Kartenbild nicht zuverlässig ableitbar (siehe Legende).',
-      tiles: wms('https://www.wms.nrw.de/wms/wms_nw_regionalplan', 'layers=regionalplan&styles=&format=image/png&transparent=true'), opacity: 0.7 },
+      getMap: { base: 'https://www.wms.nrw.de/wms/wms_nw_regionalplan', layers: 'regionalplan' }, opacity: 0.7 },
     { id: 'lep', kind: 'wms', label: 'WMS Landesentwicklungsplan NRW',
       description: 'Rasterdaten der zeichnerischen Festlegungen des geltenden Landesentwicklungsplans NRW.',
       source: 'Land NRW, wms.nrw.de/wms/wms_nw_landesentwicklungsplan',
       capabilities: caps('https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan'),
-      tiles: wms('https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan', 'layers=landesentwicklungsplan&styles=&format=image/png&transparent=true'), opacity: 0.7,
+      opacity: 0.7,
       legend: 'https://www.wms.nrw.de/legends/wms/wms_nw_landesentwicklungsplan/landesentwicklungsplan.png',
       // Flächenfarben im Kartenbild = Legendenfarben (geprüft); daraus wird der Flächenanteil im Projektbereich geschätzt
       getMap: { base: 'https://www.wms.nrw.de/wms/wms_nw_landesentwicklungsplan', layers: 'landesentwicklungsplan' },
@@ -142,8 +141,15 @@ const Fachdaten = (() => {
     for (const c of selected(ids)) {
       byEntry[c.id] = [];
       if (c.kind === 'wms') {
-        sources[`fd-${c.id}`] = { type: 'raster', tileSize: 256, tiles: [c.tiles], ...(b && { bounds: b }), attribution: c.source };
-        layers.push({ id: `fd-${c.id}`, type: 'raster', source: `fd-${c.id}`, paint: { 'raster-opacity': c.opacity ?? 1 }, metadata: { fachdaten: c.label } });
+        // Ein einzelnes GetMap-Bild genau für den Abrufbereich: bleibt auf das Rechteck begrenzt und verschwindet bei Nahzoom nicht
+        // (die Dienste zeichnen nur bis ca. 1:8000, daher mind. 4 m pro Pixel).
+        if (!b) { delete byEntry[c.id]; continue; }
+        const [w, s0, e, n] = b, [x0, y0] = merc([w, s0]), [x1, y1] = merc([e, n]);
+        const mpp = Math.max(4, Math.max(x1 - x0, y1 - y0) / 2000);
+        const W = Math.max(32, Math.round((x1 - x0) / mpp)), H = Math.max(32, Math.round((y1 - y0) / mpp));
+        sources[`fd-${c.id}`] = { type: 'image', coordinates: [[w, n], [e, n], [e, s0], [w, s0]],
+          url: `${c.getMap.base}?service=WMS&version=1.1.1&request=GetMap&layers=${c.getMap.layers}&styles=&format=image/png&transparent=true&srs=EPSG:3857&width=${W}&height=${H}&bbox=${[x0, y0, x1, y1].map(v => v.toFixed(2)).join(',')}` };
+        layers.push({ id: `fd-${c.id}`, type: 'raster', source: `fd-${c.id}`, layout: { visibility: 'none' }, paint: { 'raster-opacity': c.opacity ?? 1 }, metadata: { fachdaten: c.label } });
         byEntry[c.id].push(`fd-${c.id}`);
       } else if (loaded[c.id]?.style) {
         const st = loaded[c.id].style;
@@ -151,7 +157,7 @@ const Fachdaten = (() => {
         for (const l of st.layers) {
           if (l.type === 'symbol') continue; // Beschriftungen brauchen Sprite/Glyphs des Quell-Styles
           const id = `fd-${c.id}-${l.id}`;
-          layers.push({ ...l, id, source: `fd-${c.id}-${l.source}`, metadata: { ...l.metadata, fachdaten: c.label } });
+          layers.push({ ...l, id, source: `fd-${c.id}-${l.source}`, layout: { ...l.layout, visibility: 'none' }, metadata: { ...l.metadata, fachdaten: c.label } });
           byEntry[c.id].push(id);
         }
       }
@@ -159,41 +165,45 @@ const Fachdaten = (() => {
     return { sources, layers, byEntry };
   }
 
-  // Ein Dropdown "Fachdaten" im Layer-Chip (carmaConf.dynamicStyling, Typ list): Alle / je Kartenwerk einzeln / Keine
+  // Ein Dropdown im Layer-Chip (carmaConf.dynamicStyling, Typ list): "Nur Projektbereich" (Standard) oder je ein Kartenwerk.
+  // Der Abrufbereich (Rechteck, in dem die Fachdaten geladen werden) ist nur sichtbar, wenn ein Kartenwerk aktiv ist.
   function toDynamicStyling(ids, byEntry) {
     const sel = selected(ids).filter(c => byEntry[c.id]?.length);
     if (!sel.length) return [];
-    const opt = (id, title, on) => { const o = { id, title }; for (const c of sel) o[`vis_${c.id}`] = on.includes(c) ? 'visible' : 'none'; return o; };
-    const options = [
-      ...(sel.length > 1 ? [opt('alle', 'Alle Fachdaten', sel)] : []),
-      ...sel.map(c => opt(c.id, c.label, [c])),
-      opt('keine', 'Keine Fachdaten', []),
-    ];
+    const opt = (id, title, on) => { const o = { id, title, vis_bbox: on.length ? 'visible' : 'none' }; for (const c of sel) o[`vis_${c.id}`] = on.includes(c) ? 'visible' : 'none'; return o; };
+    const options = [opt('nur', 'Nur Projektbereich', []), ...sel.map(c => opt(c.id, c.label, [c]))];
     return [{
-      type: 'list', label: 'Fachdaten', default: options[0].id, showIcon: false, options,
-      targets: Object.fromEntries(sel.map(c => [`vis_${c.id}`, byEntry[c.id].map(id => `layers.${id}.layout.visibility`)])),
+      type: 'list', label: 'Fachdaten', default: 'nur', showIcon: false, options,
+      targets: { vis_bbox: ['layers.adhoc-bbox.layout.visibility'], ...Object.fromEntries(sel.map(c => [`vis_${c.id}`, byEntry[c.id].map(id => `layers.${id}.layout.visibility`)])) },
     }];
+  }
+
+  // Rechteck, in dem die Fachdaten abgerufen werden (Quelle `bounds` der Fachdaten-Ebenen)
+  function bboxFeature(ids, bounds) {
+    if (!bounds || !selected(ids).length) return null;
+    const [w, s, e, n] = padBounds(bounds);
+    return { type: 'Feature', properties: { info_title: 'Abrufbereich der Fachdaten', info_text: 'Rechteck um den Projektbereich, in dem die gewählten Fachdaten geladen werden.' },
+      geometry: { type: 'Polygon', coordinates: [[[w, s], [e, s], [e, n], [w, n], [w, s]]] } };
   }
 
   // ---- Infobox: eine Zuordnungsfunktion (eine Zeile!) für alle Quellen; Verteilung nach carmaInfo.sourceLayer
   const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  // HTML-Zeilen zu den WMS-Diensten (aus den Capabilities)
+  // Kompakte HTML-Zeilen zu den WMS-Kartenwerken: Auswertung (falls möglich) + Links
   function capabilitiesHtml(ids) {
     return selected(ids).filter(c => c.kind === 'wms').map(c => {
-      const k = loaded[c.id]?.caps ?? {};
-      const abs = k.abstract ? firstSentences(k.abstract) : c.description;
       const an = analysis[c.id];
-      const anHtml = an?.length ? `<br/><i>Festlegungen im Projektbereich (Näherung aus dem Kartenbild):</i> ${an.map(x => `${esc(x.name)} (${Math.max(1, Math.round(x.share * 100))} %)`).join(', ')}` : c.noAnalysis ? `<br/><i>${esc(c.noAnalysis)}</i>` : '';
-      return `<b>${esc(c.label)}</b><br/>Dienst: ${esc(k.title ?? c.label)}${k.org ? ` (${esc(k.org)})` : ''}<br/>${esc(abs)}${anHtml}<br/><a href="${c.capabilities.replace(/&/g, '&amp;')}">GetCapabilities</a>${c.legend ? ` · <a href="${c.legend}">Legende</a>` : ''}`;
-    }).join('<br/><br/>');
+      const val = an?.length ? an.map(x => `${esc(x.name)} (${Math.max(1, Math.round(x.share * 100))} %)`).join(', ') : c.noAnalysis ? 'keine Auswertung möglich' : 'keine Festlegung erkannt';
+      const links = [c.legend && `<a href="${c.legend}">Legende</a>`, `<a href="${c.capabilities.replace(/&/g, '&amp;')}">Capabilities</a>`].filter(Boolean).join(' · ');
+      return `<b>${esc(c.label)}:</b> ${val} <small>(${links})</small>`;
+    }).join('<br/>');
   }
 
   function infoboxMapping(ids) {
     const fns = selected(ids).filter(c => c.sourceLayer && loaded[c.id]?.infobox)
       .map(c => `${JSON.stringify(c.sourceLayer)}: ${loaded[c.id].infobox}`);
     const capsHtml = capabilitiesHtml(ids);
-    const adhoc = `var t = (p.info_text || '').split('\\n').join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + t + ${JSON.stringify(capsHtml ? '<br/><br/>' + capsHtml : '')} + '</html>' };`;
+    const adhoc = `var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = (p.info_text || '').split('\\n').map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + t + ${JSON.stringify(capsHtml ? '<br/>' + capsHtml : '')} + '</html>' };`;
     const code = `function createInfoBoxInfo(p){ var M = { ${fns.join(', ')} }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } ${adhoc} }`;
     return code.replace(/\s*\n\s*/g, ' ');
   }
@@ -201,5 +211,5 @@ const Fachdaten = (() => {
   const describe = ids => selected(ids).map(c => `${c.label}: ${c.description} (Quelle: ${c.source})`);
   const links = ids => selected(ids).flatMap(c => [c.styleUrl && { url: c.styleUrl, text: `${c.label} (Style)` }, c.capabilities && { url: c.capabilities, text: `${c.label} (GetCapabilities)` }].filter(Boolean));
 
-  return { CATALOG, load, analyse, analysis, errors, toStyleParts, toDynamicStyling, infoboxMapping, describe, links };
+  return { CATALOG, load, analyse, analysis, errors, toStyleParts, toDynamicStyling, bboxFeature, infoboxMapping, describe, links };
 })();

@@ -31,8 +31,10 @@ Optional als Kartenebenen im Style des Projektbereichs (keine Luftbilder), benan
 - **Gesamtbewertung der Bodenfunktionen** (`https://tiles.cismet.de/bodenfunktion/style.json`)
 
 Die Vektor-Styles werden beim Publishen live von `tiles.cismet.de` geladen und in den Style eingebaut (Beschriftungs-Layer mit Sprite entfallen).
-Die Ebenen werden nur im Rechteck um den Projektbereich geladen (MapLibre kann Raster nicht an einem Polygon ausschneiden).
-Im Geoportal gibt es **ein Dropdown „Fachdaten“** am Layer-Symbol im Chip: Alle, jedes Kartenwerk einzeln oder keine.
+Die WMS (Regionalplan, Landesentwicklungsplan) werden als **ein einziges Bild genau für den Abrufbereich** eingebunden (mind. 4 m pro Pixel).
+Die Dienste zeichnen nur bis ca. 1:8000; als Kachelquelle wären sie bei Nahzoom leer geworden. Die Vektor-Ebenen kommen kachelweise und können nicht an das Rechteck beschnitten werden.
+Der **Abrufbereich** (Rechteck um den Projektbereich) ist als blau gestrichelte Linie sichtbar, sobald ein Kartenwerk aktiv ist.
+Im Geoportal gibt es **ein Dropdown** am Layer-Symbol im Chip: „Nur Projektbereich“ (Standard) oder jedes Kartenwerk einzeln.
 Ein echter Filter-Button (wie beim Ölberg) ist nicht möglich, weil er nur Vektor-Features filtert, nicht Raster-WMS.
 
 ## Auswertung der WMS-Rasterdaten (Landesentwicklungsplan)
@@ -43,8 +45,8 @@ Beim **Regionalplan NRW** gibt es bewusst keine Auswertung: die gerenderten Farb
 Die Infobox verweist dort auf Capabilities und Legende.
 
 ## Infobox im Geoportal
-Klick in den Projektbereich: Gemarkung, Flur, Flurstück(e), Größe, dazu die **FNP-Hauptnutzungen** mit Flächenanteil (aus den FNP-Vector-Tiles ermittelt)
-und die **Capabilities** (Dienst, Betreiber, Beschreibung, Link) der gewählten WMS (Regionalplan, Landesentwicklungsplan).
+Klick in den Projektbereich: Gemarkung, Flur, Flurstück(e), Größe, dazu je gewähltem Kartenwerk die **Fachdaten im Projektbereich** mit Flächenanteil
+(FNP-Hauptnutzungen, rechtsverbindliche B-Pläne, Landschafts-/Naturschutz, Bodenfunktion aus den Vector-Tiles; Landesentwicklungsplan aus dem Kartenbild; Regionalplan ohne Auswertung) und Links zu Legende und Capabilities der WMS.
 Klick auf einen Fachdaten-Layer zeigt dessen eigene Infobox (B-Plan, Schutzgebiet, Bodenfunktion, FNP-Nutzung).
 
 ## Erweitern

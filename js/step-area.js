@@ -43,7 +43,7 @@ const AreaStep = (() => {
     // ALKIS-Flurstücke/Gebäude als Vector Tiles (Stadt Wuppertal)
     mgl = L.maplibreGL({ style: Alkis.STYLE, pane: 'overlayPane' }).addTo(map).getMaplibreMap();
     Alkis.resetHighlight();
-    mgl.on('load', () => { Alkis.addHighlight(mgl); Alkis.addFnp(mgl); render(a, api); });
+    mgl.on('load', () => { Alkis.addHighlight(mgl); Alkis.addVec(mgl); render(a, api); });
     mgl.on('idle', () => refresh(a, api));
     map.on('click', e => onMapClick(a, api, e));
     map.on('zoomend', () => render(a, api));
@@ -124,15 +124,15 @@ const AreaStep = (() => {
     return polys.length ? polygonClipping.union(...polys) : null;
   }
 
-  // FNP-Hauptnutzungen zum Projektbereich (aus den Tiles); true, wenn sich das Ergebnis geändert hat
+  // Fachdaten-Auswertung zum Projektbereich (FNP, B-Plan, Schutzgebiete, Boden) aus den Tiles; true, wenn sich etwas geändert hat
   function updateFnp(a) {
     const multi = a.mode === 'draw' || map.getZoom() >= MIN_ZOOM ? areaMulti(a) : null;
-    if (!multi) { const had = !!a.fnp; a.fnp = null; return had; }
-    const r = Alkis.fnpSummary(mgl, multi);
-    if (!r) return false;
-    const key = JSON.stringify([a.mode, r.items.map(i => [i.nutzung, Math.round(i.share * 100)]), a.parcels.map(f => f.id), a.drawn && a.drawn.coordinates[0].length]);
-    if (a.fnp?.key === key) return false;
-    a.fnp = { ...r, key };
+    if (!multi) { const had = !!a.vec; a.vec = null; return had; }
+    const vec = {};
+    for (const id of Object.keys(Alkis.VEC)) { const r = Alkis.vecSummary(mgl, id, multi); if (!r) return false; vec[id] = r; }
+    const key = JSON.stringify([a.mode, Object.values(vec).map(r => r.items.map(i => [i.name, Math.round(i.share * 100)])), a.parcels.map(f => f.id), a.drawn && a.drawn.coordinates[0].length]);
+    if (a.vec?.key === key) return false;
+    a.vec = { ...vec, key };
     return true;
   }
 
@@ -176,7 +176,8 @@ const AreaStep = (() => {
       const total = parcels.reduce((t, f) => t + f.properties.flaeche_m2, 0);
       info.append(el('div', { className: 'sum', textContent: `Gesamt: ${parcels.length} Flurstücke, Größe ${Format.ca(total)}` }));
     }
-    if (a.fnp?.items.length) info.append(el('div', { className: 'block' }, el('div', { textContent: 'FNP Hauptnutzung: ' + fnpText(a.fnp) })));
+    if (a.vec) info.append(el('div', { className: 'block' }, el('b', { textContent: 'Fachdaten im Projektbereich' }),
+      ...fnpLines(a, Object.keys(VEC_LABEL)).split('\n').filter(Boolean).map(t => el('div', { textContent: t }))));
     if (a.mode === 'draw' && a.drawnPartial)
       info.append(el('p', { className: 'warn', textContent: 'Der Bereich ragt aus dem Kartenausschnitt – Flurstückliste ggf. unvollständig. Bitte so zoomen, dass der ganze Bereich sichtbar ist.' }));
     if (a.mode === 'select' && parcels.some(f => !f.properties.geometrie_vollstaendig))
@@ -188,13 +189,18 @@ const AreaStep = (() => {
     return !!a && (a.mode === 'draw' ? !!a.drawn : a.parcels.length > 0);
   }
 
-  const fnpText = f => f.items.map(i => `${i.nutzung} (${Math.max(1, Math.round(i.share * 100))} %)`).join(', ');
-  const fnpLines = a => a.fnp?.items.length ? `\nFNP Hauptnutzung: ${fnpText(a.fnp)}` + (a.fnp.recht.length === 1 ? `\n${a.fnp.recht[0]}` : '') : '';
+  // Fachdaten-Zeilen für die Infobox (nur die in Schritt 2 gewählten)
+  const VEC_LABEL = { fnp: 'FNP Hauptnutzung', bplan: 'B-Plan-Verfahren (rechtsverbindlich)', landschaft: 'Landschafts- und Naturschutz', boden: 'Bodenfunktion (Gesamtbewertung)' };
+  const VEC_NONE = { fnp: 'keine Angabe', bplan: 'keine', landschaft: 'keine', boden: 'keine Angabe' };
+  // die drei größten Anteile, der Rest als "+ n weitere"
+  const vecText = (r, none) => r.items.length ? r.items.slice(0, 3).map(i => `${i.name} (${Math.max(1, Math.round(i.share * 100))} %)`).join(', ') + (r.items.length > 3 ? ` + ${r.items.length - 3} weitere` : '') : none;
+  const fnpLines = (a, ids) => !a.vec ? '' : Object.keys(VEC_LABEL).filter(id => ids.includes(id))
+    .map(id => `\n${VEC_LABEL[id]}: ${vecText(a.vec[id], VEC_NONE[id])}` + (id === 'fnp' && a.vec.fnp.recht.length === 1 ? ` – ${a.vec.fnp.recht[0]}` : '')).join('');
 
   // Fertige Infobox-Texte (werden im Style per infoboxMapping angezeigt)
-  const infoFor = (g, a) => ({
+  const infoFor = (g, a, ids) => ({
     info_title: `Gemarkung: ${g.gem}`,
-    info_text: `Flur: ${g.flur}\n${g.parcelsText}\nGröße: ${Format.ca(g.sum)}` + fnpLines(a),
+    info_text: `Flur: ${g.flur}\n${g.parcelsText}\nGröße: ${Format.ca(g.sum)}` + fnpLines(a, ids),
   });
 
   function toFeatures(state) {
@@ -209,7 +215,7 @@ const AreaStep = (() => {
           role: 'projektbereich', mode: 'draw', flaeche_m2: area,
           flurstuecke: parcels.map(f => ({ gemarkung: f.properties.gemarkung, flur: f.properties.flur, flurstueck: f.properties.flurstuecksnummer, flaeche_m2: f.properties.flaeche_m2 })),
           info_title: 'Gezeichneter Projektbereich',
-          info_text: `Größe: ${Format.ca(area)}\n\n` + gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n') + (fnpLines(a) ? '\n' + fnpLines(a) : ''),
+          info_text: `Größe: ${Format.ca(area)}\n\n` + gs.map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`).join('\n\n') + fnpLines(a, state.fachdaten ?? []),
         },
       }];
     }
@@ -217,7 +223,7 @@ const AreaStep = (() => {
     return a.parcels.map(f => ({
       type: 'Feature', geometry: f.geometry,
       properties: { role: 'projektbereich', mode: 'flurstueck', ...f.properties,
-        ...infoFor(byKey.get(`${f.properties.gemarkung}|${f.properties.flur}`), a) },
+        ...infoFor(byKey.get(`${f.properties.gemarkung}|${f.properties.flur}`), a, state.fachdaten ?? []) },
     }));
   }
 
