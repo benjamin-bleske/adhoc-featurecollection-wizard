@@ -11,7 +11,6 @@
         "fachkonzepte": "published/planungsphase-0-fachkonzepte.json",
         "ready2use": "published/planungsphase-1-ready2use.json",
         "ready2hack": "published/planungsphase-1-ready2hack.json",
-        "entwurf": "published/planungsphase-1-entwurf.json",
         "projektbereich": "published/projektbereich.geojson",
         "entwurfgeo": "published/entwurf.geojson",
         "datenblatt": "published/twinflow-datenblatt.html",
@@ -162,10 +161,6 @@
           {
             "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json",
             "text": "Planungsphase 1: Ready2hack (Style)"
-          },
-          {
-            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-entwurf.json",
-            "text": "Planungsphase 1: Entwurf (Style)"
           }
         ],
         "keywords": [
