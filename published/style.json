@@ -1,0 +1,113 @@
+{
+  "version": 8,
+  "name": "Adhoc-Projektbereich",
+  "metadata": {
+    "carmaConf": {
+      "instant": true,
+      "layerInfo": {
+        "title": "Adhoc-Projektbereich",
+        "description": "Ad-hoc FeatureCollection aus dem Wizard",
+        "keywords": [
+          "adhoc"
+        ]
+      }
+    }
+  },
+  "sources": {
+    "adhoc": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.15263600576755,
+                      51.2537356688448
+                    ],
+                    [
+                      7.15272455567432,
+                      51.2537078300145
+                    ],
+                    [
+                      7.15284322195015,
+                      51.253653361224
+                    ],
+                    [
+                      7.15295359838018,
+                      51.2537563748344
+                    ],
+                    [
+                      7.15302946668556,
+                      51.253827187953
+                    ],
+                    [
+                      7.15305223269903,
+                      51.253848438261
+                    ],
+                    [
+                      7.15282969422895,
+                      51.2539422314292
+                    ],
+                    [
+                      7.15280884481511,
+                      51.253920004101
+                    ],
+                    [
+                      7.15275736194584,
+                      51.2538650798908
+                    ],
+                    [
+                      7.15273915111686,
+                      51.2538456730717
+                    ],
+                    [
+                      7.15263600576755,
+                      51.2537356688448
+                    ]
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "role": "projektbereich",
+              "mode": "flurstueck",
+              "idflurst": "DENW29AL1000GSY1",
+              "gemarkung": "Elberfeld",
+              "gemarkungsschluessel": "053135",
+              "flur": "175",
+              "flurstuecksnummer": "59",
+              "flaeche_m2": 467,
+              "gemeinde": "Wuppertal"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "layers": [
+    {
+      "id": "adhoc-fill",
+      "type": "fill",
+      "source": "adhoc",
+      "paint": {
+        "fill-color": "#e8590c",
+        "fill-opacity": 0.35
+      }
+    },
+    {
+      "id": "adhoc-line",
+      "type": "line",
+      "source": "adhoc",
+      "paint": {
+        "line-color": "#e8590c",
+        "line-width": 2
+      }
+    }
+  ]
+}
