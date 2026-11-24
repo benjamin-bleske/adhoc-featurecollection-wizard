@@ -9,6 +9,7 @@ const Publish = (() => {
 
   // MapLibre-Style, wie ihn das Geoportal per Drop erwartet (URL auf .json):
   // FeatureCollection inline als geojson-Source + Fill/Line-Layer + carmaConf-Metadaten.
+  // Kein `instant`: ein instant hinzugefügter Layer verliert im Geoportal sein zoomToExtent-Tool (Lupe).
   // [west, süd, ost, nord] über alle Koordinaten der FeatureCollection
   function extent(fc) {
     let w = 180, s = 90, e = -180, n = -90;
@@ -22,7 +23,7 @@ const Publish = (() => {
     const bounds = extent(fc);
     return {
       version: 8, name: title,
-      metadata: { carmaConf: { instant: true, ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc'] } } },
+      metadata: { carmaConf: { ...(bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] }), layerInfo: { title, description: 'Ad-hoc FeatureCollection aus dem Wizard', keywords: ['adhoc'] } } },
       sources: { adhoc: { type: 'geojson', data: fc } },
       layers: [
         { id: 'adhoc-fill', type: 'fill', source: 'adhoc', paint: { 'fill-color': '#e8590c', 'fill-opacity': 0.35 } },
@@ -45,7 +46,7 @@ const Publish = (() => {
       }),
     });
     if (!res.ok) throw new Error(`GitHub HTTP ${res.status}: ${(await res.json().catch(() => ({}))).message ?? ''}`);
-    return { replaced: !!sha, url: rawUrl };
+    return { replaced: !!sha, url: `${rawUrl}?v=${Date.now()}` }; // ?v= umgeht den 5-Min-Cache von raw.githubusercontent.com
   }
 
   return { publish, buildStyle, rawUrl, CFG };
