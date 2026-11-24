@@ -25,7 +25,7 @@ const Publish = (() => {
   async function publish(json, token) {
     const headers = { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
     // vorhandene Datei -> sha nötig zum Überschreiben
-    const cur = await fetch(`${api}?ref=${CFG.branch}`, { headers });
+    const cur = await fetch(`${api}?ref=${CFG.branch}`, { headers, cache: 'no-store' });
     if (cur.status !== 404 && !cur.ok) throw new Error(`GitHub HTTP ${cur.status}`);
     const sha = cur.ok ? (await cur.json()).sha : undefined;
     const res = await fetch(api, {
