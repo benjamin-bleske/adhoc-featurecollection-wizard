@@ -6,7 +6,7 @@ const ResultStep = (() => {
     root.innerHTML = '';
     const wrap = document.createElement('div');
     wrap.className = 'result-step';
-    wrap.innerHTML = '<h2>Ergebnis: FeatureCollection</h2><div class="result-actions"><button id="copy" type="button">Kopieren</button><button id="dl" type="button">Als .geojson herunterladen</button></div><div class="publish"><input id="token" type="password" autocomplete="off" placeholder="GitHub-Token (Contents: Read &amp; write)"><button id="pub" type="button" class="primary">Ins Repo publishen</button></div><p class="hint" id="pubmsg">Veröffentlicht vier Styles (Planungsphase 0: Planungsrecht und Fachkonzepte, Planungsphase 1: Ready2Use und Ready2hack) in einem Commit und überschreibt die vorherigen (<code></code>). Die Links danach ins Geoportal ziehen. Das Token bleibt nur im Browser-Tab (sessionStorage).</p><textarea readonly></textarea>';
+    wrap.innerHTML = '<h2>Ergebnis: FeatureCollection</h2><div class="result-actions"><button id="copy" type="button">Kopieren</button><button id="dl" type="button">Als .geojson herunterladen</button></div><div class="publish"><input id="token" type="password" autocomplete="off" placeholder="GitHub-Token (Contents: Read &amp; write)"><button id="pub" type="button" class="primary">Ins Repo publishen</button></div><p class="hint" id="pubmsg">Veröffentlicht fünf Styles (Planungsphase 0: Planungsrecht und Fachkonzepte, Planungsphase 1: Ready2Use, Ready2hack und Entwurf) in einem Commit und überschreibt die vorherigen (<code></code>). Die Links danach ins Geoportal ziehen. Das Token bleibt nur im Browser-Tab (sessionStorage).</p><textarea readonly></textarea>';
     wrap.querySelector('textarea').value = json;
     wrap.querySelector('#copy').onclick = () => navigator.clipboard.writeText(json).then(() => api.status('In die Zwischenablage kopiert.'));
     wrap.querySelector('#dl').onclick = () => {
@@ -28,9 +28,9 @@ const ResultStep = (() => {
         await Fachdaten.analyse(fc);
         if (errs.length) api.status('Hinweis, nicht ladbar: ' + errs.join('; '));
         const r = await Publish.publish(fc, tok.value);
-        const names = { planungsrecht: 'Planungsphase 0: Planungsrecht', fachkonzepte: 'Planungsphase 0: Fachkonzepte', ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack', projektbereich: 'Projektbereich (GeoJSON)' };
+        const names = { planungsrecht: 'Planungsphase 0: Planungsrecht', fachkonzepte: 'Planungsphase 0: Fachkonzepte', ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack', entwurf: 'Planungsphase 1: Entwurf', projektbereich: 'Projektbereich (GeoJSON)' };
         wrap.querySelector('#pubmsg').innerHTML = `Veröffentlicht in <b>einem</b> Commit (${r.sha.slice(0, 7)}), Projektbereich ${r.id}. Diese Links ins Geoportal ziehen:<ul>` +
-          Object.entries(r.urls).filter(([k]) => k !== 'projektbereich').map(([k, u]) => `<li>${names[k]}: <a target="_blank" rel="noopener" href="${u}">${u}</a></li>`).join('') + '</ul>';
+          Object.entries(r.urls).filter(([k]) => !['projektbereich', 'entwurfgeo'].includes(k)).map(([k, u]) => `<li>${names[k]}: <a target="_blank" rel="noopener" href="${u}">${u}</a></li>`).join('') + '</ul>';
         api.status('Veröffentlicht.');
       } catch (err) { api.status('Fehler: ' + err.message); }
     };

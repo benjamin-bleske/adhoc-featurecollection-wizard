@@ -3,8 +3,9 @@
 //   Planungsphase 0: Fachkonzepte    (Bodenfunktion, dezentrale Wärmeversorgung, Stadtbaumkonzept)
 //   Planungsphase 1: Ready2Use       (Geltungsbereich: gleiche Geometrie wie der Projektbereich, schwarz gestrichelt)
 //   Planungsphase 1: Ready2hack      (zwei Punkte TwinFlow 101/103 relativ zu Ready2Use, per Filter-Button schaltbar)
+//   Planungsphase 1: Entwurf         (Bebauungsentwurf, aus der Geometrie von Ready2Use berechnet, siehe js/entwurf.js)
 // Weil alles aus derselben FeatureCollection entsteht und in einem Commit landet, sind die Styles immer synchron:
-// ein neuer Bereich ersetzt alle vier gemeinsam.
+// ein neuer Bereich ersetzt alle fünf gemeinsam.
 const Publish = (() => {
   const CFG = { owner: 'benjamin-bleske', repo: 'adhoc-featurecollection-wizard', branch: 'main' };
   const FILES = {
@@ -12,9 +13,13 @@ const Publish = (() => {
     fachkonzepte: 'published/planungsphase-0-fachkonzepte.json',
     ready2use: 'published/planungsphase-1-ready2use.json',
     ready2hack: 'published/planungsphase-1-ready2hack.json',
+    entwurf: 'published/planungsphase-1-entwurf.json',
     projektbereich: 'published/projektbereich.geojson',
+    entwurfgeo: 'published/entwurf.geojson',
   };
-  const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack' };
+  const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack', entwurf: 'Planungsphase 1: Entwurf' };
+  // fester Text in der Infobox von Ready2Use
+  const READY2USE_TEXT = 'Der TwinFlow Umlauf wurde am 24. November 2026 von Benjamin Bleske gestartet.';
   // frühere Dateinamen: werden beim Publishen entfernt (Planungsphase 0 steht dauerhaft im Tag planungsphase-0)
   const LEGACY = ['published/style.json', 'published/planungsrecht.json', 'published/fachkonzepte.json', 'published/geltungsbereich.json'];
   const raw = (path, ref = CFG.branch) => `https://raw.githubusercontent.com/${CFG.owner}/${CFG.repo}/${ref}/${path}`;
@@ -57,7 +62,7 @@ const Publish = (() => {
   const zoomTool = bounds => bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] };
   const sibling = (key, title) => ({ url: raw(FILES[key]), text: `${title} (Style)` });
   const titleOf = key => Fachdaten.GROUPS[key]?.title ?? TITLES[key];
-  const siblings = except => ['planungsrecht', 'fachkonzepte', 'ready2use', 'ready2hack'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
+  const siblings = except => ['planungsrecht', 'fachkonzepte', 'ready2use', 'ready2hack', 'entwurf'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
 
   // Style "Projektbereich: Planungsrecht" bzw. "Projektbereich: Fachkonzepte"
   function groupStyle(gid, fc, bounds, pbId) {
@@ -93,7 +98,7 @@ const Publish = (() => {
         carmaConf: { ...zoomTool(bounds),
           layerInfo: { title, description: `Geltungsbereich zum Projektbereich ${pbId} (gleiche Geometrie wie der Projektbereich).`,
             links: siblings('ready2use'),
-            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping([], { title: 'Geltungsbereich' })}`] } },
+            keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping([], { title: 'Geltungsbereich', intro: READY2USE_TEXT })}`] } },
       },
       sources: { adhoc: { type: 'geojson', data: fcFor(fc, [], pbId) } },
       layers: outlineLayers('#000000'),
@@ -143,14 +148,33 @@ const Publish = (() => {
     };
   }
 
-  // alle vier Styles aus derselben FeatureCollection
-  function buildStyles(fc) {
+  // Style "Planungsphase 1: Entwurf": Bebauungsentwurf (Lageplan), berechnet aus der Geometrie von Ready2Use (siehe js/entwurf.js)
+  function entwurfStyle(design, bounds, pbId) {
+    const title = TITLES.entwurf, st = design.stats;
+    const infobox = "function createInfoBoxInfo(p){ var n = { gruen: 'Grünfläche mit Hecke', strasse: 'Privatstraße', parken: 'Stellplätze', parken_braun: 'Stellplätze (gepflastert)', haus: p.titel, baum: 'Baum', strassenachse: 'Privatstraße' }; return { header: 'Planungsphase 1: Entwurf', headerColor: '#5d7430', title: n[p.kind] || 'Entwurf', additionalInfo: p.text || '' }; }";
+    return {
+      version: 8, name: title,
+      glyphs: 'https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf',
+      metadata: {
+        adhoc: { projektbereich: pbId, folgt: FILES.ready2use, entwurf: st },
+        carmaConf: { ...zoomTool(bounds),
+          layerInfo: { title, description: `Bebauungsentwurf (Lageplan) zum Geltungsbereich „${TITLES.ready2use}“, Projektbereich ${pbId}: ${st.haeuser} Reihenhaus-Zeilen (${st.einheiten} Einheiten), ${st.stellplaetze} Stellplätze, ${st.baeume} Bäume. Berechnet aus der Geometrie, immer synchron mit Ready2Use.`,
+            links: siblings('entwurf'), keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${infobox}`] } },
+      },
+      sources: { entwurf: { type: 'geojson', data: design } },
+      layers: Entwurf.layers('entwurf'),
+    };
+  }
+
+  // alle fünf Styles aus derselben FeatureCollection
+  function buildStyles(fc, design = Entwurf.build(fc)) {
     const bounds = extent(fc), pbId = projektbereichId(fc);
     return {
       planungsrecht: groupStyle('planungsrecht', fc, bounds, pbId),
       fachkonzepte: groupStyle('fachkonzepte', fc, bounds, pbId),
       ready2use: ready2useStyle(fc, bounds, pbId),
       ready2hack: ready2hackStyle(fc, bounds, pbId),
+      entwurf: entwurfStyle(design, bounds, pbId),
     };
   }
 
@@ -177,16 +201,18 @@ const Publish = (() => {
   // Publiziert alle Styles gemeinsam. Die URLs enthalten die Commit-SHA: unveränderlich und sofort aktuell
   // (raw.githubusercontent.com cached pro Pfad ~5 Min und ignoriert ?query).
   async function publish(fc, token) {
-    const styles = buildStyles(fc), id = projektbereichId(fc);
+    const design = Entwurf.build(fc), styles = buildStyles(fc, design), id = projektbereichId(fc);
     const files = {
       [FILES.planungsrecht]: JSON.stringify(styles.planungsrecht, null, 2),
       [FILES.fachkonzepte]: JSON.stringify(styles.fachkonzepte, null, 2),
       [FILES.ready2use]: JSON.stringify(styles.ready2use, null, 2),
       [FILES.ready2hack]: JSON.stringify(styles.ready2hack, null, 2),
+      [FILES.entwurf]: JSON.stringify(styles.entwurf, null, 2),
+      [FILES.entwurfgeo]: JSON.stringify(design, null, 2),
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),
       ...Object.fromEntries(LEGACY.map(p => [p, null])),
     };
-    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsphase 0 + 1) ${new Date().toISOString()}`);
+    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsphase 0 + 1, inkl. Entwurf) ${new Date().toISOString()}`);
     return { sha, id, urls: Object.fromEntries(Object.keys(FILES).map(k => [k, raw(FILES[k], sha)])) };
   }
 

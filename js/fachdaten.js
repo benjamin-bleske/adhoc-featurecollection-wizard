@@ -224,13 +224,13 @@ const Fachdaten = (() => {
     }).join('<br/>');
   }
 
-  function infoboxMapping(ids, { extraKey = null, title = null } = {}) {
+  function infoboxMapping(ids, { extraKey = null, title = null, intro = null } = {}) {
     const fns = selected(ids).filter(c => c.sourceLayer && loaded[c.id]?.infobox)
       .map(c => `${JSON.stringify(c.sourceLayer)}: ${loaded[c.id].infobox}`);
     const capsHtml = capabilitiesHtml(ids);
     const base = title ? "(p.info_title + '\\n' + (p.info_text || ''))" : "(p.info_text || '')";
     const raw = extraKey ? `(${base} + '\\n' + (p.${extraKey} || ''))` : base;
-    const adhoc = `var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = ${raw}.split('\\n').filter(function (l) { return l; }).map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: ${title ? JSON.stringify(title) : 'p.info_title'}, additionalInfo: '<html>' + t + ${JSON.stringify(capsHtml ? '<br/>' + capsHtml : '')} + '</html>' };`;
+    const adhoc = `var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = ${raw}.split('\\n').filter(function (l) { return l; }).map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: ${title ? JSON.stringify(title) : 'p.info_title'}, additionalInfo: '<html>' + ${JSON.stringify(intro ? esc(intro) + '<br/><br/>' : '')} + t + ${JSON.stringify(capsHtml ? '<br/>' + capsHtml : '')} + '</html>' };`;
     const code = `function createInfoBoxInfo(p){ var M = { ${fns.join(', ')} }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } ${adhoc} }`;
     return code.replace(/\s*\n\s*/g, ' ');
   }
