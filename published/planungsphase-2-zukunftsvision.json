@@ -59,7 +59,6 @@
               "layers.vision-dach.layout.visibility",
               "layers.vision-dach-rand.layout.visibility",
               "layers.vision-baum.layout.visibility",
-              "layers.vision-ausgang.layout.visibility",
               "layers.vision-label.layout.visibility"
             ]
           }
@@ -67,7 +66,7 @@
       ],
       "layerInfo": {
         "title": "Planungsphase 2: Zukunftsvision",
-        "description": "Flächengedächnis über die Zukunftsvision zum Projektbereich pb-86ab590c: Geltungsbereich mit doppelter Fläche. Ebene „Geltungsbereich und Entwurf“: Vision in 4 Bauabschnitten mit 277 Baufeldern, 748 Gebäuden und 380 Bäumen, berechnet aus der Geometrie (js/vision.js). Zeithorizonte sind beispielhaft.",
+        "description": "Flächengedächnis über die Zukunftsvision zum Projektbereich pb-86ab590c: Geltungsbereich mit doppelter Fläche (rot gestrichelt), heutiger Projektbereich in schwarzer Linie. Durch den LLM-Chatbot wurde herausgefunden, dass es Flächen in Remscheid und Solingen gibt, die man Eigentümern im Ringtausch anbieten könnte. Ebene „Geltungsbereich und Entwurf“: Vision in 4 Bauabschnitten mit 277 Baufeldern, 748 Gebäuden und 380 Bäumen, berechnet aus der Geometrie (js/vision.js). Zeithorizonte sind beispielhaft.",
         "links": [
           {
             "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
@@ -77663,7 +77662,7 @@
       "type": "fill",
       "source": "adhoc",
       "paint": {
-        "fill-color": "#000000",
+        "fill-color": "#e00000",
         "fill-opacity": 0.000001
       }
     },
@@ -77894,31 +77893,6 @@
       }
     },
     {
-      "id": "vision-ausgang",
-      "type": "line",
-      "source": "entwurf",
-      "filter": [
-        "==",
-        [
-          "get",
-          "kind"
-        ],
-        "ausgang"
-      ],
-      "layout": {
-        "line-join": "round",
-        "visibility": "none"
-      },
-      "paint": {
-        "line-color": "#e00000",
-        "line-width": 2,
-        "line-dasharray": [
-          2,
-          1.5
-        ]
-      }
-    },
-    {
       "id": "vision-label",
       "type": "symbol",
       "source": "entwurf",
@@ -77955,7 +77929,7 @@
         "line-join": "round"
       },
       "paint": {
-        "line-color": "#000000",
+        "line-color": "#e00000",
         "line-width": [
           "interpolate",
           [
@@ -77974,6 +77948,40 @@
         "line-dasharray": [
           3,
           1.5
+        ]
+      }
+    },
+    {
+      "id": "vision-ausgang",
+      "type": "line",
+      "source": "entwurf",
+      "filter": [
+        "==",
+        [
+          "get",
+          "kind"
+        ],
+        "ausgang"
+      ],
+      "layout": {
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#000000",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          1.5,
+          16,
+          3,
+          20,
+          5
         ]
       }
     }
