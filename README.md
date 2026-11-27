@@ -19,7 +19,7 @@ Sie tragen dieselbe Projektbereich-ID (`pb-…`) und verweisen in `layerInfo.lin
 | **Planungsphase 0: Erschließung** | `published/planungsphase-0-erschliessung.json` | noch ohne Kartenebenen: nur roter gestrichelter Umriss, in der Infobox ein fester Text zu DGM/DOM-Manipulationen und Simulationen. Erschließung bezeichnet im deutschen Bau- und Planungsrecht die Gesamtheit aller Maßnahmen, die ein unbebautes Grundstück überhaupt erst bebaubar und nutzbar machen |
 | **Planungsphase 1: Ready2Use** | `published/planungsphase-1-ready2use.json` | Geltungsbereich (gleiche Geometrie wie der Projektbereich, **schwarz** gestrichelt) und der daraus berechnete **Entwurf**; Dropdown am Layer-Button: **„Geltungsbereich“** / **„Geltungsbereich und Entwurf“** |
 | **Planungsphase 1: Ready2hack** | `published/planungsphase-1-ready2hack.json` | sechs Punkte **TwinFlow 101 bis 106** (je Ressort einer), per **Filter-Button** im Layer-Chip einzeln schaltbar, mit **Datenblatt** |
-| **Planungsphase 2: Zukunftsvision** | `published/planungsphase-2-zukunftsvision.json` | Flächengedächnis: Geltungsbereich mit **doppelter Fläche** und Entwurf in Bauabschnitten; Dropdown wie Ready2Use |
+| **Planungsphase 2: Zukunftsvision** | `published/planungsphase-2-zukunftsvision.json` | Flächengedächnis: Geltungsbereich mit **doppelter Fläche** (rot gestrichelt), heutiger Projektbereich (schwarze Linie), Entwurf in Bauabschnitten; Dropdown wie Ready2Use |
 | (Datenblatt) | `published/twinflow-datenblatt.html`, `published/twinflow-ressorts.json` | Datenblatt zu den TwinFlows (HTML, per GitHub Pages) und seine Daten |
 | (Quelle) | `published/projektbereich.geojson`, `published/entwurf.geojson` | die gemeinsame Geometrie und die Geometrie des Entwurfs |
 

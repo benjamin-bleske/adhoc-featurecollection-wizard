@@ -206,14 +206,16 @@ const Publish = (() => {
   // Geltungsbereich und dem Entwurf in Bauabschnitten (js/vision.js)
   function visionStyle(vision, pbId) {
     const title = TITLES.vision, { area, design } = vision, st = design.stats, bounds = extent(area);
-    const entLayers = Vision.layers('entwurf').map(l => ({ ...l, layout: { ...l.layout, visibility: 'none' } }));
+    // der heutige Projektbereich (schwarze Linie) ist immer sichtbar, der Rest des Entwurfs nur in der zweiten Ebene
+    const alle = Vision.layers('entwurf'), heute = alle.find(l => l.id === 'vision-ausgang');
+    const entLayers = alle.filter(l => l !== heute).map(l => ({ ...l, layout: { ...l.layout, visibility: 'none' } }));
     const options = [
       { id: 'geltungsbereich', title: 'Geltungsbereich', vis_entwurf: 'none' },
       { id: 'geltungsbereich_entwurf', title: 'Geltungsbereich und Entwurf', vis_entwurf: 'visible' },
     ];
     const geltung = Fachdaten.infoboxMapping([], { title: 'Geltungsbereich Zukunftsvision', intro: Vision.TEXT });
     const infobox = `function createInfoBoxInfo(p){ var E = (${Vision.INFOBOX}); var G = (${geltung}); return p.kind ? E(p) : G(p); }`;
-    const [fill, line] = outlineLayers('#000000');
+    const [fill, line] = outlineLayers('#e00000'); // erweiterter Geltungsbereich: rot gestrichelt
     return {
       version: 8, name: title,
       glyphs: 'https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf',
@@ -221,11 +223,11 @@ const Publish = (() => {
         adhoc: { projektbereich: pbId, entwurf: st },
         carmaConf: { ...zoomTool(bounds),
           dynamicStyling: [{ type: 'list', label: 'Ebene', default: 'geltungsbereich', showIcon: false, options, targets: { vis_entwurf: entLayers.map(l => `layers.${l.id}.layout.visibility`) } }],
-          layerInfo: { title, description: `Flächengedächnis über die Zukunftsvision zum Projektbereich ${pbId}: Geltungsbereich mit doppelter Fläche. Ebene „Geltungsbereich und Entwurf“: Vision in ${st.abschnitte} Bauabschnitten mit ${st.baufelder} Baufeldern, ${st.haeuser} Gebäuden und ${st.baeume} Bäumen, berechnet aus der Geometrie (js/vision.js). Zeithorizonte sind beispielhaft.`,
+          layerInfo: { title, description: `Flächengedächnis über die Zukunftsvision zum Projektbereich ${pbId}: Geltungsbereich mit doppelter Fläche (rot gestrichelt), heutiger Projektbereich in schwarzer Linie. Durch den LLM-Chatbot wurde herausgefunden, dass es Flächen in Remscheid und Solingen gibt, die man Eigentümern im Ringtausch anbieten könnte. Ebene „Geltungsbereich und Entwurf“: Vision in ${st.abschnitte} Bauabschnitten mit ${st.baufelder} Baufeldern, ${st.haeuser} Gebäuden und ${st.baeume} Bäumen, berechnet aus der Geometrie (js/vision.js). Zeithorizonte sind beispielhaft.`,
             links: siblings('vision'), keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${infobox}`] } },
       },
       sources: { adhoc: { type: 'geojson', data: { ...area, projektbereich_id: pbId } }, entwurf: { type: 'geojson', data: design } },
-      layers: [fill, ...entLayers, line],
+      layers: [fill, ...entLayers, line, heute],
     };
   }
 

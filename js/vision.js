@@ -172,7 +172,7 @@ const Vision = (() => {
       fill('dach', 'dach_gruen', { 'fill-color': '#6f9f58' }),
       line('dach-rand', 'dach_gruen', { 'line-color': '#2f4a24', 'line-width': ['interpolate', ['linear'], ['zoom'], 14, 0.5, 20, 2] }),
       fill('baum', 'baum', { 'fill-color': '#4f8a45', 'fill-outline-color': '#2c5226' }),
-      line('ausgang', 'ausgang', { 'line-color': '#e00000', 'line-width': 2, 'line-dasharray': [2, 1.5] }),
+      line('ausgang', 'ausgang', { 'line-color': '#000000', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.5, 16, 3, 20, 5] }),
       { id: 'vision-label', type: 'symbol', source, filter: is('abschnitt_label'),
         layout: { 'text-field': ['get', 'text'], 'text-font': ['Open Sans Semibold'], 'text-size': 12 },
         paint: { 'text-color': '#1d1d1d', 'text-halo-color': '#ffffff', 'text-halo-width': 1.5 } },
