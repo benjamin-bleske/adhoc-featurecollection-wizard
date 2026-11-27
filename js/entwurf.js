@@ -17,10 +17,11 @@ const Entwurf = (() => {
   const ringArea = r => Math.abs(r.reduce((s, p, i) => s + (p[0] * r[(i + 1) % r.length][1] - r[(i + 1) % r.length][0] * p[1]), 0) / 2);
   const multiArea = mp => mp.reduce((t, poly) => t + ringArea(poly[0]) - poly.slice(1).reduce((h, r) => h + ringArea(r), 0), 0);
 
-  function build(fc) {
-    const geoPolys = fc.features.flatMap(f => polysOf(f.geometry));
-    if (!geoPolys.length) return empty();
-    const P = geoPolys.map(poly => poly.map(ring => ring.map(Fachdaten.merc))); // Mercator
+  const pip = (pt, ring) => { let ins = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) ins = !ins; } return ins; };
+  const contains = (mp, pt) => mp.some(poly => pip(pt, poly[0]) && !poly.slice(1).some(h => pip(pt, h)));
+
+  // Orientiertes Rechteck um ein Mercator-MultiPolygon: Länge L / Breite Wd in Bodenmetern, toM/rect: lokal -> Mercator
+  function frame(P) {
     const pts = P.flatMap(poly => poly[0].slice(0, -1));
     const lat0 = Fachdaten.unmerc([pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length])[1];
     const s = 1 / Math.cos(lat0 * RAD); // Mercator-Einheiten je Bodenmeter
@@ -38,11 +39,31 @@ const Entwurf = (() => {
     // Mitte des orientierten Rechtecks
     const cu = (u0 + u1) / 2, cv = (v0 + v1) / 2;
     const L = (u1 - u0) / s, Wd = (v1 - v0) / s; // Bodenmeter
-    if (L < 6 || Wd < 6) return empty();
 
     // lokal (u,v in Bodenmetern, Ursprung = Mitte) -> Mercator
     const toM = (u, v) => { const uu = (cu + u * s), vv = (cv + v * s); return [mx + uu * c - vv * sn, my + uu * sn + vv * c]; };
     const rect = (ua, ub, va, vb) => [[toM(ua, va), toM(ub, va), toM(ub, vb), toM(ua, vb), toM(ua, va)]];
+    return { s, th, L, Wd, toM, rect };
+  }
+
+  // Zwischenergebnisse in Mercator -> GeoJSON-Features in Lon/Lat
+  function toGeoJSON(feats) {
+    const ll = p => Fachdaten.unmerc(p).map(v => +v.toFixed(7));
+    const toLL = g => Array.isArray(g) ? (typeof g[0] === 'number' ? ll(g) : g.map(toLL)) : g;
+    return feats.map(({ kind, geometry, props }) => ({
+      type: 'Feature', properties: { kind, ...props },
+      geometry: Array.isArray(geometry)
+        ? (geometry[0]?.[0]?.[0]?.[0] !== undefined ? { type: 'MultiPolygon', coordinates: toLL(geometry) } : { type: 'Polygon', coordinates: toLL(geometry) })
+        : { type: geometry.type, coordinates: toLL(geometry.coordinates) },
+    }));
+  }
+
+  function build(fc) {
+    const geoPolys = fc.features.flatMap(f => polysOf(f.geometry));
+    if (!geoPolys.length) return empty();
+    const P = geoPolys.map(poly => poly.map(ring => ring.map(Fachdaten.merc))); // Mercator
+    const { s, th, L, Wd, toM, rect } = frame(P);
+    if (L < 6 || Wd < 6) return empty();
 
     // Modul: Breite bestimmt die Größe, Länge muss mindestens einen Hausblock fassen
     let f = Math.min(1.5, Math.max(0.15, Wd / (2 * NEEDED_HALF_WIDTH)));
@@ -71,8 +92,7 @@ const Entwurf = (() => {
       const mid = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
       if (inside(mid)) feats.push({ kind, geometry: { type: 'LineString', coordinates: [a, b] }, props });
     };
-    const inside = pt => P.some(poly => pip(pt, poly[0]) && !poly.slice(1).some(h => pip(pt, h)));
-    const pip = (pt, ring) => { let ins = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > pt[1]) !== (yj > pt[1]) && pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi) ins = !ins; } return ins; };
+    const inside = pt => contains(P, pt);
 
     // Grünflächen (beidseits, mit Hecke), Straße, Stellplatzreihen
     for (const sd of [1, -1]) clip(rect(uMin - margin / 2, uMax + margin / 2, sd > 0 ? plotNear : -vMax, sd > 0 ? vMax : -plotNear), 'gruen');
@@ -123,15 +143,7 @@ const Entwurf = (() => {
       }
     }
 
-    // nach Lon/Lat zurück
-    const ll = p => Fachdaten.unmerc(p).map(v => +v.toFixed(7));
-    const toLL = g => Array.isArray(g) ? (typeof g[0] === 'number' ? ll(g) : g.map(toLL)) : g;
-    const features = feats.map(({ kind, geometry, props }) => ({
-      type: 'Feature', properties: { kind, ...props },
-      geometry: Array.isArray(geometry)
-        ? (geometry[0]?.[0]?.[0]?.[0] !== undefined ? { type: 'MultiPolygon', coordinates: toLL(geometry) } : { type: 'Polygon', coordinates: toLL(geometry) })
-        : { type: geometry.type, coordinates: toLL(geometry.coordinates) },
-    }));
+    const features = toGeoJSON(feats);
     return { type: 'FeatureCollection', features, stats: { haeuser, einheiten, baeume, stellplaetze: 2 * nBays, winkel_grad: +(th / RAD).toFixed(1), modul: +f.toFixed(2) } };
   }
   const empty = () => ({ type: 'FeatureCollection', features: [], stats: { haeuser: 0, einheiten: 0, baeume: 0, stellplaetze: 0 } });
@@ -155,5 +167,5 @@ const Entwurf = (() => {
       layout: { 'text-field': ['get', 'text'], 'text-font': ['Open Sans Semibold'], 'text-size': 11, 'text-allow-overlap': false }, paint: { 'text-color': '#111111', 'text-halo-color': '#ffffff', 'text-halo-width': 1, 'text-opacity': ['interpolate', ['linear'], ['zoom'], 17, 0, 18, 1] } },
   ];
 
-  return { build, layers };
+  return { build, layers, polysOf, multiArea, contains, frame, toGeoJSON };
 })();

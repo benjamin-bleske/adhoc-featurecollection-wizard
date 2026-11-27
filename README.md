@@ -1,6 +1,6 @@
 # Adhoc-FeatureCollection-Wizard
 
-Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projektbereich) für Wuppertal erzeugt und daraus **fünf Styles** für das Geoportal des Digital Twin Wuppertal veröffentlicht.
+Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projektbereich) für Wuppertal erzeugt und daraus **sechs Styles** für das Geoportal des Digital Twin Wuppertal veröffentlicht.
 
 > **Planungsphase 0** (ein einziger Style `published/style.json`) ist als Git-Tag **`planungsphase-0`** gesichert und in [docs/planungsphase-0.md](docs/planungsphase-0.md) dokumentiert:
 > `git checkout planungsphase-0`. Ihr Style bleibt unter
@@ -8,8 +8,8 @@ Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projek
 > **Planungsphase 1** (vier Styles: Planungsphase 0: Planungsrecht und Fachkonzepte, Planungsphase 1: Ready2Use und Ready2hack) ist als Git-Tag **`planungsphase-1`** gesichert und in [docs/planungsphase-1.md](docs/planungsphase-1.md) dokumentiert.
 > Dieses README beschreibt den Stand **nach** Planungsphase 0 (inklusive Planungsphase 1). Die beiden Planungsphase-0-Styles heißen jetzt „Planungsphase 0: Planungsrecht/Fachkonzepte“.
 
-## Die fünf Styles
-Aus **einer** FeatureCollection entstehen bei jedem Publishen alle fünf, in **einem Git-Commit**. Ein neuer Bereich ersetzt alle fünf gemeinsam, sie können nicht auseinanderlaufen.
+## Die sechs Styles
+Aus **einer** FeatureCollection entstehen bei jedem Publishen alle sechs, in **einem Git-Commit**. Ein neuer Bereich ersetzt alle sechs gemeinsam, sie können nicht auseinanderlaufen.
 Sie tragen dieselbe Projektbereich-ID (`pb-…`) und verweisen in `layerInfo.links` aufeinander.
 
 | Style (Titel im Geoportal) | Datei | Inhalt |
@@ -19,6 +19,7 @@ Sie tragen dieselbe Projektbereich-ID (`pb-…`) und verweisen in `layerInfo.lin
 | **Planungsphase 0: Erschließung** | `published/planungsphase-0-erschliessung.json` | noch ohne Kartenebenen: nur roter gestrichelter Umriss, in der Infobox ein fester Text zu DGM/DOM-Manipulationen und Simulationen. Erschließung bezeichnet im deutschen Bau- und Planungsrecht die Gesamtheit aller Maßnahmen, die ein unbebautes Grundstück überhaupt erst bebaubar und nutzbar machen |
 | **Planungsphase 1: Ready2Use** | `published/planungsphase-1-ready2use.json` | Geltungsbereich (gleiche Geometrie wie der Projektbereich, **schwarz** gestrichelt) und der daraus berechnete **Entwurf**; Dropdown am Layer-Button: **„Geltungsbereich“** / **„Geltungsbereich und Entwurf“** |
 | **Planungsphase 1: Ready2hack** | `published/planungsphase-1-ready2hack.json` | sechs Punkte **TwinFlow 101 bis 106** (je Ressort einer), per **Filter-Button** im Layer-Chip einzeln schaltbar, mit **Datenblatt** |
+| **Planungsphase 2: Zukunftsvision** | `published/planungsphase-2-zukunftsvision.json` | Flächengedächnis: Geltungsbereich mit **doppelter Fläche** und Entwurf in Bauabschnitten; Dropdown wie Ready2Use |
 | (Datenblatt) | `published/twinflow-datenblatt.html`, `published/twinflow-ressorts.json` | Datenblatt zu den TwinFlows (HTML, per GitHub Pages) und seine Daten |
 | (Quelle) | `published/projektbereich.geojson`, `published/entwurf.geojson` | die gemeinsame Geometrie und die Geometrie des Entwurfs |
 
@@ -57,6 +58,12 @@ Es entsteht bei jedem Publishen neu (`js/datenblatt.js`) und enthält je Ressort
 - **Wie Datenblätter in carma grundsätzlich angelegt werden** und warum ein neues Datenblatt im Geoportal-Fenster Code in carma braucht: [docs/datenblaetter.md](docs/datenblaetter.md).
 - **Entwurf der carma-Komponente** `twinFlowSIM`: [docs/carma-datenblatt/](docs/carma-datenblatt/) (nicht gebaut; `USE_SIM` in `js/publish.js`).
 - **Datenangebot und Beitrag der Ressorts 102, 104, 105, 106** (und 101, 103): [docs/ressorts-datenangebot.md](docs/ressorts-datenangebot.md).
+
+### Planungsphase 2: Zukunftsvision (Flächengedächnis)
+Bei großen Flächen mit heterogenen Eigentümerstrukturen ist der Interessenausgleich langwierig. Die Fläche wird deshalb in kleine Baufelder geteilt und über Jahre in Bauabschnitten entwickelt; ergeben sich Gelegenheitsfenster (z. B. Eigentümerwechsel), wird die Vision fortgesetzt. Der Style hält diese Vision an der Fläche fest (`js/vision.js`):
+- **Geltungsbereich:** der Projektbereich, nach außen gepuffert, bis die Fläche doppelt so groß ist (Löcher werden geschlossen). Er enthält den Projektbereich immer.
+- **Entwurf:** zentraler Grünzug mit Quartiersplatz, Baufelder mit Hofhäusern, Zeilen und Punkthäusern, begrünte Dächer, Bäume. Bauabschnitt 1 liegt auf dem heutigen Projektbereich, 2 bis 4 folgen nach außen. Die Zeithorizonte sind beispielhaft.
+- Klick auf ein Baufeld oder Gebäude zeigt Bauabschnitt, Zeithorizont und Auslöser.
 
 ## Frage 1 – Projektbereich
 - **Zeichnen**: Polygon/Rechteck in die Karte zeichnen. Die Infobox zeigt Fläche sowie die berührten Flurstücke.
@@ -121,6 +128,7 @@ Links auf den jeweils neuesten Stand (GitHub cached diese `main`-Links bis zu 5 
 - [Planungsphase 0: Fachkonzepte](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-fachkonzepte.json)
 - [Planungsphase 0: Erschließung](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-erschliessung.json)
 - [Planungsphase 1: Ready2Use](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json)
+- [Planungsphase 2: Zukunftsvision](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-2-zukunftsvision.json)
 - [Planungsphase 1: Ready2hack](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json)
 
 Das Geoportal merkt sich Layer aus früheren Sitzungen; beim Testen alte Chips entfernen.

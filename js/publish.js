@@ -1,11 +1,12 @@
-// Erzeugt aus EINER FeatureCollection (Projektbereich) fünf Styles und veröffentlicht sie in EINEM Git-Commit:
+// Erzeugt aus EINER FeatureCollection (Projektbereich) sechs Styles und veröffentlicht sie in EINEM Git-Commit:
 //   Planungsphase 0: Planungsrecht   (FNP, Regionalplan, LEP, B-Plan, Landschaft/Naturschutz)
 //   Planungsphase 0: Fachkonzepte    (Bodenfunktion, dezentrale Wärmeversorgung, Stadtbaumkonzept)
 //   Planungsphase 0: Erschließung    (noch leer: nur der Umriss des Projektbereichs)
 //   Planungsphase 1: Ready2Use       (Geltungsbereich, schwarz gestrichelt, + Bebauungsentwurf; Dropdown: "Geltungsbereich" / "Geltungsbereich und Entwurf")
 //   Planungsphase 1: Ready2hack      (TwinFlow 101 bis 106 nach festen Abstandsregeln relativ zu Ready2Use, per Filter-Button schaltbar, mit Datenblatt)
+//   Planungsphase 2: Zukunftsvision  (wie Ready2Use, Geltungsbereich mit doppelter Fläche, Entwurf in Bauabschnitten, js/vision.js)
 // Weil alles aus derselben FeatureCollection entsteht und in einem Commit landet, sind die Styles immer synchron:
-// ein neuer Bereich ersetzt alle fünf gemeinsam.
+// ein neuer Bereich ersetzt alle sechs gemeinsam.
 const Publish = (() => {
   const CFG = { owner: 'benjamin-bleske', repo: 'adhoc-featurecollection-wizard', branch: 'main' };
   const FILES = {
@@ -14,12 +15,14 @@ const Publish = (() => {
     erschliessung: 'published/planungsphase-0-erschliessung.json',
     ready2use: 'published/planungsphase-1-ready2use.json',
     ready2hack: 'published/planungsphase-1-ready2hack.json',
+    vision: 'published/planungsphase-2-zukunftsvision.json',
     projektbereich: 'published/projektbereich.geojson',
     entwurfgeo: 'published/entwurf.geojson',
+    visiongeo: 'published/zukunftsvision.geojson',
     datenblatt: 'published/twinflow-datenblatt.html',
     ressorts: 'published/twinflow-ressorts.json',
   };
-  const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack' };
+  const TITLES = { ready2use: 'Planungsphase 1: Ready2Use', ready2hack: 'Planungsphase 1: Ready2hack', vision: 'Planungsphase 2: Zukunftsvision' };
   // fester Text in der Infobox von Ready2Use
   const PAGES = `https://${CFG.owner}.github.io/${CFG.repo}/`; // GitHub Pages: liefert HTML (raw.githubusercontent.com liefert nur Text)
   // true, sobald die Komponente twinFlowSIM in carma ausgeliefert ist (docs/carma-datenblatt/): Info-Symbol öffnet dann das Datenblatt im Geoportal-Fenster
@@ -67,7 +70,7 @@ const Publish = (() => {
   const zoomTool = bounds => bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] };
   const sibling = (key, title) => ({ url: raw(FILES[key]), text: `${title} (Style)` });
   const titleOf = key => Fachdaten.GROUPS[key]?.title ?? TITLES[key];
-  const siblings = except => ['planungsrecht', 'fachkonzepte', 'erschliessung', 'ready2use', 'ready2hack'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
+  const siblings = except => ['planungsrecht', 'fachkonzepte', 'erschliessung', 'ready2use', 'ready2hack', 'vision'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
 
   // Styles der Planungsphase 0 (eine Gruppe aus Fachdaten.GROUPS je Style; ohne Fachdaten bleibt nur der Umriss)
   function groupStyle(gid, fc, bounds, pbId) {
@@ -199,8 +202,35 @@ const Publish = (() => {
     };
   }
 
-  // alle fünf Styles aus derselben FeatureCollection
-  function buildStyles(fc, design = Entwurf.build(fc)) {
+  // Style "Planungsphase 2: Zukunftsvision" (Flächengedächnis): Funktionsweise wie Ready2Use, aber mit eigenem, doppelt so großem
+  // Geltungsbereich und dem Entwurf in Bauabschnitten (js/vision.js)
+  function visionStyle(vision, pbId) {
+    const title = TITLES.vision, { area, design } = vision, st = design.stats, bounds = extent(area);
+    const entLayers = Vision.layers('entwurf').map(l => ({ ...l, layout: { ...l.layout, visibility: 'none' } }));
+    const options = [
+      { id: 'geltungsbereich', title: 'Geltungsbereich', vis_entwurf: 'none' },
+      { id: 'geltungsbereich_entwurf', title: 'Geltungsbereich und Entwurf', vis_entwurf: 'visible' },
+    ];
+    const geltung = Fachdaten.infoboxMapping([], { title: 'Geltungsbereich Zukunftsvision', intro: Vision.TEXT });
+    const infobox = `function createInfoBoxInfo(p){ var E = (${Vision.INFOBOX}); var G = (${geltung}); return p.kind ? E(p) : G(p); }`;
+    const [fill, line] = outlineLayers('#000000');
+    return {
+      version: 8, name: title,
+      glyphs: 'https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf',
+      metadata: {
+        adhoc: { projektbereich: pbId, entwurf: st },
+        carmaConf: { ...zoomTool(bounds),
+          dynamicStyling: [{ type: 'list', label: 'Ebene', default: 'geltungsbereich', showIcon: false, options, targets: { vis_entwurf: entLayers.map(l => `layers.${l.id}.layout.visibility`) } }],
+          layerInfo: { title, description: `Flächengedächnis über die Zukunftsvision zum Projektbereich ${pbId}: Geltungsbereich mit doppelter Fläche. Ebene „Geltungsbereich und Entwurf“: Vision in ${st.abschnitte} Bauabschnitten mit ${st.baufelder} Baufeldern, ${st.haeuser} Gebäuden und ${st.baeume} Bäumen, berechnet aus der Geometrie (js/vision.js). Zeithorizonte sind beispielhaft.`,
+            links: siblings('vision'), keywords: ['adhoc', pbId, `carmaconf://infoBoxMapping:${infobox}`] } },
+      },
+      sources: { adhoc: { type: 'geojson', data: { ...area, projektbereich_id: pbId } }, entwurf: { type: 'geojson', data: design } },
+      layers: [fill, ...entLayers, line],
+    };
+  }
+
+  // alle sechs Styles aus derselben FeatureCollection
+  function buildStyles(fc, design = Entwurf.build(fc), vision = Vision.build(fc)) {
     const bounds = extent(fc), pbId = projektbereichId(fc);
     return {
       planungsrecht: groupStyle('planungsrecht', fc, bounds, pbId),
@@ -208,6 +238,7 @@ const Publish = (() => {
       erschliessung: groupStyle('erschliessung', fc, bounds, pbId),
       ready2use: ready2useStyle(fc, bounds, pbId, design),
       ready2hack: ready2hackStyle(fc, bounds, pbId),
+      vision: visionStyle(vision, pbId),
     };
   }
 
@@ -233,13 +264,15 @@ const Publish = (() => {
 
   // Alle Dateien des Publish (Pfad -> Inhalt; null = löschen), ohne Netzwerk. Vorher Fachdaten.load/analyse aufrufen (wie step-result.js).
   function buildFiles(fc) {
-    const design = Entwurf.build(fc), styles = buildStyles(fc, design), id = projektbereichId(fc);
+    const design = Entwurf.build(fc), vision = Vision.build(fc), styles = buildStyles(fc, design, vision), id = projektbereichId(fc);
     const files = {
       [FILES.planungsrecht]: JSON.stringify(styles.planungsrecht, null, 2),
       [FILES.fachkonzepte]: JSON.stringify(styles.fachkonzepte, null, 2),
       [FILES.erschliessung]: JSON.stringify(styles.erschliessung, null, 2),
       [FILES.ready2use]: JSON.stringify(styles.ready2use, null, 2),
       [FILES.ready2hack]: JSON.stringify(styles.ready2hack, null, 2),
+      [FILES.vision]: JSON.stringify(styles.vision, null, 2),
+      [FILES.visiongeo]: JSON.stringify({ type: 'FeatureCollection', projektbereich_id: id, features: [...vision.area.features, ...vision.design.features] }, null, 2),
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),
       [FILES.entwurfgeo]: JSON.stringify(design, null, 2),
       [FILES.ressorts]: JSON.stringify({ stand: Ressorts.STAND, ressorts: Ressorts.LISTE }, null, 2),
@@ -253,7 +286,7 @@ const Publish = (() => {
   // (raw.githubusercontent.com cached pro Pfad ~5 Min und ignoriert ?query).
   async function publish(fc, token) {
     const { id, files } = buildFiles(fc);
-    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsphase 0 + 1, inkl. Entwurf und Datenblatt) ${new Date().toISOString()}`);
+    const sha = await commitFiles(files, token, `Publish Projektbereich ${id} (Planungsphase 0 bis 2, inkl. Entwürfen und Datenblatt) ${new Date().toISOString()}`);
     return { sha, id, urls: Object.fromEntries(Object.keys(FILES).map(k => [k, raw(FILES[k], sha)])) };
   }
 
