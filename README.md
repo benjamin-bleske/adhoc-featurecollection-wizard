@@ -60,6 +60,7 @@ Es entsteht bei jedem Publishen neu (`js/datenblatt.js`) und enthält je Ressort
 ## Frage 1 – Projektbereich
 - **Zeichnen**: Polygon/Rechteck in die Karte zeichnen. Die Infobox zeigt Fläche sowie die berührten Flurstücke.
 - **Flurstücke wählen**: ab Zoom 16 Klick auf ein Flurstück wählt/entfernt es (orange Hervorhebung).
+- **Gewerbepotenzialflächen**: Klick auf eine Fläche des Gewerbepotenzialflächen-Katasters (`https://tiles.cismet.de/pf_gewerbepotenzialflaechen/style.json`) wählt/entfernt sie; mehrere sind möglich. Bei kleinem Zoom (unter 14) springt die Karte auf die Fläche, damit die Geometrie genau übernommen wird. Übernommen werden nur Nummer, Bezeichnung, Größe, Flurstücke und der Link zum Steckbrief (`js/potenzial.js`).
 - **Infobox**: Gemarkung, Flur, Flurstück(e), Größe („ca.“) und die Fachdaten im Projektbereich.
 
 Datenquelle: ALKIS Flurstücke/Gebäude der Stadt Wuppertal als Vector-Tiles-Service (`https://tiles.cismet.de/alkis/flurstuecke.black.style.json`, Open Data dl-zero-de/2.0), gerendert mit MapLibre GL.

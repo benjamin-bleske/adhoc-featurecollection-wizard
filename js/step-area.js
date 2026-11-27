@@ -1,4 +1,4 @@
-// Frage 1: Projektbereich – zeichnen ODER Flurstücke wählen
+// Frage 1: Projektbereich – zeichnen ODER Flurstücke wählen ODER Gewerbepotenzialflächen wählen
 const AreaStep = (() => {
   const MIN_ZOOM = Alkis.MIN_ZOOM;
   const WUPPERTAL = { center: [51.2562, 7.1508], bounds: [[51.16, 6.95], [51.36, 7.36]] };
@@ -12,7 +12,7 @@ const AreaStep = (() => {
   let map, mgl, drawLayer, info, modeBtns;
 
   function mount(root, state, api) {
-    state.area ??= { mode: 'draw', drawn: null, parcels: [] };
+    state.area ??= { mode: 'draw', drawn: null, parcels: [], potential: [] };
     const a = state.area;
 
     root.innerHTML = '';
@@ -22,11 +22,12 @@ const AreaStep = (() => {
     modeBtns = {
       draw: el('button', { type: 'button', textContent: 'Zeichnen' }),
       select: el('button', { type: 'button', textContent: 'Flurstücke wählen' }),
+      potential: el('button', { type: 'button', textContent: 'Gewerbepotenzialflächen' }),
     };
     const side = el('aside', { className: 'area-side' },
       el('h2', { textContent: '1. Projektbereich' }),
-      el('p', { className: 'hint', textContent: 'Wo liegt Ihr Projekt? Zeichnen Sie den Bereich in die Karte oder wählen Sie ein oder mehrere Flurstücke aus.' }),
-      el('div', { className: 'modes' }, modeBtns.draw, modeBtns.select),
+      el('p', { className: 'hint', textContent: 'Wo liegt Ihr Projekt? Zeichnen Sie den Bereich in die Karte oder wählen Sie ein oder mehrere Flurstücke bzw. Flächen aus dem Gewerbepotenzialflächen-Kataster aus.' }),
+      el('div', { className: 'modes' }, modeBtns.draw, modeBtns.select, modeBtns.potential),
       info);
     wrap.append(mapWrap, side);
     root.append(wrap);
@@ -43,7 +44,12 @@ const AreaStep = (() => {
     // ALKIS-Flurstücke/Gebäude als Vector Tiles (Stadt Wuppertal)
     mgl = L.maplibreGL({ style: Alkis.STYLE, pane: 'overlayPane' }).addTo(map).getMaplibreMap();
     Alkis.resetHighlight();
-    mgl.on('load', () => { Alkis.addHighlight(mgl); Alkis.addVec(mgl); render(a, api); });
+    const gl = mgl;
+    mgl.on('load', () => {
+      Alkis.addHighlight(gl); Alkis.addVec(gl); render(a, api);
+      Potenzial.add(gl).then(() => { if (gl === mgl) render(a, api); })
+        .catch(e => api.status(`Gewerbepotenzialflächen nicht ladbar: ${e.message}`));
+    });
     mgl.on('idle', () => refresh(a, api));
     map.on('click', e => onMapClick(a, api, e));
     map.on('zoomend', () => render(a, api));
@@ -69,12 +75,13 @@ const AreaStep = (() => {
 
     modeBtns.draw.onclick = () => setMode(a, 'draw', api);
     modeBtns.select.onclick = () => setMode(a, 'select', api);
+    modeBtns.potential.onclick = () => setMode(a, 'potential', api);
 
     // Zustand wiederherstellen (Zurück-Navigation)
     if (a.drawn) { drawLayer.addLayer(L.geoJSON(a.drawn).getLayers()[0]); }
     setMode(a, a.mode, api);
     if (a.drawn) map.fitBounds(drawLayer.getBounds().pad(0.3));
-    else if (a.parcels.length) map.fitBounds(L.geoJSON(a.parcels).getBounds().pad(0.3));
+    else if (chosen(a).length) map.fitBounds(L.geoJSON(chosen(a)).getBounds().pad(0.3));
   }
 
   function setMode(a, mode, api) {
@@ -82,7 +89,11 @@ const AreaStep = (() => {
     for (const [k, b] of Object.entries(modeBtns)) b.setAttribute('aria-pressed', String(k === mode));
     document.querySelector('.leaflet-draw').style.display = mode === 'draw' ? '' : 'none';
     render(a, api);
+    api.changed();
   }
+
+  // gewählte Objekte des aktuellen Auswahlmodus (Flurstücke bzw. Potenzialflächen)
+  const chosen = a => a.mode === 'potential' ? a.potential : a.parcels;
 
   function refreshDrawn(a, api) {
     a.drawnParcels = [];
@@ -113,48 +124,99 @@ const AreaStep = (() => {
         return nf.properties.geometrie_vollstaendig ? nf : f;
       });
     }
+    if (a.mode === 'potential' && map.getZoom() >= Potenzial.MIN_ZOOM) {
+      a.potential = a.potential.map(f => {
+        if (f.complete) return f;
+        const nf = Potenzial.featureFor(mgl, f._raw, f.geometry, map.getZoom());
+        if (nf.complete) changed = true;
+        return nf.complete ? nf : f;
+      });
+    }
     if (updateFnp(a)) changed = true;
     if (changed) render(a, api);
   }
 
-  // Projektbereich als MultiPolygon-Koordinaten (gewählte Flurstücke vereinigt bzw. gezeichnetes Polygon)
+  // Projektbereich als MultiPolygon-Koordinaten (gewählte Flurstücke/Potenzialflächen vereinigt bzw. gezeichnetes Polygon)
   function areaMulti(a) {
     if (a.mode === 'draw') return a.drawn ? [a.drawn.coordinates] : null;
-    const polys = a.parcels.flatMap(f => f.geometry.coordinates);
+    const polys = chosen(a).flatMap(f => f.geometry.coordinates);
     return polys.length ? polygonClipping.union(...polys) : null;
   }
 
   // Fachdaten-Auswertung zum Projektbereich (FNP, B-Plan, Schutzgebiete, Boden) aus den Tiles; true, wenn sich etwas geändert hat
   function updateFnp(a) {
-    const multi = a.mode === 'draw' || map.getZoom() >= MIN_ZOOM ? areaMulti(a) : null;
+    const multi = a.mode !== 'select' || map.getZoom() >= MIN_ZOOM ? areaMulti(a) : null;
     if (!multi) { const had = !!a.vec; a.vec = null; return had; }
     const vec = {};
     for (const id of Object.keys(Alkis.VEC)) { const r = Alkis.vecSummary(mgl, id, multi); if (!r) return false; vec[id] = r; }
-    const key = JSON.stringify([a.mode, Object.values(vec).map(r => r.items.map(i => [i.name, i.count ?? Math.round(i.share * 100)])), a.parcels.map(f => f.id), a.drawn && a.drawn.coordinates[0].length]);
+    const key = JSON.stringify([a.mode, Object.values(vec).map(r => r.items.map(i => [i.name, i.count ?? Math.round(i.share * 100)])), chosen(a).map(f => f.id), a.drawn && a.drawn.coordinates[0].length]);
     if (a.vec?.key === key) return false;
     a.vec = { ...vec, key };
     return true;
   }
 
   function onMapClick(a, api, e) {
-    if (a.mode !== 'select') return;
-    if (map.getZoom() < MIN_ZOOM) { api.status(`Bitte weiter hineinzoomen (ab Zoom ${MIN_ZOOM}), um Flurstücke zu wählen.`); return; }
+    if (a.mode === 'draw') return;
+    if (a.mode === 'select' && map.getZoom() < MIN_ZOOM) { api.status(`Bitte weiter hineinzoomen (ab Zoom ${MIN_ZOOM}), um Flurstücke zu wählen.`); return; }
     // das GL-Canvas ist rundum größer als die Karte (padding) -> Klickpunkt umrechnen
     const sz = map.getSize(), cv = mgl.getCanvas();
-    const hit = Alkis.parcelAt(mgl, { x: e.containerPoint.x + (cv.clientWidth - sz.x) / 2, y: e.containerPoint.y + (cv.clientHeight - sz.y) / 2 });
+    const point = { x: e.containerPoint.x + (cv.clientWidth - sz.x) / 2, y: e.containerPoint.y + (cv.clientHeight - sz.y) / 2 };
+    if (a.mode === 'potential') { togglePotential(a, api, Potenzial.at(mgl, point)); return; }
+    const hit = Alkis.parcelAt(mgl, point);
     if (!hit) return;
     const i = a.parcels.findIndex(p => p.id === hit.raw.fid);
     if (i >= 0) a.parcels.splice(i, 1); else a.parcels.push(Alkis.featureFor(mgl, hit.raw, hit.geometry));
     render(a, api); api.changed();
   }
 
+  function togglePotential(a, api, hit) {
+    if (!hit) return;
+    const i = a.potential.findIndex(p => p.id === hit.raw.fid);
+    if (i >= 0) a.potential.splice(i, 1); else a.potential.push(Potenzial.featureFor(mgl, hit.raw, hit.geometry, map.getZoom()));
+    render(a, api); api.changed();
+    // noch ungenaue Geometrie: auf die ganze Fläche zoomen, refresh() ergänzt sie dann
+    const f = i < 0 && a.potential.at(-1), b = f && !f.complete && Potenzial.latLngBounds(hit.raw);
+    if (b) map.fitBounds(b, { padding: [40, 40], maxZoom: 17 });
+  }
+
+  // Infobox der gewählten Gewerbepotenzialflächen
+  function renderPotential(a, api) {
+    if (!a.potential.length) { info.append(el('p', { className: 'hint', textContent: 'Klicken Sie auf Gewerbepotenzialflächen (blau) in der Karte, um sie zu (ab)zuwählen.' })); return; }
+    for (const f of a.potential) {
+      const p = f.properties;
+      const remove = el('button', { type: 'button', textContent: 'Entfernen' });
+      remove.onclick = () => { a.potential = a.potential.filter(x => x.id !== f.id); render(a, api); api.changed(); refresh(a, api); };
+      info.append(el('div', { className: 'block' },
+        el('b', { textContent: p.bezeichnung }),
+        el('div', { textContent: `Nummer: ${p.nummer}` }),
+        ...Format.groups(p.flurstuecke).map(g => el('div', { textContent: `Gemarkung ${g.gem}, Flur ${g.flur}, ${g.parcelsText}` })),
+        el('div', { textContent: `Größe: ${Format.ca(p.flaeche_m2)}` }),
+        el('div', {}, el('a', { href: p.steckbrief, target: '_blank', rel: 'noopener', textContent: 'Steckbrief (PDF)' })),
+        remove));
+    }
+    if (a.potential.length > 1) {
+      const total = a.potential.reduce((t, f) => t + f.properties.flaeche_m2, 0);
+      info.append(el('div', { className: 'sum', textContent: `Gesamt: ${a.potential.length} Flächen, Größe ${Format.ca(total)}` }));
+    }
+    appendFachdaten(a);
+    if (a.potential.some(f => !f.complete))
+      info.append(el('p', { className: 'warn', textContent: 'Geometrie einzelner Flächen noch ungenau oder unvollständig. Bitte so zoomen, dass die Fläche ganz sichtbar ist.' }));
+  }
+
+  function appendFachdaten(a) {
+    if (a.vec) info.append(el('div', { className: 'block' }, el('b', { textContent: 'Fachdaten im Projektbereich' }),
+      ...fnpLines(a, Object.keys(VEC_LABEL)).split('\n').filter(Boolean).map(t => el('div', { textContent: t }))));
+  }
+
   // Infobox: Gemarkung → Flur → Flurstücke + Fläche
   function render(a, api) {
     if (mgl?.isStyleLoaded()) Alkis.setHighlight(mgl, a.mode === 'select' ? a.parcels.map(f => f.id) : []);
+    if (mgl) Potenzial.show(mgl, a.mode === 'potential', a.potential.map(f => f.id));
     if (a.mode === 'select' && map.getZoom() < MIN_ZOOM) api.status(`Bitte weiter hineinzoomen (ab Zoom ${MIN_ZOOM}), um Flurstücke zu wählen.`);
     else if (a.mode === 'draw' && a.drawn && map.getZoom() < MIN_ZOOM) api.status(`Für die Flurstückliste bitte weiter hineinzoomen (ab Zoom ${MIN_ZOOM}).`);
     else api.status('');
     info.innerHTML = '';
+    if (a.mode === 'potential') { renderPotential(a, api); return; }
     const parcels = a.mode === 'select' ? a.parcels : (a.drawnParcels ?? []);
 
     if (a.mode === 'draw') {
@@ -176,8 +238,7 @@ const AreaStep = (() => {
       const total = parcels.reduce((t, f) => t + f.properties.flaeche_m2, 0);
       info.append(el('div', { className: 'sum', textContent: `Gesamt: ${parcels.length} Flurstücke, Größe ${Format.ca(total)}` }));
     }
-    if (a.vec) info.append(el('div', { className: 'block' }, el('b', { textContent: 'Fachdaten im Projektbereich' }),
-      ...fnpLines(a, Object.keys(VEC_LABEL)).split('\n').filter(Boolean).map(t => el('div', { textContent: t }))));
+    appendFachdaten(a);
     if (a.mode === 'draw' && a.drawnPartial)
       info.append(el('p', { className: 'warn', textContent: 'Der Bereich ragt aus dem Kartenausschnitt – Flurstückliste ggf. unvollständig. Bitte so zoomen, dass der ganze Bereich sichtbar ist.' }));
     if (a.mode === 'select' && parcels.some(f => !f.properties.geometrie_vollstaendig))
@@ -186,7 +247,7 @@ const AreaStep = (() => {
 
   function isValid(state) {
     const a = state.area;
-    return !!a && (a.mode === 'draw' ? !!a.drawn : a.parcels.length > 0);
+    return !!a && (a.mode === 'draw' ? !!a.drawn : chosen(a).length > 0);
   }
 
   // Fachdaten-Zeilen für die Infobox (nur die in Schritt 2 gewählten), getrennt nach den zwei Styles
@@ -228,6 +289,18 @@ const AreaStep = (() => {
         },
       }];
     }
+    if (a.mode === 'potential') return a.potential.map(f => {
+      const p = f.properties;
+      return {
+        type: 'Feature', geometry: f.geometry,
+        properties: { role: 'projektbereich', mode: 'gewerbepotenzialflaeche', ...p,
+          flurstuecke: p.flurstuecke.map(({ gemarkung, flur, flurstuecksnummer }) => ({ gemarkung, flur, flurstueck: flurstuecksnummer })),
+          info_title: `Gewerbepotenzialfläche: ${p.bezeichnung}`,
+          info_text: [`Nummer: ${p.nummer}`, ...Format.groups(p.flurstuecke).map(g => `Gemarkung: ${g.gem}\nFlur: ${g.flur}\n${g.parcelsText}`), `Größe: ${Format.ca(p.flaeche_m2)}`].join('\n'),
+          ...groupLines(a, state.fachdaten ?? []),
+        },
+      };
+    });
     const byKey = new Map(Format.groups(a.parcels).map(g => [`${g.gem}|${g.flur}`, g]));
     return a.parcels.map(f => ({
       type: 'Feature', geometry: f.geometry,

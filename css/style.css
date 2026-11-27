@@ -27,7 +27,7 @@ button:disabled { opacity: .45; cursor: not-allowed; }
 .area-side { overflow: auto; padding: 14px 16px; border-left: 1px solid var(--line); background: var(--card); }
 .area-side h2 { font-size: 16px; margin: 0 0 4px; }
 .hint { color: var(--muted); font-size: 13px; margin: 4px 0 10px; }
-.modes { display: flex; gap: 6px; margin: 8px 0; }
+.modes { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
 .modes button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .infobox { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 10px; }
 .infobox h3 { font-size: 14px; margin: 10px 0 2px; }

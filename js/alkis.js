@@ -36,8 +36,8 @@ const Alkis = (() => {
   }
 
   // Tile-Stücke eines Flurstücks zusammenfügen; vollständig, wenn die Bbox zur mitgelieferten `bounds` passt
-  function geometryOf(mgl, rawProps) {
-    const pieces = mgl.querySourceFeatures(SOURCE, { sourceLayer: LAYER, filter: ['==', ['get', 'fid'], rawProps.fid] });
+  function geometryOf(mgl, rawProps, source = SOURCE, sourceLayer = LAYER) {
+    const pieces = mgl.querySourceFeatures(source, { sourceLayer, filter: ['==', ['get', 'fid'], rawProps.fid] });
     const polys = pieces.flatMap(f => polysOf(f.geometry));
     if (!polys.length) return null;
     const merged = polygonClipping.union(...polys);
@@ -156,5 +156,5 @@ const Alkis = (() => {
     return { items, recht: [...recht] };
   }
 
-  return { STYLE, MIN_ZOOM, VEC, addVec, vecSummary, parcelAt, featureFor, intersecting, addHighlight, setHighlight, resetHighlight };
+  return { STYLE, MIN_ZOOM, GEMARKUNGEN, VEC, geometryOf, addVec, vecSummary, parcelAt, featureFor, intersecting, addHighlight, setHighlight, resetHighlight };
 })();
