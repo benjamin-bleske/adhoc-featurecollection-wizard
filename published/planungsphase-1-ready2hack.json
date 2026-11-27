@@ -4,7 +4,7 @@
   "glyphs": "https://tiles.cismet.de/fonts/{fontstack}/{range}.pbf",
   "metadata": {
     "adhoc": {
-      "projektbereich": "pb-63bd9074",
+      "projektbereich": "pb-86ab590c",
       "folgt": "published/planungsphase-1-ready2use.json"
     },
     "carmaConf": {
@@ -14,10 +14,10 @@
           "config": {
             "label": "Auf den Projektbereich zoomen",
             "bounds": [
-              7.148296,
-              51.255962,
-              7.150419,
-              51.256432
+              7.221719,
+              51.226802,
+              7.230399,
+              51.233154
             ]
           }
         }
@@ -77,7 +77,7 @@
       },
       "layerInfo": {
         "title": "Planungsphase 1: Ready2hack",
-        "description": "TwinFlows 101 bis 106 (je Ressort einer) nach festen Abstandsregeln relativ zum Geltungsbereich „Planungsphase 1: Ready2Use“, Projektbereich pb-63bd9074. Datenblatt über das Info-Symbol in der Infobox.",
+        "description": "TwinFlows 101 bis 106 (je Ressort einer) nach festen Abstandsregeln relativ zum Geltungsbereich „Planungsphase 1: Ready2Use“, Projektbereich pb-86ab590c. Datenblatt über das Info-Symbol in der Infobox.",
         "links": [
           {
             "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
@@ -88,13 +88,17 @@
             "text": "Planungsphase 0: Fachkonzepte (Style)"
           },
           {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-erschliessung.json",
+            "text": "Planungsphase 0: Erschließung (Style)"
+          },
+          {
             "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json",
             "text": "Planungsphase 1: Ready2Use (Style)"
           }
         ],
         "keywords": [
           "adhoc",
-          "pb-63bd9074",
+          "pb-86ab590c",
           "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; return { header: 'Planungsphase 1: Ready2hack', headerColor: p.farbe, title: p.name, subtitle: 'Ressort ' + p.ressort + ': ' + p.ressort_name, additionalInfo: '<html><b>Lage:</b> ' + e(p.lage) + '<br/><b>Beitrag:</b> ' + e(p.beitrag) + '<br/><small>Stellungnahme, Datenangebot und Diskussion im Datenblatt (Info-Symbol).</small>' + (p.bild ? '<br/><img src=\\'' + p.bild + '\\' alt=\\'Schlagloch\\' style=\\'width:100%;margin-top:6px\\'/><br/><small>' + e(p.bild_hinweis) + '</small>' : '') + '</html>', genericLinks: [{ url: p.datenblatt, tooltip: 'Datenblatt', iconname: 'info' }] }; }"
         ]
       }
@@ -105,7 +109,7 @@
       "type": "geojson",
       "data": {
         "type": "FeatureCollection",
-        "projektbereich_id": "pb-63bd9074",
+        "projektbereich_id": "pb-86ab590c",
         "features": [
           {
             "type": "Feature",
@@ -114,8 +118,8 @@
               "ressort": "101",
               "ressort_name": "Stadtentwicklung und Städtebau",
               "farbe": "#e8590c",
-              "lage": "Mitte der Ausdehnung des Geltungsbereichs, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. 2 m)",
-              "verschoben_m": 2,
+              "lage": "Mitte der Ausdehnung des Geltungsbereichs",
+              "verschoben_m": 0,
               "beitrag": "Einordnung des Vorhabens in die gesamtstädtische Stadtentwicklung und die Zentralen Versorgungsbereiche (Einzelhandel, Nahversorgung)",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-101",
               "info_title": "TwinFlow 101",
@@ -124,8 +128,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.149384,
-                51.256197
+                7.226059,
+                51.2299781
               ]
             }
           },
@@ -136,8 +140,8 @@
               "ressort": "102",
               "ressort_name": "Vermessung, Katasteramt und Geodaten",
               "farbe": "#7b3fa0",
-              "lage": "20 % der Ost-West-Ausdehnung westlich der Mitte, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. 31 m)",
-              "verschoben_m": 31,
+              "lage": "20 % der Ost-West-Ausdehnung westlich der Mitte",
+              "verschoben_m": 0,
               "beitrag": "Amtliche Grundlagen: Flurstücke, Gebäude und tatsächliche Nutzung (ALKIS), Adressen, Straßenverzeichnis, Stadtkarten",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-102",
               "info_title": "TwinFlow 102",
@@ -146,8 +150,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1484818,
-                51.2562088
+                7.224323,
+                51.2299781
               ]
             }
           },
@@ -168,8 +172,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1497821,
-                51.256197
+                7.227795,
+                51.2299781
               ]
             }
           },
@@ -180,8 +184,8 @@
               "ressort": "104",
               "ressort_name": "Straßen und Verkehr",
               "farbe": "#d4a000",
-              "lage": "20 % der Nord-Süd-Ausdehnung nördlich der Mitte, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. 12 m)",
-              "verschoben_m": 12,
+              "lage": "20 % der Nord-Süd-Ausdehnung nördlich der Mitte, auf die nächstgelegene Stelle innerhalb des Geltungsbereichs verschoben (ca. 35 m)",
+              "verschoben_m": 35,
               "beitrag": "Erschließung und Verkehrsberuhigung: Tempo-30-Zonen",
               "datenblatt": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/twinflow-datenblatt.html#twinflow-104",
               "bild": "https://benjamin-bleske.github.io/adhoc-featurecollection-wizard/published/img/schlagloch-104.jpg",
@@ -192,8 +196,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1495167,
-                51.2562499
+                7.226059,
+                51.2309309
               ]
             }
           },
@@ -214,8 +218,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1493575,
-                51.256103
+                7.226059,
+                51.2287077
               ]
             }
           },
@@ -236,8 +240,8 @@
             "geometry": {
               "type": "Point",
               "coordinates": [
-                7.1502067,
-                51.256197
+                7.229531,
+                51.2299781
               ]
             }
           }

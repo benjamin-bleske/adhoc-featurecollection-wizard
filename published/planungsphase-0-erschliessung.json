@@ -1,0 +1,536 @@
+{
+  "version": 8,
+  "name": "Planungsphase 0: Erschließung",
+  "metadata": {
+    "adhoc": {
+      "projektbereich": "pb-86ab590c",
+      "styles": {
+        "planungsrecht": "published/planungsphase-0-planungsrecht.json",
+        "fachkonzepte": "published/planungsphase-0-fachkonzepte.json",
+        "erschliessung": "published/planungsphase-0-erschliessung.json",
+        "ready2use": "published/planungsphase-1-ready2use.json",
+        "ready2hack": "published/planungsphase-1-ready2hack.json",
+        "projektbereich": "published/projektbereich.geojson",
+        "entwurfgeo": "published/entwurf.geojson",
+        "datenblatt": "published/twinflow-datenblatt.html",
+        "ressorts": "published/twinflow-ressorts.json"
+      }
+    },
+    "carmaConf": {
+      "tools": [
+        {
+          "kind": "zoomToExtent",
+          "config": {
+            "label": "Auf den Projektbereich zoomen",
+            "bounds": [
+              7.221719,
+              51.226802,
+              7.230399,
+              51.233154
+            ]
+          }
+        }
+      ],
+      "layerInfo": {
+        "title": "Planungsphase 0: Erschließung",
+        "description": "Projektbereich pb-86ab590c, gemeinsam veröffentlicht mit allen Planungsphase-Styles.\nErschließung bezeichnet im deutschen Bau- und Planungsrecht die Gesamtheit aller Maßnahmen, die ein unbebautes Grundstück überhaupt erst bebaubar und nutzbar machen. Noch ohne Fachdaten.",
+        "links": [
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json",
+            "text": "Planungsphase 0: Planungsrecht (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-fachkonzepte.json",
+            "text": "Planungsphase 0: Fachkonzepte (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json",
+            "text": "Planungsphase 1: Ready2Use (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json",
+            "text": "Planungsphase 1: Ready2hack (Style)"
+          }
+        ],
+        "keywords": [
+          "adhoc",
+          "pb-86ab590c",
+          "carmaconf://infoBoxMapping:function createInfoBoxInfo(p){ var M = {  }; var sl = p.carmaInfo && p.carmaInfo.sourceLayer; if (sl && M[sl]) { return M[sl](p); } var e = function (x) { return String(x).split('&').join('&amp;').split('<').join('&lt;'); }; var t = ((p.info_text || '') + '\\n' + (p.info_erschliessung || '')).split('\\n').filter(function (l) { return l; }).map(function (l) { var i = l.indexOf(': '); return i > 0 && i < 48 ? '<b>' + e(l.slice(0, i + 1)) + '</b>' + e(l.slice(i + 1)) : e(l); }).join('<br/>'); return { title: p.info_title, additionalInfo: '<html>' + \"In diesem Schritt können Manipulationen am DGM und DOM vorgenommen werden. Bei der Fläche Blombach-Süd ist etwa relevant herauszufinden, wie viel Boden in m3 wegtransportiert oder wo andershin geschoben werden müsste, um die Fläche eben herzurichten. Bei diesem Schritt sind aber auch das Hochziehen von abstrakten 3D-Kuben, das Begrünen einzelner Seiten oder Dächer und das Platzieren von Bäumen möglich. (Simcity-Simulationen)<br/><br/>\" + t + \"\" + '</html>' }; }"
+        ]
+      }
+    }
+  },
+  "sources": {
+    "adhoc": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "projektbereich_id": "pb-86ab590c",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "MultiPolygon",
+              "coordinates": [
+                [
+                  [
+                    [
+                      7.221719026565552,
+                      51.228696946224574
+                    ],
+                    [
+                      7.222201824188232,
+                      51.228532341678886
+                    ],
+                    [
+                      7.222797274589539,
+                      51.22833750288433
+                    ],
+                    [
+                      7.222217917442322,
+                      51.2278033716137
+                    ],
+                    [
+                      7.222346663475037,
+                      51.22768579471531
+                    ],
+                    [
+                      7.2230225801467896,
+                      51.22804188382764
+                    ],
+                    [
+                      7.223784327507019,
+                      51.227047514882685
+                    ],
+                    [
+                      7.224449515342712,
+                      51.22728603101396
+                    ],
+                    [
+                      7.224776744842529,
+                      51.22698368641255
+                    ],
+                    [
+                      7.22800076007843,
+                      51.22807211768199
+                    ],
+                    [
+                      7.2284996509552,
+                      51.227763059568105
+                    ],
+                    [
+                      7.2286659479141235,
+                      51.22739017147234
+                    ],
+                    [
+                      7.228848338127136,
+                      51.22719532784211
+                    ],
+                    [
+                      7.2287517786026,
+                      51.2268022786983
+                    ],
+                    [
+                      7.22900390625,
+                      51.226859388611416
+                    ],
+                    [
+                      7.229433059692383,
+                      51.22695681124074
+                    ],
+                    [
+                      7.229433059692383,
+                      51.22695758625061
+                    ],
+                    [
+                      7.230398654937744,
+                      51.2271785309388
+                    ],
+                    [
+                      7.230205535888672,
+                      51.2274204057548
+                    ],
+                    [
+                      7.23000168800354,
+                      51.22775634089041
+                    ],
+                    [
+                      7.229921221733093,
+                      51.22795118214546
+                    ],
+                    [
+                      7.229985594749451,
+                      51.22814938188614
+                    ],
+                    [
+                      7.2300392389297485,
+                      51.22837781442675
+                    ],
+                    [
+                      7.2301411628723145,
+                      51.22865999423496
+                    ],
+                    [
+                      7.230200171470642,
+                      51.229086619945235
+                    ],
+                    [
+                      7.230387926101685,
+                      51.22948972721852
+                    ],
+                    [
+                      7.230377197265625,
+                      51.22968792033302
+                    ],
+                    [
+                      7.230398654937744,
+                      51.229818928872334
+                    ],
+                    [
+                      7.2297656536102295,
+                      51.23098119342711
+                    ],
+                    [
+                      7.229658365249634,
+                      51.231239843684364
+                    ],
+                    [
+                      7.229363322257996,
+                      51.23200570864748
+                    ],
+                    [
+                      7.229379415512085,
+                      51.23224755809284
+                    ],
+                    [
+                      7.2293150424957275,
+                      51.2323584053305
+                    ],
+                    [
+                      7.229288220405579,
+                      51.23261704784653
+                    ],
+                    [
+                      7.229143381118774,
+                      51.23290591958735
+                    ],
+                    [
+                      7.229030728340149,
+                      51.23315448219179
+                    ],
+                    [
+                      7.22900390625,
+                      51.23314776430121
+                    ],
+                    [
+                      7.226852774620056,
+                      51.23256330406676
+                    ],
+                    [
+                      7.226412892341614,
+                      51.23231473826877
+                    ],
+                    [
+                      7.226117849349976,
+                      51.23209640233847
+                    ],
+                    [
+                      7.226439714431763,
+                      51.23193852802041
+                    ],
+                    [
+                      7.226407527923584,
+                      51.231041657253826
+                    ],
+                    [
+                      7.225382924079895,
+                      51.23111219828456
+                    ],
+                    [
+                      7.225066423416138,
+                      51.23055794441561
+                    ],
+                    [
+                      7.224454879760742,
+                      51.23109876190611
+                    ],
+                    [
+                      7.2245460748672485,
+                      51.23134397519567
+                    ],
+                    [
+                      7.224277853965759,
+                      51.23151864687895
+                    ],
+                    [
+                      7.223988175392151,
+                      51.23154551938677
+                    ],
+                    [
+                      7.221971154212952,
+                      51.230564662684316
+                    ],
+                    [
+                      7.223027944564819,
+                      51.230148128171095
+                    ],
+                    [
+                      7.222389578819275,
+                      51.2294796495797
+                    ],
+                    [
+                      7.222394943237305,
+                      51.2293855915112
+                    ],
+                    [
+                      7.221719026565552,
+                      51.228696946224574
+                    ]
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "role": "projektbereich",
+              "mode": "gewerbepotenzialflaeche",
+              "nummer": "9-0211-0",
+              "bezeichnung": "Blombach-Süd",
+              "flaeche_m2": 260813,
+              "flurstuecke": [
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "24"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "25"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "27"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "32"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "33"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "34"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "35"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "39"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "40"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "41"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "46"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "47"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "48"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "49"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "50"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "90"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "91"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "98"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "113"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "119"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "122"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "127"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "129"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "141"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "142"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "143"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "155"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "156"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "157"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "159"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "160"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "161"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "162"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "164"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "165"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "167"
+                },
+                {
+                  "gemarkung": "Ronsdorf",
+                  "flur": "69",
+                  "flurstueck": "168"
+                }
+              ],
+              "steckbrief": "https://tiles.cismet.de/potenzialflaechenreport/gewerbeflaechen/Steckbrief.239.pdf",
+              "info_title": "Gewerbepotenzialfläche: Blombach-Süd",
+              "info_text": "Nummer: 9-0211-0\nGemarkung: Ronsdorf\nFlur: 69\nFlurstücke 24, 25, 27, 32, 33, 34, 35, 39, 40, 41, 46, 47, 48, 49, 50, 90, 91, 98, 113, 119, 122, 127, 129, 141, 142, 143, 155, 156, 157, 159, 160, 161, 162, 164, 165, 167 und 168\nGröße: ca. 260.800 m²"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "layers": [
+    {
+      "id": "adhoc-fill",
+      "type": "fill",
+      "source": "adhoc",
+      "paint": {
+        "fill-color": "#e00000",
+        "fill-opacity": 0.000001
+      }
+    },
+    {
+      "id": "adhoc-line",
+      "type": "line",
+      "source": "adhoc",
+      "layout": {
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#e00000",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          2,
+          16,
+          4,
+          20,
+          6
+        ],
+        "line-dasharray": [
+          3,
+          1.5
+        ]
+      }
+    }
+  ]
+}
