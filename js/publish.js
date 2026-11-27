@@ -244,6 +244,9 @@ const Publish = (() => {
     };
   }
 
+  // Namen der gewählten Gewerbepotenzialflächen (für flächenbezogene Texte im Datenblatt)
+  const namen = fc => fc.features.map(f => f.properties.bezeichnung).filter(Boolean);
+
   // Dateien (Pfad -> Inhalt, null = löschen) in EINEM Commit schreiben (Git Data API)
   async function commitFiles(files, token, message) {
     const base = `https://api.github.com/repos/${CFG.owner}/${CFG.repo}`;
@@ -277,8 +280,8 @@ const Publish = (() => {
       [FILES.visiongeo]: JSON.stringify({ type: 'FeatureCollection', projektbereich_id: id, features: [...vision.area.features, ...vision.design.features] }, null, 2),
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),
       [FILES.entwurfgeo]: JSON.stringify(design, null, 2),
-      [FILES.ressorts]: JSON.stringify({ stand: Ressorts.STAND, ressorts: Ressorts.LISTE }, null, 2),
-      [FILES.datenblatt]: Datenblatt.build(twinflowPoints(extent(fc), fc), { id, zeilen: (fc.features[0]?.properties.info_text || '').split('\n') }),
+      [FILES.ressorts]: JSON.stringify({ stand: Ressorts.STAND, ressorts: Ressorts.fuer(namen(fc)) }, null, 2),
+      [FILES.datenblatt]: Datenblatt.build(twinflowPoints(extent(fc), fc), { id, zeilen: (fc.features[0]?.properties.info_text || '').split('\n'), namen: namen(fc) }),
       ...Object.fromEntries(LEGACY.map(p => [p, null])),
     };
     return { id, files };

@@ -50,6 +50,7 @@ const Ressorts = (() => {
    }
   ],
   "twinflow": "TwinFlow 101",
+  "auftakt": "Bevor wir über Entwürfe streiten: Passt das Vorhaben zu den Zentren und gibt es dafür nachweislich Bedarf? Das sollten wir als Erstes klären.",
   "stellungnahme": {
    "titel": "Einordnung in die Stadtentwicklung",
    "text": "Das Vorhaben ist in das gesamtstädtische Stadtentwicklungsgefüge einzuordnen. Zu prüfen sind die Lage zu den Zentralen Versorgungsbereichen (2020) sowie die Wirkung auf Nahversorgung und Einzelhandel. Der Gebäude- und Wohnungsbestand dient als Bedarfsgrundlage; Dichte, Wohnungsmix und Gebietscharakter sollen sich am Umfeld orientieren.",
@@ -317,6 +318,7 @@ const Ressorts = (() => {
    }
   ],
   "twinflow": "TwinFlow 102",
+  "auftakt": "Kurz vorweg aus Kataster und Planungsrecht: Bitte erst Grenzen, Baulasten und geltendes Recht prüfen, dann zeichnen. Andersherum wird es teuer.",
   "stellungnahme": {
    "titel": "Kataster, Vermessung und Planungsrecht",
    "text": "Vor Planungsbeginn sind Flurstücksgrenzen, Gebäudebestand und tatsächliche Nutzung aus dem Liegenschaftskataster (ALKIS) zu prüfen. Für den Bauantrag wird ein Amtlicher Lageplan benötigt; Teilungen und Zusammenlegungen sind als Fortführungsvermessung rechtzeitig zu beantragen. Das geltende Planungsrecht (Bebauungsplan, Flächennutzungsplan, Satzungen) ist über die Auszüge Planungsrecht zu klären, Baulasten und Dienstbarkeiten über das Baulastenverzeichnis.",
@@ -392,6 +394,7 @@ const Ressorts = (() => {
    }
   ],
   "twinflow": "TwinFlow 103",
+  "auftakt": "Uns geht es zuerst um die Bäume, die schon da sind. Was erhalten werden kann, sollte vor dem Entwurf feststehen.",
   "stellungnahme": {
    "titel": "Freiraum und Baumbestand",
    "text": "Der vorhandene Baumbestand (Stammpositionen und Kronen) ist zu erfassen und im Entwurf zu berücksichtigen; Erhalt hat Vorrang, Ersatzpflanzungen sind einzuplanen. Im Umfeld liegende Kleingartenanlagen und Grünflächen sind bei Erschließung und Baustellenlogistik zu schonen. Grünstreifen und Hecken im Entwurf sollen standortgerecht bepflanzt werden.",
@@ -570,6 +573,7 @@ const Ressorts = (() => {
    }
   ],
   "twinflow": "TwinFlow 104",
+  "auftakt": "Die Anbindung ist machbar, aber Stellplätze, Rad und Bus müssen zusammen gedacht werden. Außerdem ist uns ein Schlagloch in der Zufahrt aufgefallen.",
   "stellungnahme": {
    "titel": "Erschließung, Parken und Verkehr",
    "text": "Die Erschließung ist an das öffentliche Straßennetz anzubinden; im Umfeld gelten Tempo-30-Zonen. Das Stellplatzkonzept ist mit den Bewohnerparkzonen und City-Parkzonen abzustimmen, Radabstellanlagen und die ÖPNV-Anbindung (Park and Ride, Bike and Ride, Nahverkehrsplan) sind einzubeziehen. Die vorhandene Straßenbeleuchtung ist zu berücksichtigen. Bei der Bestandsaufnahme der Erschließungsstraße wurden Fahrbahnschäden festgestellt (siehe Illustration, Schlagloch): Die Instandsetzung ist vor Baubeginn zu klären, der Zustand vor dem Baustellenverkehr per Beweissicherung zu dokumentieren.",
@@ -650,6 +654,7 @@ const Ressorts = (() => {
    }
   ],
   "twinflow": "TwinFlow 105",
+  "auftakt": "Für die Genehmigung zählt, dass die Unterlagen vollständig sind. Den Denkmalschutz im Umfeld würden wir gern früh statt spät besprechen.",
   "stellungnahme": {
    "titel": "Bauordnung und Denkmalschutz",
    "text": "Das Vorhaben bedarf der Baugenehmigung; die Bauvorlagen sind vollständig einzureichen. Im Umfeld sind Baudenkmäler und Denkmalbereichssatzungen (rechtsverbindlich und nicht rechtsverbindlich) auf Umgebungsschutz zu prüfen; Erhaltungs- und Gestaltungssatzungen können Anforderungen an die Gestaltung stellen. Nach Fertigstellung meldet die Bauordnungsbehörde die Gebäudedaten an Ressort 102 zur Gebäudeeinmessung.",
@@ -803,6 +808,7 @@ const Ressorts = (() => {
    }
   ],
   "twinflow": "TwinFlow 106",
+  "auftakt": "Der Pegel zeigt, wie schnell Starkregen hier ankommen kann. Ohne Entwässerungs- und Rückhaltekonzept sehen wir das Vorhaben kritisch.",
   "stellungnahme": {
    "titel": "Immissionsschutz, Naturschutz und Hochwasser",
    "text": "Die Luftqualität im Umfeld ist anhand der NO2-Messungen (Passivsammler) und der Umweltzone zu bewerten; Baustellenverkehr darf Belastungsschwerpunkte nicht zusätzlich verschärfen. Landschaftspläne sowie Landschafts- und Naturschutzgebiete sind auf Betroffenheit zu prüfen. Zum Wasserhaushalt: Der nahe Pegel Kluserbrücke (Wupperverband) stieg am 22.08.2026 binnen weniger Stunden von rund 18 cm auf 58,5 cm (siehe Grafik). Das zeigt, wie schnell das Einzugsgebiet auf Starkregen reagiert. Hochwassergefahrenkarte und Starkregensimulation sind auszuwerten, ein Entwässerungs- und Rückhaltekonzept ist nachzuweisen, zusätzliche Abflussspitzen sind zu vermeiden (z. B. Dachbegrünung, Versickerung).",
@@ -828,5 +834,7 @@ const Ressorts = (() => {
 ];
   // Lage der TwinFlows relativ zur Ausdehnung des Geltungsbereichs: dx = Anteil der Ost-West-Breite (+ östlich), dy = Anteil der Nord-Süd-Höhe (+ nördlich)
   const byTwinflow = name => LISTE.find(r => r.twinflow === name);
-  return { STAND, LISTE, ckan, byTwinflow };
+  // Liste für einen Projektbereich: für Blombach-Süd (Name der Gewerbepotenzialfläche) mit eigenen Diskussionen
+  const fuer = namen => (namen ?? []).includes('Blombach-Süd') ? LISTE.map(r => ({ ...r, ...DISKUSSION_BLOMBACH[r.id] })) : LISTE;
+  return { STAND, LISTE, ckan, byTwinflow, fuer };
 })();

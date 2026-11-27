@@ -32,9 +32,10 @@ const Datenblatt = (() => {
       peak, med, von: fmtTime(new Date(t0), { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }), bis: fmtTime(new Date(t1), { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) };
   }
 
-  // points: Features (Point) mit properties { name, lage, verschoben_m }; projekt: { id, zeilen: [..], bildBasis }
+  // points: Features (Point) mit properties { name, lage, verschoben_m }; projekt: { id, zeilen: [..], namen: [..] }
   function build(points, projekt) {
-    const rows = points.map(f => ({ f, r: Ressorts.byTwinflow(f.properties.name), lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }));
+    const liste = Ressorts.fuer(projekt.namen);
+    const rows = points.map(f => ({ f, r: liste.find(r => r.twinflow === f.properties.name), lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] }));
     const geoportal = (lat, lon) => `https://digital-twin-wuppertal-live.github.io/geoportal/#/?lat=${deg(lat)}&lng=${deg(lon)}&zoom=20`;
     const osm = (lat, lon) => `https://www.openstreetmap.org/?mlat=${deg(lat)}&mlon=${deg(lon)}#map=19/${deg(lat)}/${deg(lon)}`;
     const chart = chartSvg();
@@ -44,7 +45,7 @@ const Datenblatt = (() => {
     const sections = rows.map(({ f, r, lon, lat }) => {
       const p = f.properties, name = p.name, moved = p.verschoben_m > 0;
       const st = r.stellungnahme;
-      const thread = r.diskussion.map(d => { const o = Ressorts.LISTE.find(x => x.id === d.von); return `<div class="msg"><span class="dot" style="background:${esc(o.farbe)}"></span><b>Ressort ${esc(o.id)} ${esc(o.name)}</b><div>${esc(d.text)}</div></div>`; }).join('');
+      const thread = [{ von: r.id, text: r.auftakt }, ...r.diskussion].map(d => { const o = Ressorts.LISTE.find(x => x.id === d.von); return `<div class="msg"><span class="dot" style="background:${esc(o.farbe)}"></span><b>Ressort ${esc(o.id)} ${esc(o.name)}</b><div>${esc(d.text)}</div></div>`; }).join('');
       return `
       <section class="tf" id="${slug(name)}" hidden>
         <div class="top">
@@ -71,7 +72,7 @@ const Datenblatt = (() => {
           <tr><td><a href="${esc(Ressorts.ckan(d.slug))}">${esc(d.titel)}</a>${d.hinweis ? `<br><small>${esc(d.hinweis)}</small>` : ''}</td><td>${esc(d.herausgeber)}</td><td>${esc((d.formate || []).join(', '))}</td><td>${esc(d.lizenz)}</td></tr>`).join('')}</tbody></table>
           <p class="note">Beitrag zum Planungsprozess: ${r.beitraege.map(esc).join(' · ')}</p></div></div>
         <div class="panel grey"><div class="ph">Diskussion (simuliert)</div><div class="pb">
-          <div class="msg"><span class="dot" style="background:${esc(r.farbe)}"></span><b>Ressort ${esc(r.id)} ${esc(r.name)}</b><div>Stellungnahme: ${esc(st.titel)}</div></div>${thread}</div></div>
+          ${thread}</div></div>
       </section>`;
     }).join('');
 
