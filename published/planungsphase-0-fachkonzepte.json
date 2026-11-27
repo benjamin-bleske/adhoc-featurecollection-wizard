@@ -12,8 +12,10 @@
         "erschliessung": "published/planungsphase-0-erschliessung.json",
         "ready2use": "published/planungsphase-1-ready2use.json",
         "ready2hack": "published/planungsphase-1-ready2hack.json",
+        "vision": "published/planungsphase-2-zukunftsvision.json",
         "projektbereich": "published/projektbereich.geojson",
         "entwurfgeo": "published/entwurf.geojson",
+        "visiongeo": "published/zukunftsvision.geojson",
         "datenblatt": "published/twinflow-datenblatt.html",
         "ressorts": "published/twinflow-ressorts.json"
       }
@@ -117,6 +119,10 @@
           {
             "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json",
             "text": "Planungsphase 1: Ready2hack (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-2-zukunftsvision.json",
+            "text": "Planungsphase 2: Zukunftsvision (Style)"
           }
         ],
         "keywords": [

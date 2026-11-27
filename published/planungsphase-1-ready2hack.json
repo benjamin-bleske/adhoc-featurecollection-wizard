@@ -94,6 +94,10 @@
           {
             "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json",
             "text": "Planungsphase 1: Ready2Use (Style)"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-2-zukunftsvision.json",
+            "text": "Planungsphase 2: Zukunftsvision (Style)"
           }
         ],
         "keywords": [
