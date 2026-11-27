@@ -1,15 +1,17 @@
-// Erzeugt aus EINER FeatureCollection (Projektbereich) vier Styles und veröffentlicht sie in EINEM Git-Commit:
+// Erzeugt aus EINER FeatureCollection (Projektbereich) fünf Styles und veröffentlicht sie in EINEM Git-Commit:
 //   Planungsphase 0: Planungsrecht   (FNP, Regionalplan, LEP, B-Plan, Landschaft/Naturschutz)
 //   Planungsphase 0: Fachkonzepte    (Bodenfunktion, dezentrale Wärmeversorgung, Stadtbaumkonzept)
+//   Planungsphase 0: Erschließung    (noch leer: nur der Umriss des Projektbereichs)
 //   Planungsphase 1: Ready2Use       (Geltungsbereich, schwarz gestrichelt, + Bebauungsentwurf; Dropdown: "Geltungsbereich" / "Geltungsbereich und Entwurf")
 //   Planungsphase 1: Ready2hack      (TwinFlow 101 bis 106 nach festen Abstandsregeln relativ zu Ready2Use, per Filter-Button schaltbar, mit Datenblatt)
 // Weil alles aus derselben FeatureCollection entsteht und in einem Commit landet, sind die Styles immer synchron:
-// ein neuer Bereich ersetzt alle vier gemeinsam.
+// ein neuer Bereich ersetzt alle fünf gemeinsam.
 const Publish = (() => {
   const CFG = { owner: 'benjamin-bleske', repo: 'adhoc-featurecollection-wizard', branch: 'main' };
   const FILES = {
     planungsrecht: 'published/planungsphase-0-planungsrecht.json',
     fachkonzepte: 'published/planungsphase-0-fachkonzepte.json',
+    erschliessung: 'published/planungsphase-0-erschliessung.json',
     ready2use: 'published/planungsphase-1-ready2use.json',
     ready2hack: 'published/planungsphase-1-ready2hack.json',
     projektbereich: 'published/projektbereich.geojson',
@@ -65,23 +67,23 @@ const Publish = (() => {
   const zoomTool = bounds => bounds && { tools: [{ kind: 'zoomToExtent', config: { label: 'Auf den Projektbereich zoomen', bounds } }] };
   const sibling = (key, title) => ({ url: raw(FILES[key]), text: `${title} (Style)` });
   const titleOf = key => Fachdaten.GROUPS[key]?.title ?? TITLES[key];
-  const siblings = except => ['planungsrecht', 'fachkonzepte', 'ready2use', 'ready2hack'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
+  const siblings = except => ['planungsrecht', 'fachkonzepte', 'erschliessung', 'ready2use', 'ready2hack'].filter(k => k !== except).map(k => sibling(k, titleOf(k)));
 
-  // Style "Projektbereich: Planungsrecht" bzw. "Projektbereich: Fachkonzepte"
+  // Styles der Planungsphase 0 (eine Gruppe aus Fachdaten.GROUPS je Style; ohne Fachdaten bleibt nur der Umriss)
   function groupStyle(gid, fc, bounds, pbId) {
     const g = Fachdaten.GROUPS[gid];
     const ids = (fc.fachdaten ?? []).filter(id => Fachdaten.CATALOG.find(c => c.id === id)?.group === gid);
     const fd = Fachdaten.toStyleParts(ids, bounds);
     const ds = Fachdaten.toDynamicStyling(ids, fd.byEntry);
     const links = [...Fachdaten.links(ids), ...siblings(gid)];
-    const keywords = ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping(ids, { extraKey: 'info_' + gid })}`];
+    const keywords = ['adhoc', pbId, `carmaconf://infoBoxMapping:${Fachdaten.infoboxMapping(ids, { extraKey: 'info_' + gid, intro: g.infoText })}`];
     return {
       version: 8, name: g.title,
       ...(fd.sprite && { sprite: fd.sprite }), ...(fd.glyphs && { glyphs: fd.glyphs }),
       metadata: {
         adhoc: { projektbereich: pbId, styles: FILES },
         carmaConf: { ...(ds.length && { dynamicStyling: ds }), ...zoomTool(bounds),
-          layerInfo: { title: g.title, description: [`Projektbereich ${pbId}, gemeinsam veröffentlicht mit allen Planungsphase-Styles.`, ...Fachdaten.describe(ids)].join('\n'), links, keywords } },
+          layerInfo: { title: g.title, description: [`Projektbereich ${pbId}, gemeinsam veröffentlicht mit allen Planungsphase-Styles.`, ...(g.description ? [g.description] : []), ...Fachdaten.describe(ids)].join('\n'), links, keywords } },
       },
       sources: { ...fd.sources, adhoc: { type: 'geojson', data: fcFor(fc, ['info_' + gid], pbId) } },
       layers: [
@@ -197,12 +199,13 @@ const Publish = (() => {
     };
   }
 
-  // alle vier Styles aus derselben FeatureCollection
+  // alle fünf Styles aus derselben FeatureCollection
   function buildStyles(fc, design = Entwurf.build(fc)) {
     const bounds = extent(fc), pbId = projektbereichId(fc);
     return {
       planungsrecht: groupStyle('planungsrecht', fc, bounds, pbId),
       fachkonzepte: groupStyle('fachkonzepte', fc, bounds, pbId),
+      erschliessung: groupStyle('erschliessung', fc, bounds, pbId),
       ready2use: ready2useStyle(fc, bounds, pbId, design),
       ready2hack: ready2hackStyle(fc, bounds, pbId),
     };
@@ -234,6 +237,7 @@ const Publish = (() => {
     const files = {
       [FILES.planungsrecht]: JSON.stringify(styles.planungsrecht, null, 2),
       [FILES.fachkonzepte]: JSON.stringify(styles.fachkonzepte, null, 2),
+      [FILES.erschliessung]: JSON.stringify(styles.erschliessung, null, 2),
       [FILES.ready2use]: JSON.stringify(styles.ready2use, null, 2),
       [FILES.ready2hack]: JSON.stringify(styles.ready2hack, null, 2),
       [FILES.projektbereich]: JSON.stringify({ ...fc, projektbereich_id: id }, null, 2),

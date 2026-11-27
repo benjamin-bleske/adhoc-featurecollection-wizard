@@ -6,10 +6,14 @@
 const Fachdaten = (() => {
   const caps = base => `${base}?REQUEST=GetCapabilities&SERVICE=WMS`;
 
-  // Zwei Fachdaten-Styles im Geoportal: "Planungsphase 0: Planungsrecht" und "Planungsphase 0: Fachkonzepte"
+  // Styles der Planungsphase 0 im Geoportal: "Planungsrecht", "Fachkonzepte" und "Erschließung" (noch ohne Fachdaten)
   const GROUPS = {
     planungsrecht: { title: 'Planungsphase 0: Planungsrecht', file: 'published/planungsphase-0-planungsrecht.json' },
     fachkonzepte: { title: 'Planungsphase 0: Fachkonzepte', file: 'published/planungsphase-0-fachkonzepte.json' },
+    erschliessung: { title: 'Planungsphase 0: Erschließung', file: 'published/planungsphase-0-erschliessung.json',
+      description: 'Erschließung bezeichnet im deutschen Bau- und Planungsrecht die Gesamtheit aller Maßnahmen, die ein unbebautes Grundstück überhaupt erst bebaubar und nutzbar machen. Noch ohne Fachdaten.',
+      // fester Text oben in der Infobox
+      infoText: 'In diesem Schritt können Manipulationen am DGM und DOM vorgenommen werden. Bei der Fläche Blombach-Süd ist etwa relevant herauszufinden, wie viel Boden in m3 wegtransportiert oder wo andershin geschoben werden müsste, um die Fläche eben herzurichten. Bei diesem Schritt sind aber auch das Hochziehen von abstrakten 3D-Kuben, das Begrünen einzelner Seiten oder Dächer und das Platzieren von Bäumen möglich. (Simcity-Simulationen)' },
   };
 
   const CATALOG = [

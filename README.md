@@ -1,6 +1,6 @@
 # Adhoc-FeatureCollection-Wizard
 
-Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projektbereich) für Wuppertal erzeugt und daraus **vier Styles** für das Geoportal des Digital Twin Wuppertal veröffentlicht.
+Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projektbereich) für Wuppertal erzeugt und daraus **fünf Styles** für das Geoportal des Digital Twin Wuppertal veröffentlicht.
 
 > **Planungsphase 0** (ein einziger Style `published/style.json`) ist als Git-Tag **`planungsphase-0`** gesichert und in [docs/planungsphase-0.md](docs/planungsphase-0.md) dokumentiert:
 > `git checkout planungsphase-0`. Ihr Style bleibt unter
@@ -8,14 +8,15 @@ Wizard, der Schritt für Schritt eine ad-hoc GeoJSON-`FeatureCollection` (Projek
 > **Planungsphase 1** (vier Styles: Planungsphase 0: Planungsrecht und Fachkonzepte, Planungsphase 1: Ready2Use und Ready2hack) ist als Git-Tag **`planungsphase-1`** gesichert und in [docs/planungsphase-1.md](docs/planungsphase-1.md) dokumentiert.
 > Dieses README beschreibt den Stand **nach** Planungsphase 0 (inklusive Planungsphase 1). Die beiden Planungsphase-0-Styles heißen jetzt „Planungsphase 0: Planungsrecht/Fachkonzepte“.
 
-## Die vier Styles
-Aus **einer** FeatureCollection entstehen bei jedem Publishen alle vier, in **einem Git-Commit**. Ein neuer Bereich ersetzt alle vier gemeinsam, sie können nicht auseinanderlaufen.
+## Die fünf Styles
+Aus **einer** FeatureCollection entstehen bei jedem Publishen alle fünf, in **einem Git-Commit**. Ein neuer Bereich ersetzt alle fünf gemeinsam, sie können nicht auseinanderlaufen.
 Sie tragen dieselbe Projektbereich-ID (`pb-…`) und verweisen in `layerInfo.links` aufeinander.
 
 | Style (Titel im Geoportal) | Datei | Inhalt |
 |---|---|---|
 | **Planungsphase 0: Planungsrecht** | `published/planungsphase-0-planungsrecht.json` | roter gestrichelter Umriss + Dropdown: FNP Hauptnutzungen, WMS Regionalplan NRW, WMS Landesentwicklungsplan NRW, B-Plan-Verfahren (rechtsverbindlich), Landschafts- und Naturschutz |
 | **Planungsphase 0: Fachkonzepte** | `published/planungsphase-0-fachkonzepte.json` | roter gestrichelter Umriss + Dropdown: Gesamtbewertung der Bodenfunktionen, Eignung dezentrale Wärmeversorgung, Stadtbaumkonzept |
+| **Planungsphase 0: Erschließung** | `published/planungsphase-0-erschliessung.json` | noch ohne Kartenebenen: nur roter gestrichelter Umriss, in der Infobox ein fester Text zu DGM/DOM-Manipulationen und Simulationen. Erschließung bezeichnet im deutschen Bau- und Planungsrecht die Gesamtheit aller Maßnahmen, die ein unbebautes Grundstück überhaupt erst bebaubar und nutzbar machen |
 | **Planungsphase 1: Ready2Use** | `published/planungsphase-1-ready2use.json` | Geltungsbereich (gleiche Geometrie wie der Projektbereich, **schwarz** gestrichelt) und der daraus berechnete **Entwurf**; Dropdown am Layer-Button: **„Geltungsbereich“** / **„Geltungsbereich und Entwurf“** |
 | **Planungsphase 1: Ready2hack** | `published/planungsphase-1-ready2hack.json` | sechs Punkte **TwinFlow 101 bis 106** (je Ressort einer), per **Filter-Button** im Layer-Chip einzeln schaltbar, mit **Datenblatt** |
 | (Datenblatt) | `published/twinflow-datenblatt.html`, `published/twinflow-ressorts.json` | Datenblatt zu den TwinFlows (HTML, per GitHub Pages) und seine Daten |
@@ -118,6 +119,7 @@ Danach zeigt der Wizard die **Links mit Commit-SHA** (`raw.githubusercontent.com
 Links auf den jeweils neuesten Stand (GitHub cached diese `main`-Links bis zu 5 Minuten, ein `?v=…` hilft **nicht**):
 - [Planungsphase 0: Planungsrecht](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-planungsrecht.json)
 - [Planungsphase 0: Fachkonzepte](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-fachkonzepte.json)
+- [Planungsphase 0: Erschließung](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-0-erschliessung.json)
 - [Planungsphase 1: Ready2Use](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2use.json)
 - [Planungsphase 1: Ready2hack](https://raw.githubusercontent.com/benjamin-bleske/adhoc-featurecollection-wizard/main/published/planungsphase-1-ready2hack.json)
 
